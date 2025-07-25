@@ -1,0 +1,14 @@
+{
+  "pages": {
+    "hero_hi": "Salut, sunt",
+    "hero_subtitle": "Full-Stack Developer construind aplicații web scalabile cu Laravel, Vue și Tailwind",
+    "see_work": "Vezi proiectele",
+    "hire_me": "Angajează-mă",
+    "about_h1": "Despre mine",
+    "about_text": "Pasiunea mea pentru web development a început în 201X. De atunci am construit zeci de aplicații, de la MVP-uri la soluții complexe. Cred în cod curat, teste riguroase și experiențe utilizator excepționale.",
+    "skills": "Competențe",
+    "stack_h1": "Tehnologii folosite",
+    "projects_h1": "Proiecte",
+    "contact_h1": "Contact"
+  }
+}
