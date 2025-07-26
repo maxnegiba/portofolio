@@ -114,12 +114,12 @@ class ProjectResource extends Resource
             ]);
     }
 
-   public static function getPages(): array
+  public static function getPages(): array
 {
     return [
         'index'  => \App\Filament\Resources\ProjectResource\Pages\ListProjects::route('/'),
         'create' => \App\Filament\Resources\ProjectResource\Pages\CreateProject::route('/create'),
         'edit'   => \App\Filament\Resources\ProjectResource\Pages\EditProject::route('/{record}/edit'),
     ];
-   }
+}
 }
