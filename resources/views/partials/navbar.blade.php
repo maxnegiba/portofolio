@@ -1,4 +1,3 @@
-```blade
 <nav class="fixed top-0 left-0 right-0 z-50 py-3 bg-black/80 backdrop-blur-xl border-b border-white/10 transition-all duration-500" id="navbar">
   <div class="container mx-auto px-4 flex justify-between items-center">
     <!-- Logo cu animație și gradient -->
@@ -134,7 +133,7 @@
   </div>
 </nav>
 
-<!-- Adaugă acest script pentru funcționalitatea mobile menu și scroll effect -->
+<!-- Script complet pentru funcționalitate -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -143,7 +142,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let isMenuOpen = false;
     
     // Mobile menu toggle cu animație hamburger
-    mobileMenuBtn.addEventListener('click', function() {
+    mobileMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
         isMenuOpen = !isMenuOpen;
         
         if (isMenuOpen) {
@@ -151,17 +151,17 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
             
             // Animație hamburger to X
-            document.getElementById('line1').classList.add('rotate-45', 'translate-y-[7px]');
+            document.getElementById('line1').classList.add('rotate-45', 'translate-y-[7px]', 'w-full');
             document.getElementById('line2').classList.add('opacity-0');
-            document.getElementById('line3').classList.add('-rotate-45', '-translate-y-[7px]');
+            document.getElementById('line3').classList.add('-rotate-45', '-translate-y-[7px]', 'w-full');
         } else {
             mobileMenu.classList.add('opacity-0', 'invisible', '-translate-y-4');
             mobileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
             
             // Revert animation
-            document.getElementById('line1').classList.remove('rotate-45', 'translate-y-[7px]');
+            document.getElementById('line1').classList.remove('rotate-45', 'translate-y-[7px]', 'w-full');
             document.getElementById('line2').classList.remove('opacity-0');
-            document.getElementById('line3').classList.remove('-rotate-45', '-translate-y-[7px]');
+            document.getElementById('line3').classList.remove('-rotate-45', '-translate-y-[7px]', 'w-full');
         }
     });
     
@@ -172,10 +172,65 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileMenu.classList.add('opacity-0', 'invisible', '-translate-y-4');
             mobileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
             
-            document.getElementById('line1').classList.remove('rotate-45', 'translate-y-[7px]');
+            document.getElementById('line1').classList.remove('rotate-45', 'translate-y-[7px]', 'w-full');
             document.getElementById('line2').classList.remove('opacity-0');
-            document.getElementById('line3').classList.remove('-I
-
+            document.getElementById('line3').classList.remove('-rotate-45', '-translate-y-[7px]', 'w-full');
+        });
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && isMenuOpen) {
+            isMenuOpen = false;
+            mobileMenu.classList.add('opacity-0', 'invisible', '-translate-y-4');
+            mobileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+            
+            document.getElementById('line1').classList.remove('rotate-45', 'translate-y-[7px]', 'w-full');
+            document.getElementById('line2').classList.remove('opacity-0');
+            document.getElementById('line3').classList.remove('-rotate-45', '-translate-y-[7px]', 'w-full');
+        }
+    });
+    
+    // Language dropdown functionality
+    document.querySelectorAll('.group').forEach(group => {
+        const button = group.querySelector('button');
+        const dropdown = group.querySelector('.absolute');
+        
+        if (button && dropdown) {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = dropdown.classList.contains('opacity-100');
+                
+                // Close all other dropdowns
+                document.querySelectorAll('.absolute.opacity-100').forEach(openDropdown => {
+                    if (openDropdown !== dropdown) {
+                        openDropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+                        openDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                    }
+                });
+                
+                // Toggle current dropdown
+                if (isOpen) {
+                    dropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+                    dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                } else {
+                    dropdown.classList.add('opacity-100', 'visible', 'scale-100');
+                    dropdown.classList.remove('opacity-0', 'invisible', 'scale-95');
+                }
+            });
+        }
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.group')) {
+            document.querySelectorAll('.absolute.opacity-100').forEach(dropdown => {
+                dropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+                dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+            });
+        }
+    });
+    
     // Navbar scroll effect
     let lastScroll = 0;
     window.addEventListener('scroll', () => {
@@ -193,4 +248,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-```

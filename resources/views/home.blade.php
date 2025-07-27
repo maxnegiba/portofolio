@@ -141,7 +141,7 @@
           <!-- Image Frame -->
           <div class="relative rounded-3xl overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
-            <img src="{{ asset('img/about.jpg') }}" alt="About" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700">
+            <img src="{{ asset('img/avatar.jpg') }}" alt="About" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700">
           </div>
           
           <!-- Floating Card -->
@@ -215,152 +215,165 @@
   </div>
 </section>
 
-<!-- Tech Stack Section cu animații moderne -->
-<section id="stack" class="py-32 relative bg-gradient-to-b from-black via-gray-900/50 to-black overflow-hidden">
-  <!-- Animated Background -->
+<!--  Tech Stack with Automation & Growth  -->
+<section id="stack" class="py-32 bg-gradient-to-b from-black via-gray-900/50 to-black overflow-hidden">
+  <!--  Background magic (unchanged)  -->
   <div class="absolute inset-0">
-    <!-- Tech Grid Pattern -->
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w```blade
-    <!-- Tech Grid Pattern -->
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="tech-grid" width="100" height="100" patternUnits="userSpaceOnUse"%3E%3Ccircle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23tech-grid)"/%3E%3C/svg%3E')]"></div>
-    
-    <!-- Floating Tech Icons -->
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="floating-icon absolute top-20 left-10 text-purple-500/20 text-6xl animate-float-slow"><i class="fab fa-laravel"></i></div>
-      <div class="floating-icon absolute top-40 right-20 text-blue-500/20 text-5xl animate-float-slow delay-1000"><i class="fab fa-vuejs"></i></div>
-      <div class="floating-icon absolute bottom-20 left-1/4 text-yellow-500/20 text-7xl animate-float-slow delay-500"><i class="fab fa-js"></i></div>
-      <div class="floating-icon absolute bottom-40 right-1/3 text-red-500/20 text-6xl animate-float-slow delay-1500"><i class="fab fa-php"></i></div>
-    </div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%22100%22%20height%3D%22100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22tech-grid%22%20width%3D%22100%22%20height%3D%22100%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%221%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.1%29%22/%3E%3C/pattern%3E%3C/defs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url%28%23tech-grid%29%22/%3E%3C/svg%3E')]"></div>
+    <div class="floating-icon top-20 left-10 text-purple-400/20 text-6xl animate-float-slow"><i class="fab fa-python"></i></div>
+    <div class="floating-icon top-40 right-20 text-blue-400/20 text-5xl animate-float-slow delay-1000"><i class="fas fa-robot"></i></div>
+    <div class="floating-icon bottom-20 left-1/4 text-green-400/20 text-7xl animate-float-slow delay-500"><i class="fas fa-search"></i></div>
+    <div class="floating-icon bottom-40 right-1/3 text-yellow-400/20 text-6xl animate-float-slow delay-1500"><i class="fas fa-cloud"></i></div>
   </div>
-  
+
   <div class="container relative z-10">
-    <!-- Section Header -->
+    <!-- Heading -->
     <div class="text-center mb-20">
-      <span class="text-purple-400 font-medium tracking-wider uppercase text-sm">My Arsenal</span>
+      <span class="text-purple-400 tracking-wider uppercase text-sm">My Arsenal</span>
       <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mt-4 mb-6">
         <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
           {{ __('pages.stack_h1') }}
         </span>
       </h2>
       <p class="text-xl text-gray-400 max-w-3xl mx-auto">
-        Cutting-edge technologies and tools I use to build exceptional digital experiences
+        From pixel-perfect front-ends to hyper-automated back-ends, SEO & growth stacks
       </p>
     </div>
-    
-    <!-- Tech Categories -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-      <!-- Frontend Technologies -->
-      <div class="group relative">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all duration-500">
-          <!-- Icon -->
-          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-            <i class="fas fa-code text-2xl text-white"></i>
-          </div>
-          
-          <!-- Title -->
-          <h3 class="text-2xl font-bold text-white mb-4">Frontend</h3>
-          
-          <!-- Tech List -->
-          <div class="space-y-3">
-            @foreach([
-              ['HTML5 & CSS3', 'fab fa-html5', 'text-orange-400'],
-              ['JavaScript ES6+', 'fab fa-js', 'text-yellow-400'],
-              ['Vue.js 3', 'fab fa-vuejs', 'text-green-400'],
-              ['Tailwind CSS', 'fas fa-wind', 'text-cyan-400'],
-              ['Bootstrap 5', 'fab fa-bootstrap', 'text-purple-400']
-            ] as $tech)
-            <div class="flex items-center space-x-3 group/item">
-              <i class="{{ $tech[1] }} {{ $tech[2] }} group-hover/item:scale-110 transition-transform duration-300"></i>
-              <span class="text-gray-300 group-hover/item:text-white transition-colors duration-300">{{ $tech[0] }}</span>
-            </div>
-            @endforeach
-          </div>
-        </div>
+
+    <!--  NEW 4-COLUMN GRID  -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+
+      <!-- 1. Frontend Technologies (original) -->
+  <div class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all">
+      <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110">
+        <i class="fas fa-code text-2xl text-white"></i>
       </div>
-      
-      <!-- Backend Technologies -->
-      <div class="group relative">
-        <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all duration-500">
-          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-            <i class="fas fa-server text-2xl text-white"></i>
-          </div>
-          
-          <h3 class="text-2xl font-bold text-white mb-4">Backend</h3>
-          
-          <div class="space-y-3">
-            @foreach([
-              ['PHP 8+', 'fab fa-php', 'text-purple-400'],
-              ['Laravel 10', 'fab fa-laravel', 'text-red-400'],
-              ['Node.js', 'fab fa-node-js', 'text-green-400'],
-              ['REST APIs', 'fas fa-plug', 'text-blue-400'],
-              ['GraphQL', 'fas fa-project-diagram', 'text-pink-400']
-            ] as $tech)
-            <div class="flex items-center space-x-3 group/item">
-              <i class="{{ $tech[1] }} {{ $tech[2] }} group-hover/item:scale-110 transition-transform duration-300"></i>
-              <span class="text-gray-300 group-hover/item:text-white transition-colors duration-300">{{ $tech[0] }}</span>
-            </div>
-            @endforeach
-          </div>
-        </div>
-      </div>
-      
-      <!-- Database & Tools -->
-      <div class="group relative">
-        <div class="absolute inset-0 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all duration-500">
-          <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-            <i class="fas fa-database text-2xl text-white"></i>
-          </div>
-          
-          <h3 class="text-2xl font-bold text-white mb-4">Database & DevOps</h3>
-          
-          <div class="space-y-3">
-            @foreach([
-              ['MySQL', 'fas fa-database', 'text-blue-400'],
-              ['PostgreSQL', 'fas fa-database', 'text-blue-300'],
-              ['Redis', 'fas fa-memory', 'text-red-400'],
-              ['Docker', 'fab fa-docker', 'text-blue-400'],
-              ['Git & GitHub', 'fab fa-git-alt', 'text-orange-400']
-            ] as $tech)
-            <div class="flex items-center space-x-3 group/item">
-              <i class="{{ $tech[1] }} {{ $tech[2] }} group-hover/item:scale-110 transition-transform duration-300"></i>
-              <span class="text-gray-300 group-hover/item:text-white transition-colors duration-300">{{ $tech[0] }}</span>
-            </div>
-            @endforeach
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Skills Progress Bars -->
-    <div class="max-w-4xl mx-auto">
-      <h3 class="text-2xl font-bold text-center text-white mb-12">Proficiency Levels</h3>
-      <div class="space-y-6">
-        @foreach([
-          ['Laravel Development', 95, 'from-red-500 to-pink-500'],
-          ['Frontend Development', 90, 'from-blue-500 to-cyan-500'],
-          ['Database Design', 85, 'from-green-500 to-emerald-500'],
-          ['API Development', 92, 'from-purple-500 to-indigo-500'],
-          ['DevOps', 80, 'from-orange-500 to-yellow-500']
-        ] as $skill)
-        <div class="group">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-gray-300 font-medium group-hover:text-white transition-colors duration-300">{{ $skill[0] }}</span>
-            <span class="text-gray-400 text-sm">{{ $skill[1] }}%</span>
-          </div>
-          <div class="h-3 bg-white/10 rounded-full overflow-hidden">
-            <div class="h-full bg-gradient-to-r {{ $skill[2] }} rounded-full transform origin-left scale-x-0 animate-skill-fill" style="animation-delay: {{ $loop->index * 200 }}ms; --skill-width: {{ $skill[1] }}%"></div>
-          </div>
-        </div>
-        @endforeach
-      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Frontend</h3>
+      <ul class="space-y-3 text-sm text-gray-300">
+        <li><i class="fab fa-html5 text-orange-400 mr-2"></i>HTML5 & CSS3</li>
+        <li><i class="fab fa-js text-yellow-400 mr-2"></i>JavaScript ES6+</li>
+        <li><i class="fab fa-vuejs text-green-400 mr-2"></i>Vue.js 3</li>
+        <li><i class="fas fa-wind text-cyan-400 mr-2"></i>Tailwind CSS</li>
+        <li><i class="fab fa-bootstrap text-purple-400 mr-2"></i>Bootstrap 5</li>
+      </ul>
     </div>
   </div>
-</section>
 
+  <!-- 2. Backend Technologies (original) -->
+  <div class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100"></div>
+    <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all">
+      <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110">
+        <i class="fas fa-server text-2xl text-white"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Backend</h3>
+      <ul class="space-y-3 text-sm text-gray-300">
+        <li><i class="fab fa-php text-purple-400 mr-2"></i>PHP 8+</li>
+        <li><i class="fab fa-laravel text-red-400 mr-2"></i>Laravel 10</li>
+        <li><i class="fab fa-node-js text-green-400 mr-2"></i>Node.js</li>
+        <li><i class="fas fa-plug text-blue-400 mr-2"></i>REST APIs</li>
+        <li><i class="fas fa-project-diagram text-pink-400 mr-2"></i>GraphQL</li>
+      </ul>
+    </div>
+  </div>
 
+  <!-- 3. Database & Tools (original) -->
+  <div class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100"></div>
+    <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all">
+      <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110">
+        <i class="fas fa-database text-2xl text-white"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Database & DevOps</h3>
+      <ul class="space-y-3 text-sm text-gray-300">
+        <li><i class="fas fa-database text-blue-400 mr-2"></i>MySQL</li>
+        <li><i class="fas fa-database text-blue-300 mr-2"></i>PostgreSQL</li>
+        <li><i class="fas fa-memory text-red-400 mr-2"></i>Redis</li>
+        <li><i class="fab fa-docker text-blue-400 mr-2"></i>Docker</li>
+        <li><i class="fab fa-git-alt text-orange-400 mr-2"></i>Git & GitHub</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. Python & RPA (card nou) -->
+  <div class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-yellow-600/20 to-amber-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100"></div>
+    <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all">
+      <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110">
+        <i class="fab fa-python text-2xl text-white"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Python & RPA</h3>
+      <ul class="space-y-3 text-sm text-gray-300">
+        <li><i class="fab fa-python text-yellow-400 mr-2"></i>Scrapy / Selenium</li>
+        <li><i class="fas fa-robot text-cyan-400 mr-2"></i>PyAutoGUI / RPA</li>
+        <li><i class="fas fa-chart-bar text-green-400 mr-2"></i>Pandas / NumPy</li>
+        <li><i class="fas fa-microchip text-red-400 mr-2"></i>FastAPI / Django REST</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5. No-Code Orchestration (card nou) -->
+  <div class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-pink-600/20 to-rose-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100"></div>
+    <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all">
+      <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110">
+        <i class="fas fa-project-diagram text-2xl text-white"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">No-Code Orchestration</h3>
+      <ul class="space-y-3 text-sm text-gray-300">
+        <li><i class="fas fa-cogs text-purple-400 mr-2"></i>n8n / Make.com</li>
+        <li><i class="fas fa-bolt text-yellow-400 mr-2"></i>Zapier / Integrately</li>
+        <li><i class="fas fa-cloud text-blue-400 mr-2"></i>OctaBase / n8n-Cloud</li>
+        <li><i class="fas fa-link text-green-400 mr-2"></i>Webhook bridges</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 6. SEO & Growth (card nou) -->
+  <div class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-red-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100"></div>
+    <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all">
+      <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110">
+        <i class="fas fa-search text-2xl text-white"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">SEO & Growth</h3>
+      <ul class="space-y-3 text-sm text-gray-300">
+        <li><i class="fas fa-chart-line text-green-400 mr-2"></i>Technical SEO</li>
+        <li><i class="fab fa-google text-blue-400 mr-2"></i>Search Console / GA4</li>
+        <li><i class="fas fa-tachometer-alt text-purple-400 mr-2"></i>PageSpeed & Lighthouse</li>
+        <li><i class="fas fa-share-alt text-cyan-400 mr-2"></i>Schema & SERP automation</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<!--  Progress Bars (rămân identice)  -->
+<div class="max-w-4xl mx-auto">
+  <h3 class="text-2xl font-bold text-center text-white mb-12">Proficiency Levels</h3>
+  <div class="space-y-6">
+    @foreach([
+      ['Laravel Development', 95, 'from-red-500 to-pink-500'],
+      ['Frontend Development', 90, 'from-blue-500 to-cyan-500'],
+      ['Database Design', 85, 'from-green-500 to-emerald-500'],
+      ['API Development', 92, 'from-purple-500 to-indigo-500'],
+      ['DevOps', 80, 'from-orange-500 to-yellow-500'],
+      ['Python Automation', 88, 'from-yellow-500 to-green-500'],
+      ['SEO & Growth', 85, 'from-pink-500 to-purple-500']
+    ] as $skill)
+    <div class="group">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-gray-300 font-medium group-hover:text-white">{{ $skill[0] }}</span>
+        <span class="text-gray-400 text-sm">{{ $skill[1] }}%</span>
+      </div>
+      <div class="h-3 bg-white/10 rounded-full overflow-hidden">
+        <div class="h-full bg-gradient-to-r {{ $skill[2] }} rounded-full" style="width: {{ $skill[1] }}%"></div>
+      </div>
+    </div>
+    @endforeach
+  </div>
+</div>
 
 <!-- Add particles.js or custom particle script -->
 <script>

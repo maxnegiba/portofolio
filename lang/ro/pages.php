@@ -6,4 +6,8 @@ return [
     'projects_h1'  => 'Proiecte',
     'contact_h1'   => 'Contact',
     'back' => 'Înapoi la proiecte',
+    'hero_hi' => 'Salut, sunt',
+    'hero_subtitle' => 'Full-Stack Developer construind aplicații web scalabile cu Laravel, Vue și Tailwind',
+    'see_work' => 'Vezi proiectele',
+    'hire_me' => 'Angajează-mă',
 ];
