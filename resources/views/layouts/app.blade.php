@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -14,6 +15,9 @@
         @yield('content')
     </main>
     
-    @vite('resources/js/app.js') <!-- Asigură-te că JS e încărcat la final -->
+    <!-- Footer inclus aici -->
+    @include('partials.footer')
+    
+    @vite('resources/js/app.js')
 </body>
 </html>
