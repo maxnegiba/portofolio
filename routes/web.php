@@ -33,4 +33,14 @@ Route::prefix('{locale}')
         Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
     });
 
+    use App\Http\Controllers\BlogController;
+
+// Blog routes
+Route::prefix('blog')->group(function () {
+    Route::get('/', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/{slug}', [BlogController::class, 'show'])->name('blog.show');
+    Route::get('/feed', [BlogController::class, 'feed'])->name('blog.feed');
+    Route::get('/sitemap', [BlogController::class, 'sitemap'])->name('blog.sitemap');
+});
+
 require __DIR__.'/auth.php';
