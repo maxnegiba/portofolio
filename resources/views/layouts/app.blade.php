@@ -19,5 +19,6 @@
     @include('partials.footer')
     
     @vite('resources/js/app.js')
+    @vite9('resources/css/app.css')
 </body>
 </html>

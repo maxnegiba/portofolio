@@ -74,3 +74,65 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 8rem 1rem;
+  }
+  
+  .hero-content {
+    max-width: 100%;
+  }
+  
+  .avatar-section {
+    flex-direction: column;
+  }
+  
+  .avatar-container {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+  
+  .nav-link {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .section-padding {
+    padding: 4rem 1rem;
+  }
+  
+  .card {
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .social-icons {
+    margin-top: 1rem;
+  }
+  
+  .social-icon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+  }
+  
+  .footer-section {
+    margin-bottom: 2rem;
+  }
+}
