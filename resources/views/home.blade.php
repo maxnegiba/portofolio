@@ -54,7 +54,7 @@
             <span class="block text-gray-400 animate-fade-in-down">{{ __('pages.hero_hi') }}</span>
             <span class="block mt-2 relative">
               <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient-x animate-fade-in-up delay-200 bg-[length:200%_auto]">
-                [Your Name]
+                Max
               </span>
               <!-- Typing Cursor -->
               <span class="absolute -right-8 top-1/2 -translate-y-1/2 w-1 h-12 bg-cyan-400 animate-blink shadow-[0_0_10px_rgba(34,211,238,0.8)]"></span>

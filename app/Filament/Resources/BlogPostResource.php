@@ -11,80 +11,114 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Forms\Set;
-use Filament\Forms\Get;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Notifications\Notification;
+// === Importuri necesare pentru Tabs ===
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+// =====================================
 
 class BlogPostResource extends Resource
 {
     protected static ?string $model = BlogPost::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+
     protected static ?string $navigationGroup = 'Content';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Group::make()
+                Forms\Components\Group::make()
                     ->schema([
-                        Section::make('Content')
+                        // === Secțiunea de Conținut cu Tabs pentru traduceri ===
+                        Forms\Components\Section::make(__('blog.form_content_section'))
                             ->schema([
-                                Forms\Components\TextInput::make('title')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(debounce: 500)
-                                    ->afterStateUpdated(function (Set $set, ?string $state) {
-                                        $set('slug', Str::slug($state));
-                                    }),
-                                    
+                                // Tabs pentru traduceri
+                                Tabs::make('Translations')
+                                    ->tabs(
+                                        array_map(function (string $locale) {
+                                            return Tab::make(Str::upper($locale))
+                                                ->schema([
+                                                    Forms\Components\TextInput::make("title.{$locale}")
+                                                        ->label(__('blog.title_label') . " ({$locale})")
+                                                        ->required()
+                                                        ->maxLength(255)
+                                                        ->live(debounce: 500)
+                                                        ->afterStateUpdated(function (Set $set, ?string $state) use ($locale) {
+                                                            // Generează slug doar pentru limba implicită (sau prima limbă editată)
+                                                            // Poți modifica logica dacă vrei slug-uri traduse
+                                                            if ($locale === config('app.locale', 'en')) {
+                                                                $set('slug', Str::slug($state));
+                                                            }
+                                                        }),
+                                                    Forms\Components\RichEditor::make("content.{$locale}")
+                                                        ->label(__('blog.content_label') . " ({$locale})")
+                                                        ->required()
+                                                        ->columnSpanFull()
+                                                        ->fileAttachmentsDirectory('blog/images')
+                                                        ->fileAttachmentsVisibility('public'),
+                                                    Forms\Components\Textarea::make("excerpt.{$locale}")
+                                                        ->label(__('blog.excerpt_label') . " ({$locale})")
+                                                        ->maxLength(65535)
+                                                        ->columnSpanFull()
+                                                        ->helperText(__('blog.excerpt_helper')),
+                                                ]);
+                                        }, config('app.available_locales', ['en'])) // Presupune că ai 'available_locales' în config/app.php
+                                    )
+                                    ->columnSpanFull(),
+
+                                // Slug - rămâne ca string unic dacă nu este în $translatable în model
+                                // Dacă slug este și el translatable, scoate-l de aici și adaugă-l în Tabs.
                                 Forms\Components\TextInput::make('slug')
+                                    ->label(__('blog.slug_label'))
                                     ->required()
                                     ->maxLength(255)
-                                    ->unique(ignoreRecord: true),
-                                    
-                                Forms\Components\RichEditor::make('content')
-                                    ->required()
-                                    ->columnSpanFull()
-                                    ->fileAttachmentsDirectory('blog/images')
-                                    ->fileAttachmentsVisibility('public'),
-                                    
-                                Forms\Components\Textarea::make('excerpt')
-                                    ->maxLength(65535)
-                                    ->columnSpanFull()
-                                    ->helperText('A brief summary of the post for SEO and previews.'),
+                                    ->unique(ignoreRecord: true) // Asigură-te că funcționează corect cu logica modelului
+                                    ->helperText('Acest slug este unic global. Dacă vrei slug-uri traduse, trebuie să modifici modelul și migrarea.'),
+
                             ]),
-                            
-                        Section::make('SEO & Meta')
+                        // =====================================================
+
+                        // === Secțiunea SEO/Meta cu Tabs pentru traduceri ===
+                        Forms\Components\Section::make(__('blog.seo_meta_section'))
                             ->schema([
-                                Forms\Components\Textarea::make('meta_description')
-                                    ->maxLength(160)
-                                    ->helperText('Recommended: 150-160 characters for optimal SEO.'),
-                                    
+                                Tabs::make('Meta Translations')
+                                    ->tabs(
+                                        array_map(function (string $locale) {
+                                            return Tab::make(Str::upper($locale) . ' Meta')
+                                                ->schema([
+                                                    Forms\Components\Textarea::make("meta_description.{$locale}")
+                                                        ->label(__('blog.meta_description_label') . " ({$locale})")
+                                                        ->maxLength(160)
+                                                        ->helperText(__('blog.meta_description_helper')),
+                                                    // Dacă vrei meta_keywords tradus, aplică același principiu cu Tabs aici
+                                                    // Forms\Components\TagsInput::make("meta_keywords.{$locale}")
+                                                    //     ->label(__('blog.meta_keywords_label') . " ({$locale})")
+                                                    //     ->placeholder(__('blog.meta_keywords_placeholder'))
+                                                    //     ->helperText(__('blog.meta_keywords_helper')),
+                                                ]);
+                                        }, config('app.available_locales', ['en']))
+                                    )
+                                    ->columnSpanFull(),
+                                // Dacă meta_keywords NU e tradus, îl pui aici:
                                 Forms\Components\TagsInput::make('meta_keywords')
-                                    ->placeholder('Add keywords')
-                                    ->helperText('Keywords for SEO optimization.'),
+                                    ->label(__('blog.meta_keywords_label'))
+                                    ->placeholder(__('blog.meta_keywords_placeholder'))
+                                    ->helperText(__('blog.meta_keywords_helper')),
                             ]),
+                        // ====================================================
                     ])
                     ->columnSpan(['lg' => 2]),
-                    
-                Group::make()
+
+                Forms\Components\Group::make()
                     ->schema([
-                        Section::make('Publishing')
+                        // Secțiunea de Publicare (rămâne neschimbată)
+                        Forms\Components\Section::make(__('blog.publishing_section'))
                             ->schema([
                                 Forms\Components\FileUpload::make('featured_image')
+                                    ->label(__('blog.featured_image_label'))
                                     ->image()
                                     ->directory('blog/featured')
                                     ->maxSize(2048)
@@ -92,20 +126,22 @@ class BlogPostResource extends Resource
                                     ->imageCropAspectRatio('16:9')
                                     ->imageResizeTargetWidth('1200')
                                     ->imageResizeTargetHeight('675'),
-                                    
+
                                 Forms\Components\Toggle::make('is_published')
-                                    ->label('Published')
-                                    ->helperText('Make this post visible to visitors.'),
-                                    
+                                    ->label(__('blog.is_published_label'))
+                                    ->helperText(__('blog.is_published_helper')),
+
                                 Forms\Components\DateTimePicker::make('published_at')
-                                    ->label('Publish Date')
+                                    ->label(__('blog.published_at_label'))
                                     ->default(now())
-                                    ->helperText('When should this post be published?'),
+                                    ->helperText(__('blog.published_at_helper')),
                             ]),
-                            
-                        Section::make('Author')
+
+                        // Secțiunea Autor (rămâne neschimbată)
+                        Forms\Components\Section::make(__('blog.author_section'))
                             ->schema([
                                 Forms\Components\Select::make('user_id')
+                                    ->label(__('blog.author_label'))
                                     ->relationship('user', 'name')
                                     ->default(auth()->id())
                                     ->required(),
@@ -120,114 +156,131 @@ class BlogPostResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('featured_image')
-                    ->label('Image')
+                Tables\Columns\ImageColumn::make('featured_image')
+                    ->label(__('blog.image_column'))
                     ->circular()
                     ->size(50),
-                    
-                TextColumn::make('title')
-                    ->searchable()
+                // Modificăm pentru a afișa titlul în limba curentă
+                Tables\Columns\TextColumn::make('title')
+                    ->label(__('blog.title_column'))
+                    // Căutare în JSON - simplificată, caută în toate localele
+                    ->searchable(query: function ($query, $search) {
+                         return $query->whereJsonContains('title', $search);
+                    })
                     ->limit(50)
                     ->tooltip(function (BlogPost $record): string {
-                        return $record->title;
-                    }),
-                    
-                TextColumn::make('user.name')
-                    ->label('Author')
+                        // Afișează titlul în limba curentă
+                        return $record->getTranslation('title', app()->getLocale());
+                    })
+                    ->formatStateUsing(fn ($state, $record) => $record->getTranslation('title', app()->getLocale())), // Afișează titlul în limba curentă
+
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('blog.author_column'))
                     ->sortable()
                     ->toggleable(),
-                    
-                ToggleColumn::make('is_published')
-                    ->label('Published')
+
+                Tables\Columns\ToggleColumn::make('is_published')
+                    ->label(__('blog.published_column'))
                     ->sortable(),
-                    
-                TextColumn::make('published_at')
+
+                Tables\Columns\TextColumn::make('published_at')
+                    ->label(__('blog.published_at_column'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
-                    
-                TextColumn::make('reading_time')
-                    ->label('Read Time')
+
+                Tables\Columns\TextColumn::make('reading_time')
+                    ->label(__('blog.reading_time_column'))
                     ->suffix(' min')
                     ->toggleable(),
-                    
-                TextColumn::make('created_at')
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('blog.created_at_column'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('is_published')
+                Tables\Filters\SelectFilter::make('is_published')
+                    ->label(__('blog.status_filter'))
                     ->options([
-                        true => 'Published',
-                        false => 'Draft',
+                        true => __('blog.published_option'),
+                        false => __('blog.draft_option'),
                     ]),
-                    
-                Filter::make('published_at')
+                Tables\Filters\Filter::make('published_at')
+                    ->label(__('blog.date_filter'))
                     ->form([
-                        Forms\Components\DatePicker::make('published_from'),
-                        Forms\Components\DatePicker::make('published_until'),
+                        Forms\Components\DatePicker::make('published_from')
+                            ->label(__('blog.from_date')),
+                        Forms\Components\DatePicker::make('published_until')
+                            ->label(__('blog.to_date')),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
+                    ->query(function (Tables\Filters\QueryBuilder $query, array $data): Tables\Filters\QueryBuilder {
                         return $query
-                            ->when(
-                                $data['published_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['published_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
-                            );
+                            ->when($data['published_from'], fn ($query, $date) => $query->whereDate('published_at', '>=', $date))
+                            ->when($data['published_until'], fn ($query, $date) => $query->whereDate('published_at', '<=', $date));
                     }),
             ])
             ->actions([
-                ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                    
-                    Action::make('duplicate')
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()->label(__('blog.view_action')),
+                    Tables\Actions\EditAction::make()->label(__('blog.edit_action')),
+                    Tables\Actions\DeleteAction::make()->label(__('blog.delete_action')),
+                    Tables\Actions\Action::make('duplicate')
+                        ->label(__('blog.duplicate_action'))
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (BlogPost $record) {
+                            // Replicarea necesită ajustări pentru datele traducibile
                             $newPost = $record->replicate();
-                            $newPost->title = $record->title . ' (Copy)';
+                            
+                            // Ajustează titlul copiei pentru limba implicită
+                            $defaultLocale = config('app.locale', 'en');
+                            $originalTitleDefaultLocale = $record->getTranslation('title', $defaultLocale, false) ?? $record->title;
+                            $newTitleDefaultLocale = $originalTitleDefaultLocale . ' (Copy)';
+                            $newPost->setTranslation('title', $defaultLocale, $newTitleDefaultLocale);
+
+                            // Ajustează slug-ul copiei (poate fi necesar să fie unic)
                             $newPost->slug = $record->slug . '-copy';
+                            
+                            // Resetează statusul de publicare
                             $newPost->is_published = false;
                             $newPost->published_at = null;
+                            
                             $newPost->save();
                             
-                            Notification::make()
-                                ->title('Post duplicated successfully')
+                            // Notificare
+                            \Filament\Notifications\Notification::make()
+                                ->title(__('blog.duplicate_success'))
                                 ->success()
                                 ->send();
                         }),
-                        
-                    Action::make('preview')
+                    Tables\Actions\Action::make('preview')
+                        ->label(__('blog.preview_action'))
                         ->icon('heroicon-o-eye')
-                        ->url(fn (BlogPost $record) => route('blog.show', $record->slug))
+                        ->url(fn (BlogPost $record) => route('blog.show', ['locale' => config('app.locale', 'en'), 'slug' => $record->slug])) // Previzualizare în limba implicită sau curentă
                         ->openUrlInNewTab(),
                 ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->label(__('blog.delete_bulk')),
                     Tables\Actions\BulkAction::make('publish')
+                        ->label(__('blog.publish_bulk'))
                         ->icon('heroicon-o-check')
-                        ->action(function (Collection $records) {
+                        ->action(function ($records) {
                             $records->each->update(['is_published' => true]);
-                            
-                            Notification::make()
-                                ->title('Posts published successfully')
+                            \Filament\Notifications\Notification::make()
+                                ->title(__('blog.publish_success'))
                                 ->success()
                                 ->send();
                         }),
                     Tables\Actions\BulkAction::make('unpublish')
+                        ->label(__('blog.unpublish_bulk'))
                         ->icon('heroicon-o-x-mark')
-                        ->action(function (Collection $records) {
+                        ->action(function ($records) {
                             $records->each->update(['is_published' => false]);
-                            
-                            Notification::make()
-                                ->title('Posts unpublished successfully')
+                            \Filament\Notifications\Notification::make()
+                                ->title(__('blog.unpublish_success'))
                                 ->success()
                                 ->send();
                         }),
@@ -248,8 +301,22 @@ class BlogPostResource extends Resource
         return [
             'index' => Pages\ListBlogPosts::route('/'),
             'create' => Pages\CreateBlogPost::route('/create'),
-        
             'edit' => Pages\EditBlogPost::route('/{record}/edit'),
         ];
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('blog.post');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('blog.posts');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('blog.posts');
     }
 }

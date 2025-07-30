@@ -18,7 +18,7 @@
                     <span class="mx-2">•</span>
                     <time>{{ $post->published_at->format('M d, Y') }}</time>
                     <span class="mx-2">•</span>
-                    <span>{{ $post->reading_time }} min read</span>
+                    <span>{{ $post->reading_time }} {{ __('blog.reading_time') }}</span>
                 </div>
                 
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">{{ $post->title }}</h1>
@@ -41,7 +41,7 @@
 
         @if($recentPosts->count() > 0)
             <section class="mt-16 pt-16 border-t border-white/10">
-                <h2 class="text-2xl font-bold text-white mb-8">Recent Posts</h2>
+                <h2 class="text-2xl font-bold text-white mb-8">{{ __('blog.recent_posts') }}</h2>
                 <div class="grid md:grid-cols-3 gap-6">
                     @foreach($recentPosts as $recentPost)
                         <article class="group">

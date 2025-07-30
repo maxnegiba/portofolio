@@ -283,5 +283,12 @@
     "Whoops!": "Whoops!",
     "Yes": "Yes",
     "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
-    "Your email address is unverified.": "Your email address is unverified."
+    "Your email address is unverified.": "Your email address is unverified.",
+    "blog": {
+        "title": "Blog",
+        "subtitle": "Ultimele noutăți și articole",
+        "reading_time": "min de lectură",
+        "read_more": "Citește mai mult",
+        "recent_posts": "Ultimele articole"
+    }
 }
