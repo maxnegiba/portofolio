@@ -14,7 +14,8 @@ use Filament\Forms\Set;
 // === Importuri necesare pentru Tabs ===
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
-// =====================================
+use Illuminate\Database\Eloquent\Builder; // <--- Adăugat pentru corectare
+// ===========================================================
 
 class BlogPostResource extends Resource
 {
