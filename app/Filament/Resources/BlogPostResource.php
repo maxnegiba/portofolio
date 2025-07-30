@@ -15,16 +15,13 @@ use Filament\Forms\Set;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder; // <--- Adăugat pentru corectare
-// ===========================================================
+// =====================================
 
 class BlogPostResource extends Resource
 {
     protected static ?string $model = BlogPost::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
-
     protected static ?string $navigationGroup = 'Content';
-
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -69,7 +66,6 @@ class BlogPostResource extends Resource
                                         }, config('app.available_locales', ['en'])) // Presupune că ai 'available_locales' în config/app.php
                                     )
                                     ->columnSpanFull(),
-
                                 // Slug - rămâne ca string unic dacă nu este în $translatable în model
                                 // Dacă slug este și el translatable, scoate-l de aici și adaugă-l în Tabs.
                                 Forms\Components\TextInput::make('slug')
@@ -78,10 +74,8 @@ class BlogPostResource extends Resource
                                     ->maxLength(255)
                                     ->unique(ignoreRecord: true) // Asigură-te că funcționează corect cu logica modelului
                                     ->helperText('Acest slug este unic global. Dacă vrei slug-uri traduse, trebuie să modifici modelul și migrarea.'),
-
                             ]),
                         // =====================================================
-
                         // === Secțiunea SEO/Meta cu Tabs pentru traduceri ===
                         Forms\Components\Section::make(__('blog.seo_meta_section'))
                             ->schema([
@@ -112,7 +106,6 @@ class BlogPostResource extends Resource
                         // ====================================================
                     ])
                     ->columnSpan(['lg' => 2]),
-
                 Forms\Components\Group::make()
                     ->schema([
                         // Secțiunea de Publicare (rămâne neschimbată)
@@ -127,17 +120,14 @@ class BlogPostResource extends Resource
                                     ->imageCropAspectRatio('16:9')
                                     ->imageResizeTargetWidth('1200')
                                     ->imageResizeTargetHeight('675'),
-
                                 Forms\Components\Toggle::make('is_published')
                                     ->label(__('blog.is_published_label'))
                                     ->helperText(__('blog.is_published_helper')),
-
                                 Forms\Components\DateTimePicker::make('published_at')
                                     ->label(__('blog.published_at_label'))
                                     ->default(now())
                                     ->helperText(__('blog.published_at_helper')),
                             ]),
-
                         // Secțiunea Autor (rămâne neschimbată)
                         Forms\Components\Section::make(__('blog.author_section'))
                             ->schema([
@@ -174,27 +164,22 @@ class BlogPostResource extends Resource
                         return $record->getTranslation('title', app()->getLocale());
                     })
                     ->formatStateUsing(fn ($state, $record) => $record->getTranslation('title', app()->getLocale())), // Afișează titlul în limba curentă
-
                 Tables\Columns\TextColumn::make('user.name')
                     ->label(__('blog.author_column'))
                     ->sortable()
                     ->toggleable(),
-
                 Tables\Columns\ToggleColumn::make('is_published')
                     ->label(__('blog.published_column'))
                     ->sortable(),
-
                 Tables\Columns\TextColumn::make('published_at')
                     ->label(__('blog.published_at_column'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
-
                 Tables\Columns\TextColumn::make('reading_time')
                     ->label(__('blog.reading_time_column'))
                     ->suffix(' min')
                     ->toggleable(),
-
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('blog.created_at_column'))
                     ->dateTime()
@@ -216,11 +201,13 @@ class BlogPostResource extends Resource
                         Forms\Components\DatePicker::make('published_until')
                             ->label(__('blog.to_date')),
                     ])
-                    ->query(function (Tables\Filters\QueryBuilder $query, array $data): Tables\Filters\QueryBuilder {
+                    // === Corectare aplicată aici ===
+                    ->query(function (Builder $query, array $data): Builder { // <--- Schimbare aici
                         return $query
                             ->when($data['published_from'], fn ($query, $date) => $query->whereDate('published_at', '>=', $date))
                             ->when($data['published_until'], fn ($query, $date) => $query->whereDate('published_at', '<=', $date));
                     }),
+                    // =============================
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -233,22 +220,17 @@ class BlogPostResource extends Resource
                         ->action(function (BlogPost $record) {
                             // Replicarea necesită ajustări pentru datele traducibile
                             $newPost = $record->replicate();
-                            
                             // Ajustează titlul copiei pentru limba implicită
                             $defaultLocale = config('app.locale', 'en');
                             $originalTitleDefaultLocale = $record->getTranslation('title', $defaultLocale, false) ?? $record->title;
                             $newTitleDefaultLocale = $originalTitleDefaultLocale . ' (Copy)';
                             $newPost->setTranslation('title', $defaultLocale, $newTitleDefaultLocale);
-
                             // Ajustează slug-ul copiei (poate fi necesar să fie unic)
                             $newPost->slug = $record->slug . '-copy';
-                            
                             // Resetează statusul de publicare
                             $newPost->is_published = false;
                             $newPost->published_at = null;
-                            
                             $newPost->save();
-                            
                             // Notificare
                             \Filament\Notifications\Notification::make()
                                 ->title(__('blog.duplicate_success'))
