@@ -2,7 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BlogPostResource\Pages;
+// === Importuri necesare pentru Tabs ===
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Illuminate\Database\Eloquent\Builder; // <--- Ensure this is present for the filter
+// =====================================
+
+use App\Filament\Resources\BlogPostResource\Pages; // <--- This import is crucial
 use App\Models\BlogPost;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,17 +17,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Forms\Set;
-// === Importuri necesare pentru Tabs ===
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
-use Illuminate\Database\Eloquent\Builder; // <--- Adăugat pentru corectare
-// =====================================
 
 class BlogPostResource extends Resource
 {
     protected static ?string $model = BlogPost::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+
     protected static ?string $navigationGroup = 'Content';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -279,15 +283,19 @@ class BlogPostResource extends Resource
         ];
     }
 
+    // === CORECTED getPages METHOD ===
     public static function getPages(): array
     {
+        // Ensure the Pages namespace alias is correctly imported at the top
         return [
-            'index' => Pages\ListBlogPost::route('/'),
+            'index' => Pages\ListBlogPost::route('/'), // Standard index route
             'create' => Pages\CreateBlogPost::route('/create'),
             'edit' => Pages\EditBlogPost::route('/{record}/edit'),
-            'list' => Pages\ListBlogPost::route('/list'),
+            // Removed the redundant 'list' route pointing to the same page class
+            // 'list' => Pages\ListBlogPost::route('/list'),
         ];
     }
+    // ================================
 
     public static function getModelLabel(): string
     {
