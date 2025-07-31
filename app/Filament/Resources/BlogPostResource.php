@@ -11,9 +11,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Forms\Set;
+// === Importuri necesare pentru Tabs ===
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder; // <--- Adăugat pentru corectare
+// =====================================
 
 class BlogPostResource extends Resource
 {
@@ -28,8 +30,10 @@ class BlogPostResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
+                        // === Secțiunea de Conținut cu Tabs pentru traduceri ===
                         Forms\Components\Section::make(__('blog.form_content_section'))
                             ->schema([
+                                // Tabs pentru traduceri
                                 Tabs::make('Translations')
                                     ->tabs(
                                         array_map(function (string $locale) {
@@ -39,38 +43,40 @@ class BlogPostResource extends Resource
                                                         ->label(__('blog.title_label') . " ({$locale})")
                                                         ->required()
                                                         ->maxLength(255)
-                                                        ->live(onBlur: true)
+                                                        ->live(debounce: 500)
                                                         ->afterStateUpdated(function (Set $set, ?string $state) use ($locale) {
-                                                            $set("slug.{$locale}", Str::slug($state));
+                                                            // Generează slug doar pentru limba implicită (sau prima limbă editată)
+                                                            // Poți modifica logica dacă vrei slug-uri traduse
+                                                            if ($locale === config('app.locale', 'en')) {
+                                                                $set('slug', Str::slug($state));
+                                                            }
                                                         }),
-
-                                                    Forms\Components\TextInput::make("slug.{$locale}")
-                                                        ->label(__('blog.slug_label') . " ({$locale})")
-                                                        ->required()
-                                                        ->maxLength(255)
-                                                        ->unique(
-                                                            table: BlogPost::class,
-                                                            column: "slug->{$locale}",
-                                                            ignoreRecord: true
-                                                        ),
-
                                                     Forms\Components\RichEditor::make("content.{$locale}")
                                                         ->label(__('blog.content_label') . " ({$locale})")
                                                         ->required()
                                                         ->columnSpanFull()
                                                         ->fileAttachmentsDirectory('blog/images')
                                                         ->fileAttachmentsVisibility('public'),
-
                                                     Forms\Components\Textarea::make("excerpt.{$locale}")
                                                         ->label(__('blog.excerpt_label') . " ({$locale})")
                                                         ->maxLength(65535)
                                                         ->columnSpanFull()
                                                         ->helperText(__('blog.excerpt_helper')),
                                                 ]);
-                                        }, config('app.available_locales', ['en']))
+                                        }, config('app.available_locales', ['en'])) // Presupune că ai 'available_locales' în config/app.php
                                     )
                                     ->columnSpanFull(),
+                                // Slug - rămâne ca string unic dacă nu este în $translatable în model
+                                // Dacă slug este și el translatable, scoate-l de aici și adaugă-l în Tabs.
+                                Forms\Components\TextInput::make('slug')
+                                    ->label(__('blog.slug_label'))
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->unique(ignoreRecord: true) // Asigură-te că funcționează corect cu logica modelului
+                                    ->helperText('Acest slug este unic global. Dacă vrei slug-uri traduse, trebuie să modifici modelul și migrarea.'),
                             ]),
+                        // =====================================================
+                        // === Secțiunea SEO/Meta cu Tabs pentru traduceri ===
                         Forms\Components\Section::make(__('blog.seo_meta_section'))
                             ->schema([
                                 Tabs::make('Meta Translations')
@@ -82,19 +88,27 @@ class BlogPostResource extends Resource
                                                         ->label(__('blog.meta_description_label') . " ({$locale})")
                                                         ->maxLength(160)
                                                         ->helperText(__('blog.meta_description_helper')),
+                                                    // Dacă vrei meta_keywords tradus, aplică același principiu cu Tabs aici
+                                                    // Forms\Components\TagsInput::make("meta_keywords.{$locale}")
+                                                    //     ->label(__('blog.meta_keywords_label') . " ({$locale})")
+                                                    //     ->placeholder(__('blog.meta_keywords_placeholder'))
+                                                    //     ->helperText(__('blog.meta_keywords_helper')),
                                                 ]);
                                         }, config('app.available_locales', ['en']))
                                     )
                                     ->columnSpanFull(),
+                                // Dacă meta_keywords NU e tradus, îl pui aici:
                                 Forms\Components\TagsInput::make('meta_keywords')
                                     ->label(__('blog.meta_keywords_label'))
                                     ->placeholder(__('blog.meta_keywords_placeholder'))
                                     ->helperText(__('blog.meta_keywords_helper')),
                             ]),
+                        // ====================================================
                     ])
                     ->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
                     ->schema([
+                        // Secțiunea de Publicare (rămâne neschimbată)
                         Forms\Components\Section::make(__('blog.publishing_section'))
                             ->schema([
                                 Forms\Components\FileUpload::make('featured_image')
@@ -114,6 +128,7 @@ class BlogPostResource extends Resource
                                     ->default(now())
                                     ->helperText(__('blog.published_at_helper')),
                             ]),
+                        // Secțiunea Autor (rămâne neschimbată)
                         Forms\Components\Section::make(__('blog.author_section'))
                             ->schema([
                                 Forms\Components\Select::make('user_id')
@@ -136,14 +151,19 @@ class BlogPostResource extends Resource
                     ->label(__('blog.image_column'))
                     ->circular()
                     ->size(50),
+                // Modificăm pentru a afișa titlul în limba curentă
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('blog.title_column'))
+                    // Căutare în JSON - simplificată, caută în toate localele
                     ->searchable(query: function ($query, $search) {
-                        return $query->whereJsonContains('title', $search);
+                         return $query->whereJsonContains('title', $search);
                     })
                     ->limit(50)
-                    ->tooltip(fn (BlogPost $record): string => $record->getTranslation('title', app()->getLocale()))
-                    ->formatStateUsing(fn ($state, $record) => $record->getTranslation('title', app()->getLocale())),
+                    ->tooltip(function (BlogPost $record): string {
+                        // Afișează titlul în limba curentă
+                        return $record->getTranslation('title', app()->getLocale());
+                    })
+                    ->formatStateUsing(fn ($state, $record) => $record->getTranslation('title', app()->getLocale())), // Afișează titlul în limba curentă
                 Tables\Columns\TextColumn::make('user.name')
                     ->label(__('blog.author_column'))
                     ->sortable()
@@ -170,7 +190,7 @@ class BlogPostResource extends Resource
                 Tables\Filters\SelectFilter::make('is_published')
                     ->label(__('blog.status_filter'))
                     ->options([
-                        true  => __('blog.published_option'),
+                        true => __('blog.published_option'),
                         false => __('blog.draft_option'),
                     ]),
                 Tables\Filters\Filter::make('published_at')
@@ -181,11 +201,13 @@ class BlogPostResource extends Resource
                         Forms\Components\DatePicker::make('published_until')
                             ->label(__('blog.to_date')),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
+                    // === Corectare aplicată aici ===
+                    ->query(function (Builder $query, array $data): Builder { // <--- Schimbare aici
                         return $query
                             ->when($data['published_from'], fn ($query, $date) => $query->whereDate('published_at', '>=', $date))
                             ->when($data['published_until'], fn ($query, $date) => $query->whereDate('published_at', '<=', $date));
                     }),
+                    // =============================
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -196,24 +218,20 @@ class BlogPostResource extends Resource
                         ->label(__('blog.duplicate_action'))
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (BlogPost $record) {
+                            // Replicarea necesită ajustări pentru datele traducibile
                             $newPost = $record->replicate();
+                            // Ajustează titlul copiei pentru limba implicită
                             $defaultLocale = config('app.locale', 'en');
                             $originalTitleDefaultLocale = $record->getTranslation('title', $defaultLocale, false) ?? $record->title;
                             $newTitleDefaultLocale = $originalTitleDefaultLocale . ' (Copy)';
                             $newPost->setTranslation('title', $defaultLocale, $newTitleDefaultLocale);
-
-                            // duplicate slugs for every locale
-                            foreach (config('app.available_locales', [$defaultLocale]) as $locale) {
-                                $slug = $record->getTranslation('slug', $locale, false);
-                                if ($slug) {
-                                    $newPost->setTranslation('slug', $locale, $slug . '-copy');
-                                }
-                            }
-
+                            // Ajustează slug-ul copiei (poate fi necesar să fie unic)
+                            $newPost->slug = $record->slug . '-copy';
+                            // Resetează statusul de publicare
                             $newPost->is_published = false;
                             $newPost->published_at = null;
                             $newPost->save();
-
+                            // Notificare
                             \Filament\Notifications\Notification::make()
                                 ->title(__('blog.duplicate_success'))
                                 ->success()
@@ -222,10 +240,7 @@ class BlogPostResource extends Resource
                     Tables\Actions\Action::make('preview')
                         ->label(__('blog.preview_action'))
                         ->icon('heroicon-o-eye')
-                        ->url(fn (BlogPost $record) => route('blog.show', [
-                            'locale' => config('app.locale', 'en'),
-                            'slug'   => $record->getTranslation('slug', config('app.locale', 'en'))
-                        ]))
+                        ->url(fn (BlogPost $record) => route('blog.show', ['locale' => config('app.locale', 'en'), 'slug' => $record->slug])) // Previzualizare în limba implicită sau curentă
                         ->openUrlInNewTab(),
                 ]),
             ])
@@ -259,15 +274,18 @@ class BlogPostResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            //
+        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListBlogPosts::route('/'),
-            'create' => Pages\CreateBlogPosts::route('/create'),
-            'edit'   => Pages\EditBlogPosts::route('/{record}/edit'),
+            'index' => Pages\ListBlogPost::route('/'),
+            'create' => Pages\CreateBlogPost::route('/create'),
+            'edit' => Pages\EditBlogPost::route('/{record}/edit'),
+            'list' => Pages\ListBlogPost::route('/list'),
         ];
     }
 
