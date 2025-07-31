@@ -285,7 +285,7 @@ class BlogPostResource extends Resource
             'index' => Pages\ListBlogPost::route('/'),
             'create' => Pages\CreateBlogPost::route('/create'),
             'edit' => Pages\EditBlogPost::route('/{record}/edit'),
-            'list' => Pages\ListBlogPost::route('/list'),
+            'list' => Pages\ListBlogPosts::route('/list'),
         ];
     }
 
