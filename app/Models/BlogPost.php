@@ -23,7 +23,8 @@ class BlogPost extends Model
         // 'slug', // Dacă slug-ul este tradus, adaugă-l aici și schimbă tipul în migrare
         'excerpt',
         'content',
-        'meta_description'
+        'meta_description',
+         'slug'
     ];
 
     /**
