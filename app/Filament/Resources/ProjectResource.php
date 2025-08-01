@@ -212,23 +212,79 @@ class ProjectResource extends Resource
                 // Custom title column that uses the filament_title accessor
                 TextColumn::make('filament_title')
                     ->label('Title')
-                    ->state(fn (Project $record): string => (string) $record->filament_title)
+                    // Ensure state always returns a string - Robust handling
+                    ->state(function (Project $record): string {
+                        $title = null;
+                        try {
+                            // Attempt to get the value from the accessor
+                            $title = $record->filament_title;
+                        } catch (\TypeError $e) {
+                            // If the accessor itself throws a TypeError, log it and use raw data
+                            \Log::error("TypeError accessing filament_title for project ID {$record->id}: " . $e->getMessage());
+                            $rawTitle = $record->getRawOriginal('title');
+                            if (is_array($rawTitle)) {
+                                $title = reset($rawTitle) ?? 'No Title (Raw Array)';
+                            } elseif (is_string($rawTitle)) {
+                                $title = $rawTitle;
+                            } else {
+                                $title = 'Title Error (Raw Data)';
+                            }
+                        } catch (\Exception $e) {
+                            // Catch any other unexpected exception
+                            \Log::error("Exception accessing filament_title for project ID {$record->id}: " . $e->getMessage());
+                            $title = 'Title Error (Exception)';
+                        }
+
+                        // Final robust handling of the value obtained
+                        if (is_array($title)) {
+                            $first = reset($title);
+                            return is_scalar($first) ? (string) $first : 'No Title (State Array)';
+                        }
+                        if (is_scalar($title)) {
+                            return (string) $title;
+                        }
+                        if (is_null($title)) {
+                            return 'No Title (Null)';
+                        }
+                        // This is a last resort, e.g. if $title is an object
+                        return 'Title Error (State Type)';
+                    })
                     ->searchable(query: fn ($query, $search) =>
                         $query->whereJsonContains('title->' . app()->getLocale(), $search)
                     )
                     ->limit(50)
-                    // Ensure tooltip always returns a string - Final safety net
+                    // Ensure tooltip always returns a string - Robust handling
                     ->tooltip(function (Project $record): string {
-                        $title = $record->filament_title;
-                        // Even with the model fix, we add one more layer of protection here.
-                        if (is_scalar($title)) {
-                            return (string) $title;
+                         // Re-use the same logic as state to get the title string
+                        $title = null;
+                        try {
+                            $title = $record->filament_title;
+                        } catch (\TypeError $e) {
+                            \Log::error("TypeError accessing filament_title for tooltip (ID {$record->id}): " . $e->getMessage());
+                            $rawTitle = $record->getRawOriginal('title');
+                            if (is_array($rawTitle)) {
+                                $title = reset($rawTitle) ?? 'No Title (Raw Array)';
+                            } elseif (is_string($rawTitle)) {
+                                $title = $rawTitle;
+                            } else {
+                                $title = 'Title Error (Raw Data)';
+                            }
+                        } catch (\Exception $e) {
+                            \Log::error("Exception accessing filament_title for tooltip (ID {$record->id}): " . $e->getMessage());
+                            $title = 'Title Error (Exception)';
                         }
+
                         if (is_array($title)) {
                             $first = reset($title);
                             return is_scalar($first) ? (string) $first : 'No Title (Tooltip Array)';
                         }
-                        return 'Title Error (Tooltip)';
+                        if (is_scalar($title)) {
+                            return (string) $title;
+                        }
+                        if (is_null($title)) {
+                            return 'No Title (Null)';
+                        }
+                        return 'Title Error (Tooltip Type)';
                     }),
 
                 // Custom tech column that ensures it's always an array
