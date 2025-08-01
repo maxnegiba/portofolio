@@ -55,9 +55,10 @@
 
                             <!-- Titlu -->
                             <h2 class="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors duration-300 line-clamp-2">
-                                <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getTranslation('slug', app()->getLocale())]) }}">
-                                    {{ $post->getTranslation('title', app()->getLocale()) }}
-                                </a>
+                                <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getLocalizedSlug()]) }}">
+         <!-- Folosește noua metodă getLocalizedTitle() -->
+         {{ $post->getLocalizedTitle() }}
+     </a>
                             </h2>
 
                             <!-- Excerpt -->
