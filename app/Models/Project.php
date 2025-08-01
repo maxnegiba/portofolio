@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,54 +17,74 @@ class Project extends Model
         'live_url',
         'github_url',
         'thumbnail',
-        'images', // Add the new 'images' column to fillable
+        'images',
     ];
 
     protected $casts = [
-        'title'       => 'array', // Cast la array pentru manipulare
+        'title' => 'array',
         'description' => 'array',
-        'tech'        => 'array',
-        'images'      => 'array', // Cast 'images' to array
+        'images' => 'array',
     ];
 
     /**
      * Get the title in the current app locale.
-     * Usage: $project->title // Returns title in app()->getLocale()
-     *
-     * @param  array|null  $value // Valoarea cast-uita ca array
-     * @return string|null
      */
     public function getTitleAttribute($value)
     {
-        // $value este array-ul JSON decodat din cauza cast-ului 'array'
         if (is_array($value)) {
             $locale = app()->getLocale();
             return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? null;
         }
-        return $value; // Fallback dacă nu e array
+        return $value;
     }
 
     /**
      * Get the description in the current app locale.
-     * Usage: $project->description
-     *
-     * @param  array|null  $value // Valoarea cast-uita ca array
-     * @return string|null
      */
     public function getDescriptionAttribute($value)
     {
-        // $value este array-ul JSON decodat
         if (is_array($value)) {
             $locale = app()->getLocale();
             return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? null;
         }
-        return $value; // Fallback dacă nu e array
+        return $value;
     }
 
-     /**
+    /**
+     * Get the tech attribute as an array.
+     */
+    public function getTechAttribute($value)
+    {
+        // If it's already an array, return it
+        if (is_array($value)) {
+            return $value;
+        }
+        
+        // If it's a JSON string, decode it
+        if (is_string($value) && !empty($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decoded;
+            }
+            
+            // If it's a comma-separated string, split it
+            return array_map('trim', explode(',', $value));
+        }
+        
+        // Default to empty array
+        return [];
+    }
+
+    /**
+     * Set the tech attribute.
+     */
+    public function setTechAttribute($value)
+    {
+        $this->attributes['tech'] = is_array($value) ? json_encode($value) : $value;
+    }
+
+    /**
      * Get the URL of the thumbnail image.
-     *
-     * @return string|null
      */
     public function getThumbnailUrlAttribute(): ?string
     {
@@ -74,25 +93,19 @@ class Project extends Model
 
     /**
      * Get the URLs of the additional images.
-     * Ensures each path is converted to a full URL.
-     * Usage: $project->image_urls // Returns array of full URLs
-     *
-     * @return array
      */
     public function getImageUrlsAttribute(): array
     {
         $urls = [];
         if (is_array($this->images)) {
             foreach ($this->images as $imagePath) {
-                // Assuming images are stored using the same disk as thumbnail
-                if ($imagePath) { // Check if path is not empty
+                if ($imagePath) {
                      $urls[] = Storage::url($imagePath);
                 }
             }
         }
         return $urls;
     }
-
 
     public function getRouteKeyName()
     {

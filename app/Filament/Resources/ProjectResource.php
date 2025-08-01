@@ -1,18 +1,14 @@
 <?php
-
 namespace App\Filament\Resources;
-
 // === Importuri pentru paginile Filament ===
 use App\Filament\Resources\ProjectResource\Pages;
 // =========================================
-
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-
 // === Importuri pentru componente (asigură-te că sunt corecte) ===
 // Acestea sunt importate de filament/forms și filament/tables, dar e bine să le ai explicite
 use Filament\Forms\Components\TextInput;
@@ -23,18 +19,14 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\TagsInput;
 // ================================================================
-
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
-
     protected static ?string $navigationGroup = 'Portfolio';
-
     protected static ?int $navigationSort = 1;
-
     public static function form(Form $form): Form
     {
         return $form
@@ -127,7 +119,7 @@ class ProjectResource extends Resource
                     ]),
                  Section::make('Tech Stack')
                     ->schema([
-                         Forms\Components\TagsInput::make('tech')
+                         TagsInput::make('tech')
                             ->label('Technologies Used')
                             ->placeholder('Add a technology')
                             ->helperText('List the main technologies used in this project.')
@@ -140,7 +132,6 @@ class ProjectResource extends Resource
             // și este acum o metodă separată a clasei ProjectResource.
             // ========================================================================
     }
-
     // === METODĂ CORECTĂ PENTRU MUTARE DATE ===
     // Aceasta este metoda care trebuie definită în clasa Resource, nu înlănțuită la form()
     // Updated to handle 'images' which is now a direct array from FileUpload::multiple()
@@ -156,7 +147,6 @@ class ProjectResource extends Resource
             }
             $data['title'] = $titleTranslations; // Va fi transformat în JSON de Laravel
         }
-
         // Transformă repeaterul 'description' într-un array asociativ JSON
         if (isset($data['description']) && is_array($data['description'])) {
             $descTranslations = [];
@@ -167,16 +157,24 @@ class ProjectResource extends Resource
             }
             $data['description'] = $descTranslations; // Va fi transformat în JSON de Laravel
         }
-
-        // 'tech' este deja un array de stringuri, deci nu necesită transformare
-
+        
+        // Ensure tech is an array
+        if (isset($data['tech']) && is_string($data['tech'])) {
+            // If it's a JSON string, decode it
+            $decoded = json_decode($data['tech'], true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $data['tech'] = $decoded;
+            } else {
+                // If it's a comma-separated string, split it
+                $data['tech'] = array_map('trim', explode(',', $data['tech']));
+            }
+        }
+        
         // 'images' is already an array of paths from FileUpload::multiple(), no transformation needed
         // It will be cast to JSON by Laravel automatically when saved.
-
         return $data;
     }
     // =========================================
-
     public static function table(Table $table): Table
     {
         return $table
@@ -206,7 +204,26 @@ class ProjectResource extends Resource
                 TextColumn::make('tech')
                     ->label('Technologies')
                     ->badge() // Afișează ca badge-uri
-                    // ->separator(',') // Nu mai e necesar, Filament gestionează array-urile
+                    ->formatStateUsing(function ($state) {
+                        // Ensure we're working with an array
+                        if (is_array($state)) {
+                            return $state;
+                        }
+                        
+                        // If it's a JSON string, decode it
+                        if (is_string($state)) {
+                            $decoded = json_decode($state, true);
+                            if (json_last_error() === JSON_ERROR_NONE) {
+                                return $decoded;
+                            }
+                            
+                            // If it's a comma-separated string, split it
+                            return array_map('trim', explode(',', $state));
+                        }
+                        
+                        // Default to empty array
+                        return [];
+                    })
                     ->toggleable(),
                  // === NEW: Column to show number of additional images ===
                  TextColumn::make('images')
@@ -237,14 +254,12 @@ class ProjectResource extends Resource
             ])
             ->defaultSort('created_at', 'desc');
     }
-
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [
