@@ -198,19 +198,18 @@ class ProjectResource extends Resource
                     ->circular(),
                 TextColumn::make('title')
                     ->label('Title')
+                    ->formatStateUsing(function ($state, Project $record) {
+                        // Use the model accessor to get the localized title
+                        return $record->title;
+                    })
                     ->searchable(query: function ($query, $search) {
                          return $query->whereJsonContains('title', $search);
                     })
                     ->limit(50)
                     ->tooltip(function (Project $record): string {
-                        $locale = app()->getLocale();
-                        $titles = $record->getRawOriginal('title');
-                        if (is_array($titles)) {
-                             return $titles[$locale] ?? $titles[config('app.fallback_locale', 'en')] ?? '';
-                        }
-                        return (string) $titles;
-                    })
-                    ->formatStateUsing(fn ($state, $record) => $record->title),
+                        // Return the localized title for tooltip
+                        return $record->title;
+                    }),
                 TextColumn::make('tech')
                     ->label('Technologies')
                     ->badge()
