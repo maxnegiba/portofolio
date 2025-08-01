@@ -16,7 +16,7 @@ return new class extends Migration
 
             // Câmpuri traduse - tip JSON
             $table->json('title');
-            $table->json('slug'); // Acum slug-ul este tradus
+            $table->json('slug');
             $table->json('excerpt')->nullable();
             $table->json('content');
             
@@ -32,7 +32,8 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['is_published', 'published_at']);
-            $table->index('slug'); // Index pentru slug
+            // Eliminăm indexul pe coloana JSON - cauzează eroare în PostgreSQL
+            // $table->index('slug');
         });
     }
 
