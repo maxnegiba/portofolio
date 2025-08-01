@@ -74,7 +74,7 @@
                                     'Tailwind' => 'fas fa-wind text-cyan-400',
                                     'Bootstrap' => 'fab fa-bootstrap text-purple-500'
                                 ];
-                                // Verificare defensivă pentru $project->tech
+                                // Defensive check for tech field
                                 $projectTech = is_array($project->tech ?? null) ? $project->tech : [];
                             @endphp
                             @foreach(array_slice($projectTech, 0, 3) as $tech)
@@ -109,14 +109,18 @@
                             @endforeach
                         </div>
                         <!-- Indicators for Additional Images -->
-                        @if($project->image_urls && count($project->image_urls) > 0)
+                        @php
+                            // Defensive check for image_urls
+                            $projectImageUrls = is_array($project->image_urls ?? null) ? $project->image_urls : [];
+                        @endphp
+                        @if(count($projectImageUrls) > 0)
                         <div class="flex items-center text-gray-500 text-sm mb-4">
                             <i class="fas fa-images mr-2 text-purple-400"></i>
-                            <span>{{ count($project->image_urls) }} image{{ count($project->image_urls) != 1 ? 's' : '' }}</span>
+                            <span>{{ count($projectImageUrls) }} image{{ count($projectImageUrls) != 1 ? 's' : '' }}</span>
                             <!-- Optional: View Images Button -->
                             <button type="button"
                                 class="ml-auto text-purple-400 hover:text-purple-300 text-xs font-medium flex items-center group/view"
-                                onclick="openImageModal({{ json_encode($project->image_urls) }}, '{{ addslashes($project->getTitleAttribute()) }}', {{ $loop->index }})">
+                                onclick="openImageModal({{ json_encode($projectImageUrls) }}, '{{ addslashes($project->getTitleAttribute()) }}', {{ $loop->index }})">
                                 View <i class="fas fa-expand ml-1 group-hover/view:scale-110 transition-transform"></i>
                             </button>
                         </div>
