@@ -95,6 +95,11 @@ class Project extends Model
             if (is_string($rawValue)) {
                 $decoded = json_decode($rawValue, true);
                 if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    // Check if it's the array of objects format
+                    if (isset($decoded[0]) && is_array($decoded[0]) && isset($decoded[0]['value'])) {
+                         // Return the first 'value'
+                         return $decoded[0]['value'];
+                    }
                     $firstValue = reset($decoded);
                     return is_scalar($firstValue) ? (string) $firstValue : 'No Title (JSON Array)';
                 }
@@ -243,22 +248,47 @@ class Project extends Model
      */
     public function getLocalizedTitle()
     {
-        $rawTitle = $this->getRawOriginal('title');
+        $rawTitle = $this->getRawOriginal('title'); // Obține valoarea brută din DB (un string JSON)
         $locale = app()->getLocale();
         $fallbackLocale = config('app.fallback_locale', 'en');
-        
-        if (is_array($rawTitle)) {
-            return $rawTitle[$locale] ?? $rawTitle[$fallbackLocale] ?? '';
-        }
-        
+
+        // Pasul 1: Decodează stringul JSON într-un array PHP
+        $dataArray = null;
         if (is_string($rawTitle)) {
-            $decoded = json_decode($rawTitle, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? '';
-            }
-            return $rawTitle;
+            $dataArray = json_decode($rawTitle, true);
+        } elseif (is_array($rawTitle)) {
+            // Poate fi deja un array dacă Laravel face casting
+            $dataArray = $rawTitle;
         }
-        
+
+        // Pasul 2: Verifică dacă este un array și are structura așteptată (array de obiecte)
+        if (is_array($dataArray)) {
+            // Verificăm dacă este un array de obiecte (formatul tău actual)
+            // Ex: [ ['locale' => 'en', 'value' => '...'], ['locale' => 'ro', 'value' => '...'] ]
+            if (isset($dataArray[0]) && is_array($dataArray[0]) && isset($dataArray[0]['locale'])) {
+                // Caută valoarea pentru locale-ul curent
+                foreach ($dataArray as $item) {
+                    if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
+                        return $item['value'];
+                    }
+                }
+                // Caută valoarea pentru locale-ul de rezervă
+                foreach ($dataArray as $item) {
+                    if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
+                        return $item['value'];
+                    }
+                }
+                // Dacă nici locale-ul curent, nici cel de rezervă nu sunt găsite, returnează prima valoare disponibilă
+                if (isset($dataArray[0]['value'])) {
+                    return $dataArray[0]['value'];
+                }
+            } else {
+                // Dacă este un obiect JSON standard { "en": "...", "ro": "..." }
+                return $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '';
+            }
+        }
+
+        // Fallback final
         return '';
     }
     
@@ -270,19 +300,43 @@ class Project extends Model
         $rawDesc = $this->getRawOriginal('description');
         $locale = app()->getLocale();
         $fallbackLocale = config('app.fallback_locale', 'en');
-        
-        if (is_array($rawDesc)) {
-            return $rawDesc[$locale] ?? $rawDesc[$fallbackLocale] ?? '';
-        }
-        
+
+        // Pasul 1: Decodează stringul JSON într-un array PHP
+        $dataArray = null;
         if (is_string($rawDesc)) {
-            $decoded = json_decode($rawDesc, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? '';
-            }
-            return $rawDesc;
+            $dataArray = json_decode($rawDesc, true);
+        } elseif (is_array($rawDesc)) {
+            // Poate fi deja un array dacă Laravel face casting
+            $dataArray = $rawDesc;
         }
-        
+
+        // Pasul 2: Verifică dacă este un array și are structura așteptată (array de obiecte)
+        if (is_array($dataArray)) {
+            // Verificăm dacă este un array de obiecte (formatul tău actual)
+            if (isset($dataArray[0]) && is_array($dataArray[0]) && isset($dataArray[0]['locale'])) {
+                // Caută valoarea pentru locale-ul curent
+                foreach ($dataArray as $item) {
+                    if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
+                        return $item['value'];
+                    }
+                }
+                // Caută valoarea pentru locale-ul de rezervă
+                foreach ($dataArray as $item) {
+                    if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
+                        return $item['value'];
+                    }
+                }
+                // Dacă nici locale-ul curent, nici cel de rezervă nu sunt găsite, returnează prima valoare disponibilă
+                if (isset($dataArray[0]['value'])) {
+                    return $dataArray[0]['value'];
+                }
+            } else {
+                // Dacă este un obiect JSON standard { "en": "...", "ro": "..." }
+                return $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '';
+            }
+        }
+
+        // Fallback final
         return '';
     }
 }
