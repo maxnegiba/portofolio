@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Project extends Model
 {
@@ -24,6 +25,7 @@ class Project extends Model
         'title' => 'array',
         'description' => 'array',
         'images' => 'array',
+        'tech' => 'array',
     ];
 
     /**
@@ -80,7 +82,25 @@ class Project extends Model
      */
     public function setTechAttribute($value)
     {
-        $this->attributes['tech'] = is_array($value) ? json_encode($value) : $value;
+        // If it's an array, encode it to JSON
+        if (is_array($value)) {
+            $this->attributes['tech'] = json_encode($value);
+        } 
+        // If it's a string, try to decode it first to see if it's JSON
+        elseif (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->attributes['tech'] = $value; // It's already a JSON string
+            } else {
+                // If it's a comma-separated string, convert to array and then encode
+                $array = array_map('trim', explode(',', $value));
+                $this->attributes['tech'] = json_encode($array);
+            }
+        }
+        // Otherwise, set to empty array
+        else {
+            $this->attributes['tech'] = json_encode([]);
+        }
     }
 
     /**
@@ -110,5 +130,20 @@ class Project extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+    
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        // Ensure tech is always an array when saving
+        static::saving(function ($project) {
+            if (!is_array($project->tech)) {
+                $project->tech = [];
+            }
+        });
     }
 }
