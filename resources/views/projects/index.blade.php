@@ -61,28 +61,30 @@
                                 {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
                             </span>
                         </div>
-                        <!-- Tech Stack Icons -->
-                        <div class="absolute top-4 right-4 z-20 flex gap-2">
-                            @php
-                            $techIcons = [
-                            'Laravel' => 'fab fa-laravel text-red-400',
-                            'Vue.js' => 'fab fa-vuejs text-green-400',
-                            'JavaScript' => 'fab fa-js text-yellow-400',
-                            'PHP' => 'fab fa-php text-purple-400',
-                            'MySQL' => 'fas fa-database text-blue-400',
-                            'PostgreSQL' => 'fas fa-database text-blue-300', // Comentariu PHP corect
-                            'Tailwind' => 'fas fa-wind text-cyan-400',
-                            'Bootstrap' => 'fab fa-bootstrap text-purple-500'
-                            ];
-                            @endphp
-                            @foreach(array_slice($project->tech ?? [], 0, 3) as $tech) {{-- Null coalesce --}}
-                            @if(isset($techIcons[$tech]))
-                            <div class="w-8 h-8 bg-black/50 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                                <i class="{{ $techIcons[$tech] }} text-sm"></i>
-                            </div>
-                            @endif
-                            @endforeach
-                        </div>
+                       <!-- Tech Stack Icons -->
+<div class="absolute top-4 right-4 z-20 flex gap-2">
+    @php
+        $techIcons = [
+            'Laravel' => 'fab fa-laravel text-red-400',
+            'Vue.js' => 'fab fa-vuejs text-green-400',
+            'JavaScript' => 'fab fa-js text-yellow-400',
+            'PHP' => 'fab fa-php text-purple-400',
+            'MySQL' => 'fas fa-database text-blue-400',
+            'PostgreSQL' => 'fas fa-database text-blue-300',
+            'Tailwind' => 'fas fa-wind text-cyan-400',
+            'Bootstrap' => 'fab fa-bootstrap text-purple-500'
+        ];
+        // Verificare defensivă pentru $project->tech
+        $projectTech = is_array($project->tech ?? null) ? $project->tech : [];
+    @endphp
+    @foreach(array_slice($projectTech, 0, 3) as $tech)
+        @if(isset($techIcons[$tech]))
+        <div class="w-8 h-8 bg-black/50 backdrop-blur-sm rounded-lg flex items-center justify-center">
+            <i class="{{ $techIcons[$tech] }} text-sm"></i>
+        </div>
+        @endif
+    @endforeach
+</div><!-- Tech Tags -->
                         <!-- Image -->
                         <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" {{-- Folosim accessorul --}}
                             alt="{{ $project->getTitleAttribute() }}" {{-- Folosim accessorul --}}
@@ -101,14 +103,14 @@
                             {{ $project->getDescriptionAttribute() }} {{-- Folosim accessorul --}}
                         </p>
                         <!-- Tech Tags -->
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            @foreach($project->tech ?? [] as $tech) {{-- Null coalesce --}}
-                            <span
-                                class="px-3 py-1 text-xs font-medium bg-white/5 border border-white/10 rounded-full text-gray-400 group-hover:border-white/20 group-hover:text-gray-300 transition-all duration-300">
-                                {{ $tech }}
-                            </span>
-                            @endforeach
-                        </div>
+                        <!-- Tech Tags -->
+<div class="flex flex-wrap gap-2 mb-4">
+    @foreach($projectTech as $tech) {{-- Folosim variabila $projectTech verificată mai sus --}}
+    <span class="px-3 py-1 text-xs font-medium bg-white/5 border border-white/10 rounded-full text-gray-400 group-hover:border-white/20 group-hover:text-gray-300 transition-all duration-300">
+        {{ $tech }}
+    </span>
+    @endforeach
+</div>
                         <!-- === NEW: Indicators for Additional Images === -->
                         @if($project->image_urls && count($project->image_urls) > 0)
                         <div class="flex items-center text-gray-500 text-sm mb-4">
