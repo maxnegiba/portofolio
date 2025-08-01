@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,27 +79,43 @@ class Project extends Model
 
     /**
      * Get the title for Filament admin panel.
+     * This method is designed to be extremely robust and always return a string.
      */
-    public function getFilamentTitleAttribute()
+    public function getFilamentTitleAttribute(): string
     {
-        $value = $this->getRawOriginal('title');
-        
-        // If it's already an array, get the first available title
-        if (is_array($value)) {
-            return reset($value) ?? '';
-        }
-        
-        // If it's a string, try to decode it as JSON
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                return reset($decoded) ?? '';
+        try {
+            $rawValue = $this->getRawOriginal('title');
+
+            // Handle array directly from DB
+            if (is_array($rawValue)) {
+                $firstValue = reset($rawValue);
+                return is_scalar($firstValue) ? (string) $firstValue : 'No Title (Array)';
             }
+
+            // Handle JSON string from DB
+            if (is_string($rawValue)) {
+                $decoded = json_decode($rawValue, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $firstValue = reset($decoded);
+                    return is_scalar($firstValue) ? (string) $firstValue : 'No Title (JSON Array)';
+                }
+                // If it's a string but not valid JSON, return it
+                return $rawValue;
+            }
+
+            // Handle any other type (null, etc.)
+            if (is_scalar($rawValue)) {
+                return (string) $rawValue;
+            }
+
+        } catch (\Exception $e) {
+            \Log::warning("Error in getFilamentTitleAttribute for project ID {$this->id}: " . $e->getMessage());
         }
-        
-        // Default to empty string
-        return $value ?? '';
+
+        // Ultimate fallback
+        return 'Title Error';
     }
+
 
     /**
      * Get the raw title array.

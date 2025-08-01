@@ -209,7 +209,7 @@ class ProjectResource extends Resource
                     ->size(50)
                     ->circular(),
 
-                                // Custom title column that uses the filament_title accessor
+                // Custom title column that uses the filament_title accessor
                 TextColumn::make('filament_title')
                     ->label('Title')
                     ->state(fn (Project $record): string => (string) $record->filament_title)
@@ -217,36 +217,18 @@ class ProjectResource extends Resource
                         $query->whereJsonContains('title->' . app()->getLocale(), $search)
                     )
                     ->limit(50)
-                    // Ensure tooltip always returns a string - Versiune robusta
+                    // Ensure tooltip always returns a string - Final safety net
                     ->tooltip(function (Project $record): string {
-                        // Obtinem valoarea direct din atributul accesibil
-                        $rawTitle = $record->getRawOriginal('title');
-
-                        // Initializam titlul final ca string gol
-                        $finalTitle = '';
-
-                        // Verificam ce tip de date avem in 'title' (inainte de cast)
-                        if (is_array($rawTitle)) {
-                            // Daca este array, luam prima valoare disponibila
-                            $finalTitle = reset($rawTitle) ?: '';
-                        } elseif (is_string($rawTitle)) {
-                            // Daca este string, incercam sa-l decodam JSON
-                            $decoded = json_decode($rawTitle, true);
-                            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                                // Daca decodarea reuseste si e array, luam prima valoare
-                                $finalTitle = reset($decoded) ?: '';
-                            } else {
-                                // Daca nu e JSON valid, folosim stringul asa cum e
-                                $finalTitle = $rawTitle;
-                            }
-                        } else {
-                             // Pentru orice alt tip de date (null, etc), folosim string gol
-                             $finalTitle = '';
+                        $title = $record->filament_title;
+                        // Even with the model fix, we add one more layer of protection here.
+                        if (is_scalar($title)) {
+                            return (string) $title;
                         }
-
-                        // Ne asiguram ca ceea ce returnam este un scalar (string, int, float, bool)
-                        // si il convertim la string. Daca nu e scalar, returnam un string implicit.
-                        return is_scalar($finalTitle) ? (string) $finalTitle : 'No title';
+                        if (is_array($title)) {
+                            $first = reset($title);
+                            return is_scalar($first) ? (string) $first : 'No Title (Tooltip Array)';
+                        }
+                        return 'Title Error (Tooltip)';
                     }),
 
                 // Custom tech column that ensures it's always an array
