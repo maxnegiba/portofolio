@@ -217,16 +217,21 @@ class ProjectResource extends Resource
                         $query->whereJsonContains('title->' . app()->getLocale(), $search)
                     )
                     ->limit(50)
-                    // Ensure tooltip always returns a string
+                    // Ensure tooltip always returns a string - CORECTAT PENTRU A EVITA "Array to string conversion"
                     ->tooltip(function (Project $record): string {
-                        $title = $record->filament_title ?? '';
-                        // Even though filament_title should return a string,
-                        // explicitly handle potential array return for robustness
+                        $title = $record->filament_title; // Obține valoarea
+
+                        // Verifică explicit dacă este array și gestionează
                         if (is_array($title)) {
-                             // Get the first string value if available
-                             $title = reset($title) ?: '';
+                            // Poți alege prima valoare disponibilă
+                            $title = reset($title) ?: 'No title';
+                            // Alternativ, poți folosi o reprezentare string a array-ului:
+                            // $title = implode(', ', array_filter($title, 'is_string')) ?: 'No title';
                         }
-                        return (string) $title;
+
+                        // Asigură-te că rezultatul final este un string sigur pentru afișare
+                        // Dacă $title este null sau altceva neașteptat, folosește un string implicit
+                        return is_scalar($title) ? (string) $title : 'No title';
                     }),
 
                 // Custom tech column that ensures it's always an array
