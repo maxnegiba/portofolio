@@ -85,13 +85,13 @@ class Project extends Model
     {
         try {
             $rawValue = $this->getRawOriginal('title');
-
+            
             // Handle array directly from DB
             if (is_array($rawValue)) {
                 $firstValue = reset($rawValue);
                 return is_scalar($firstValue) ? (string) $firstValue : 'No Title (Array)';
             }
-
+            
             // Handle JSON string from DB
             if (is_string($rawValue)) {
                 $decoded = json_decode($rawValue, true);
@@ -102,20 +102,18 @@ class Project extends Model
                 // If it's a string but not valid JSON, return it
                 return $rawValue;
             }
-
+            
             // Handle any other type (null, etc.)
             if (is_scalar($rawValue)) {
                 return (string) $rawValue;
             }
-
         } catch (\Exception $e) {
             \Log::warning("Error in getFilamentTitleAttribute for project ID {$this->id}: " . $e->getMessage());
         }
-
+        
         // Ultimate fallback
         return 'Title Error';
     }
-
 
     /**
      * Get the raw title array.
@@ -123,14 +121,12 @@ class Project extends Model
     public function getRawTitleAttribute()
     {
         $value = $this->getRawOriginal('title');
-        
         if (is_string($value)) {
             $decoded = json_decode($value, true);
             if (json_last_error() === JSON_ERROR_NONE) {
                 return $decoded;
             }
         }
-        
         return is_array($value) ? $value : [];
     }
 
@@ -140,14 +136,12 @@ class Project extends Model
     public function getRawDescriptionAttribute()
     {
         $value = $this->getRawOriginal('description');
-        
         if (is_string($value)) {
             $decoded = json_decode($value, true);
             if (json_last_error() === JSON_ERROR_NONE) {
                 return $decoded;
             }
         }
-        
         return is_array($value) ? $value : [];
     }
 
@@ -167,7 +161,6 @@ class Project extends Model
             if (json_last_error() === JSON_ERROR_NONE) {
                 return $decoded;
             }
-            
             // If it's a comma-separated string, split it
             return array_map('trim', explode(',', $value));
         }
@@ -230,7 +223,7 @@ class Project extends Model
     {
         return 'slug';
     }
-    
+
     /**
      * Boot the model.
      */
@@ -238,7 +231,7 @@ class Project extends Model
     {
         parent::boot();
         
-        // Ensure tech is always an array when saving
+        // Asigură-te că tech este întotdeauna un array înainte de salvare
         static::saving(function ($project) {
             if (!is_array($project->tech)) {
                 $project->tech = [];
