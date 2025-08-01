@@ -71,7 +71,7 @@
                 
                 <!-- Title -->
                 <h2 class="text-2xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
-                  <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->slug]) }}">
+                  <a href="{{ route('blog.show', [app()->getLocale(), $post->slug]) }}">
                     {{ $post->title }}
                   </a>
                 </h2>
@@ -101,7 +101,7 @@
                 
                 <!-- Read More Button -->
                 <div class="mt-auto">
-                  <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->slug]) }}" 
+                  <a href="{{ route('blog.show', [app()->getLocale(), $post->slug]) }}" 
                      class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium group/btn">
                     {{ __('blog.read_more') }}
                     <svg class="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
