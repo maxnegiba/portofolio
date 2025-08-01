@@ -20,30 +20,28 @@ class BlogController extends Controller
         // Acest apel este redundant dacă middleware-ul funcționează corect,
         // dar nu strică să-l păstrăm pentru siguranță.
         app()->setLocale($locale);
-        $posts = BlogPost::published()
-            ->with('user')
-            // Căutarea ar trebui ajustată pentru a funcționa cu JSON
-            // Această metodă funcționează cu spatie/laravel-translatable
-            ->when($request->search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    // Caută în titlu și conținut în limba curentă
-                    // `title` și `content` sunt acum JSON, dar HasTranslations le gestionează
-                    // pentru interogări simple. Laravel încearcă să le caute ca string-uri.
-                    // Pentru o căutare mai precisă în JSON, ar fi nevoie de o abordare diferită.
-                    // Varianta de mai jos funcționează adesea cu HasTranslations.
-                    $q->where('title', 'like', "%{$search}%")
-                      ->orWhere('content', 'like', "%{$search}%");
-                    // Alternativ, pentru căutare în JSON:
-                    // $q->whereJsonContains('title', $search) // Caută în toate localele
-                    //   ->orWhereJsonContains('content', $search); // Caută în toate localele
-                    // Sau, pentru căutare în limba curentă (necesită un pic mai multă logică):
-                    // $currentLocale = app()->getLocale();
-                    // $q->where("title->{$currentLocale}", 'like', "%{$search}%")
-                    //   ->orWhere("content->{$currentLocale}", 'like', "%{$search}%");
-                });
-            })
-            ->latest('published_at')
-            ->paginate(6);
+
+        $query = BlogPost::published()
+            ->with('user'); // Încarcă utilizatorul
+
+        // Aplică filtrul de căutare dacă există
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $currentLocale = app()->getLocale();
+
+            $query->where(function ($q) use ($searchTerm, $currentLocale) {
+                // Caută în titlu și excerpt în limba curentă
+                // Presupunem că excerpt este și el translat (JSON)
+                $q->whereJsonContains("title->{$currentLocale}", $searchTerm)
+                  ->orWhereJsonContains("excerpt->{$currentLocale}", $searchTerm)
+                  ->orWhereJsonContains("content->{$currentLocale}", $searchTerm);
+            });
+        }
+
+        // Paginare articole
+        $posts = $query->latest('published_at')
+                       ->paginate(6)
+                       ->appends(['search' => $request->search]); // Păstrează termenul de căutare în URL
 
         return view('blog.index', compact('posts'));
     }
@@ -52,7 +50,7 @@ class BlogController extends Controller
      * Display the specified blog post.
      *
      * @param string $locale The current locale.
-     * @param string $slug The slug of the post.
+     * @param string $slug The localized slug of the post.
      * @return \Illuminate\View\View
      */
     public function show($locale, string $slug)
@@ -60,36 +58,34 @@ class BlogController extends Controller
         // Middleware-ul SetLocale ar trebui să seteze deja limba.
         app()->setLocale($locale);
 
-        // === MODIFIED QUERY for JSON slug ===
-        // Caută un post unde slug-ul în limba curentă ($locale) este egal cu $slug
-        // Folosește whereJsonContains.
+        // Caută postul publicat unde slug-ul în limba curentă ($locale) este egal cu $slug
+        // Presupunem că metoda `scopePublished` există în modelul BlogPost
         $post = BlogPost::published()
-            ->with('user')
-            // Verifică dacă JSON-ul slug conține {"$locale": "$slug"}
-            ->whereJsonContains('slug', [$locale => $slug])
+            ->with('user') // Încarcă autorul
+            ->whereJsonContains("slug->{$locale}", $slug) // Căutare în JSON pentru slug-ul localizat
             ->firstOrFail();
-        // ===================================
 
-        // Recent posts - la fel, conținutul va fi în limba curentă
+        // Obține articole recente (doar cele publicate, excluzând articolul curent)
+        // Se încarcă doar datele necesare pentru afișare în Blade
         $recentPosts = BlogPost::published()
             ->where('id', '!=', $post->id)
             ->latest('published_at')
             ->limit(3)
-            ->get(); // Nu e nevoie de firstOrFail() pentru get()
+            ->get(['id', 'title', 'excerpt', 'slug', 'featured_image', 'published_at', 'reading_time']); // Selectează doar coloanele necesare
 
         return view('blog.show', compact('post', 'recentPosts'));
     }
 
     /**
      * Display the blog feed (e.g., RSS).
-     * Consider generating separate feeds for each language.
+     * Consider generating separate feeds for each language or a single feed with language tags.
      *
      * @return \Illuminate\Http\Response
      */
     public function feed()
     {
-        // TODO: Poate fi modificat pentru a genera feed pentru limba curentă
-        // sau pentru toate limbile.
+        // TODO: Implementare completă pentru feed XML (RSS/Atom)
+        // Ar trebui să țină cont de localizare (slug-uri, titluri, conținut)
         $posts = BlogPost::published()
             ->latest('published_at')
             ->limit(20)
@@ -100,14 +96,14 @@ class BlogController extends Controller
 
     /**
      * Display the blog sitemap.
-     * Consider generating separate sitemap entries for each language.
+     * Consider generating separate sitemap entries for each language or a single sitemap with hreflang tags.
      *
      * @return \Illuminate\Http\Response
      */
     public function sitemap()
     {
-        // TODO: Poate fi modificat pentru a include slug-uri în toate limbile
-        // sau pentru limba curentă.
+        // TODO: Implementare completă pentru sitemap XML
+        // Ar trebui să includă toate slug-urile pentru toate limbile disponibile
         $posts = BlogPost::published()
             ->latest('published_at')
             ->get();
