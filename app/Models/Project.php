@@ -79,7 +79,6 @@ class Project extends Model
 
     /**
      * Get the title for Filament admin panel.
-     * This method is designed to be extremely robust and always return a string.
      */
     public function getFilamentTitleAttribute(): string
     {
@@ -237,5 +236,53 @@ class Project extends Model
                 $project->tech = [];
             }
         });
+    }
+    
+    /**
+     * Get the localized title with fallback
+     */
+    public function getLocalizedTitle()
+    {
+        $rawTitle = $this->getRawOriginal('title');
+        $locale = app()->getLocale();
+        $fallbackLocale = config('app.fallback_locale', 'en');
+        
+        if (is_array($rawTitle)) {
+            return $rawTitle[$locale] ?? $rawTitle[$fallbackLocale] ?? '';
+        }
+        
+        if (is_string($rawTitle)) {
+            $decoded = json_decode($rawTitle, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? '';
+            }
+            return $rawTitle;
+        }
+        
+        return '';
+    }
+    
+    /**
+     * Get the localized description with fallback
+     */
+    public function getLocalizedDescription()
+    {
+        $rawDesc = $this->getRawOriginal('description');
+        $locale = app()->getLocale();
+        $fallbackLocale = config('app.fallback_locale', 'en');
+        
+        if (is_array($rawDesc)) {
+            return $rawDesc[$locale] ?? $rawDesc[$fallbackLocale] ?? '';
+        }
+        
+        if (is_string($rawDesc)) {
+            $decoded = json_decode($rawDesc, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? '';
+            }
+            return $rawDesc;
+        }
+        
+        return '';
     }
 }

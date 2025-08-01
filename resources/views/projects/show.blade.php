@@ -36,11 +36,11 @@
           <div class="relative inline-block mb-6">
             <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl opacity-30 blur-lg"></div>
             <h1 class="relative text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-              {{ $project->title }}
+              {{ $project->getLocalizedTitle() }}
             </h1>
           </div>
           <p class="text-xl text-gray-300 leading-relaxed">
-            {{ $project->description }}
+            {{ $project->getLocalizedDescription() }}
           </p>
         </div>
         
@@ -94,7 +94,7 @@
           <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-12 shadow-2xl border border-white/10">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
             <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" 
-                 alt="{{ $project->title }}" 
+                 alt="{{ $project->getLocalizedTitle() }}" 
                  class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
           </div>
         </div>
@@ -133,7 +133,7 @@
     <!-- Gallery Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @foreach($project->image_urls as $index => $imageUrl)
-        <div class="group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer" onclick="openGalleryModal({{ json_encode($project->image_urls) }}, {{ $index }}, '{{ addslashes($project->title) }}')">
+        <div class="group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer" onclick="openGalleryModal({{ json_encode($project->image_urls) }}, {{ $index }}, '{{ addslashes($project->getLocalizedTitle()) }}')">
           <!-- Glow Effect on Hover -->
           <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.3)] transition-all duration-500"></div>
           
