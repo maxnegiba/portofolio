@@ -9,7 +9,7 @@ class BlogController extends Controller
 {
     /**
      * Display a listing of the blog posts.
-     * 
+     *
      * @param string $locale The current locale.
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
@@ -19,8 +19,7 @@ class BlogController extends Controller
         // Middleware-ul SetLocale ar trebui să seteze deja limba.
         // Acest apel este redundant dacă middleware-ul funcționează corect,
         // dar nu strică să-l păstrăm pentru siguranță.
-        app()->setLocale($locale); 
-
+        app()->setLocale($locale);
         $posts = BlogPost::published()
             ->with('user')
             // Căutarea ar trebui ajustată pentru a funcționa cu JSON
@@ -34,11 +33,9 @@ class BlogController extends Controller
                     // Varianta de mai jos funcționează adesea cu HasTranslations.
                     $q->where('title', 'like', "%{$search}%")
                       ->orWhere('content', 'like', "%{$search}%");
-                    
                     // Alternativ, pentru căutare în JSON:
                     // $q->whereJsonContains('title', $search) // Caută în toate localele
                     //   ->orWhereJsonContains('content', $search); // Caută în toate localele
-                    
                     // Sau, pentru căutare în limba curentă (necesită un pic mai multă logică):
                     // $currentLocale = app()->getLocale();
                     // $q->where("title->{$currentLocale}", 'like', "%{$search}%")
@@ -53,7 +50,7 @@ class BlogController extends Controller
 
     /**
      * Display the specified blog post.
-     * 
+     *
      * @param string $locale The current locale.
      * @param string $slug The slug of the post.
      * @return \Illuminate\View\View
@@ -63,12 +60,15 @@ class BlogController extends Controller
         // Middleware-ul SetLocale ar trebui să seteze deja limba.
         app()->setLocale($locale);
 
-        // Când accesezi $post->title, HasTranslations va returna automat
-        // traducerea în limba curentă (setată de app()->setLocale($locale))
+        // === MODIFIED QUERY for JSON slug ===
+        // Caută un post unde slug-ul în limba curentă ($locale) este egal cu $slug
+        // Folosește whereJsonContains.
         $post = BlogPost::published()
             ->with('user')
-            ->where('slug', $slug) // Presupunem slug e string unic
+            // Verifică dacă JSON-ul slug conține {"$locale": "$slug"}
+            ->whereJsonContains('slug', [$locale => $slug])
             ->firstOrFail();
+        // ===================================
 
         // Recent posts - la fel, conținutul va fi în limba curentă
         $recentPosts = BlogPost::published()
@@ -83,7 +83,7 @@ class BlogController extends Controller
     /**
      * Display the blog feed (e.g., RSS).
      * Consider generating separate feeds for each language.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function feed()
@@ -94,7 +94,6 @@ class BlogController extends Controller
             ->latest('published_at')
             ->limit(20)
             ->get();
-
         return response()->view('blog.feed', compact('posts'))
             ->header('Content-Type', 'application/xml');
     }
@@ -102,7 +101,7 @@ class BlogController extends Controller
     /**
      * Display the blog sitemap.
      * Consider generating separate sitemap entries for each language.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function sitemap()
@@ -112,7 +111,6 @@ class BlogController extends Controller
         $posts = BlogPost::published()
             ->latest('published_at')
             ->get();
-
         return response()->view('blog.sitemap', compact('posts'))
             ->header('Content-Type', 'text/xml');
     }

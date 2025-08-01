@@ -17,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Forms\Set;
+use Filament\Forms\Get; // <--- Add Get for accessing other fields in afterStateUpdated
 
 class BlogPostResource extends Resource
 {
@@ -48,13 +49,21 @@ class BlogPostResource extends Resource
                                                         ->required()
                                                         ->maxLength(255)
                                                         ->live(debounce: 500)
-                                                        ->afterStateUpdated(function (Set $set, ?string $state) use ($locale) {
-                                                            // Generează slug doar pentru limba implicită (sau prima limbă editată)
-                                                            // Poți modifica logica dacă vrei slug-uri traduse
-                                                            if ($locale === config('app.locale', 'en')) {
-                                                                $set('slug', Str::slug($state));
+                                                        ->afterStateUpdated(function (Set $set, ?string $state, Get $get) use ($locale) {
+                                                            // Generează slug doar dacă câmpul slug.$locale este gol
+                                                            $currentSlug = $get("slug.{$locale}");
+                                                            if (empty($currentSlug)) {
+                                                                $set("slug.{$locale}", Str::slug($state));
                                                             }
                                                         }),
+                                                    // === MUTA SLUG AICI ===
+                                                    Forms\Components\TextInput::make("slug.{$locale}")
+                                                        ->label(__('blog.slug_label') . " ({$locale})")
+                                                        ->required()
+                                                        ->maxLength(255)
+                                                        // ->unique(ignoreRecord: true) // Unique per locale? Complex. Ensure unique manually or via custom rule.
+                                                        ->helperText(__('blog.slug_helper', ['locale' => $locale])), // Add helper translation
+                                                    // =====================
                                                     Forms\Components\RichEditor::make("content.{$locale}")
                                                         ->label(__('blog.content_label') . " ({$locale})")
                                                         ->required()
@@ -70,14 +79,14 @@ class BlogPostResource extends Resource
                                         }, config('app.available_locales', ['en'])) // Presupune că ai 'available_locales' în config/app.php
                                     )
                                     ->columnSpanFull(),
-                                // Slug - rămâne ca string unic dacă nu este în $translatable în model
-                                // Dacă slug este și el translatable, scoate-l de aici și adaugă-l în Tabs.
-                                Forms\Components\TextInput::make('slug')
-                                    ->label(__('blog.slug_label'))
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->unique(ignoreRecord: true) // Asigură-te că funcționează corect cu logica modelului
-                                    ->helperText('Acest slug este unic global. Dacă vrei slug-uri traduse, trebuie să modifici modelul și migrarea.'),
+                                // === SCOS slug de aici ===
+                                // Forms\Components\TextInput::make('slug')
+                                //     ->label(__('blog.slug_label'))
+                                //     ->required()
+                                //     ->maxLength(255)
+                                //     ->unique(ignoreRecord: true) // Asigură-te că funcționează corect cu logica modelului
+                                //     ->helperText('Acest slug este unic global. Dacă vrei slug-uri traduse, trebuie să modifici modelul și migrarea.'),
+                                // ========================
                             ]),
                         // =====================================================
                         // === Secțiunea SEO/Meta cu Tabs pentru traduceri ===
@@ -230,7 +239,9 @@ class BlogPostResource extends Resource
                             $newTitleDefaultLocale = $originalTitleDefaultLocale . ' (Copy)';
                             $newPost->setTranslation('title', $defaultLocale, $newTitleDefaultLocale);
                             // Ajustează slug-ul copiei (poate fi necesar să fie unic)
-                            $newPost->slug = $record->slug . '-copy';
+                            // Get the original slug for the default locale
+                            $originalSlugDefaultLocale = $record->getTranslation('slug', $defaultLocale, false) ?? $record->slug; // Fallback to string slug if needed
+                            $newPost->setTranslation('slug', $defaultLocale, $originalSlugDefaultLocale . '-copy');
                             // Resetează statusul de publicare
                             $newPost->is_published = false;
                             $newPost->published_at = null;
@@ -244,7 +255,7 @@ class BlogPostResource extends Resource
                     Tables\Actions\Action::make('preview')
                         ->label(__('blog.preview_action'))
                         ->icon('heroicon-o-eye')
-                        ->url(fn (BlogPost $record) => route('blog.show', ['locale' => config('app.locale', 'en'), 'slug' => $record->slug])) // Previzualizare în limba implicită sau curentă
+                        ->url(fn (BlogPost $record) => route('blog.show', ['locale' => config('app.locale', 'en'), 'slug' => $record->getTranslation('slug', config('app.locale', 'en'))])) // Previzualizare în limba implicită sau curentă
                         ->openUrlInNewTab(),
                 ]),
             ])
