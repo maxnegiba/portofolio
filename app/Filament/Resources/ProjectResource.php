@@ -2,24 +2,19 @@
 
 namespace App\Filament\Resources;
 
+// === Importuri pentru paginile Filament ===
 use App\Filament\Resources\ProjectResource\Pages;
+// =========================================
+
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-// use Filament\Tables\Columns\TextColumn; // Nu mai e necesar, deja importat mai jos
-// use Filament\Tables\Columns\ImageColumn; // Nu mai e necesar, deja importat mai jos
-// use Filament\Forms\Components\TextInput; // Nu mai e necesar, deja importat mai jos
-// use Filament\Forms\Components\Textarea; // Nu mai e necesar, deja importat mai jos
-// use Filament\Forms\Components\FileUpload; // Nu mai e necesar, deja importat mai jos
-// use Filament\Forms\Components\Repeater; // Nu mai e necesar, deja importat mai jos
-// use Filament\Forms\Components\Section; // Nu mai e necesar, deja importat mai jos
-// use Filament\Forms\Components\Grid; // Nu mai e necesar, deja importat mai jos
-// use Filament\Forms\Components\Toggle; // Nu mai e necesar, deja importat mai jos
 
-// Importuri pentru componente (asigură-te că sunt corecte)
+// === Importuri pentru componente (asigură-te că sunt corecte) ===
+// Acestea sunt importate de filament/forms și filament/tables, dar e bine să le ai explicite
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
@@ -28,6 +23,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
+// ================================================================
 
 class ProjectResource extends Resource
 {
@@ -67,7 +63,6 @@ class ProjectResource extends Resource
                             ->imageResizeTargetWidth('800')
                             ->imageResizeTargetHeight('450'),
                     ]),
-
                 Section::make('Translations')
                     ->schema([
                         Repeater::make('title')
@@ -92,7 +87,6 @@ class ProjectResource extends Resource
                                     config('app.available_locales', ['en'])
                                 )
                             ),
-
                         Repeater::make('description')
                             ->label('Description Translations')
                             ->schema([
@@ -115,7 +109,6 @@ class ProjectResource extends Resource
                                     config('app.available_locales', ['en'])
                                 )
                             ),
-
                         // Presupunem că tech stack nu este tradus, ci doar o listă de tehnologii
                         // Deci îl lăsăm ca TagsInput în secțiunea General sau aici, dar nu în Repeater
                         // Dacă îl păstrezi în Repeater, trebuie să modifici logica de salvare.
@@ -139,37 +132,44 @@ class ProjectResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->collapsible(),
-            ])
+            ]);
             // === Transformă datele din Repeater în formatul JSON așteptat de model ===
-            ->mutateFormDataBeforeSave(function (array $data): array {
-                // Transformă repeaterul 'title' într-un array asociativ JSON
-                if (isset($data['title']) && is_array($data['title'])) {
-                    $titleTranslations = [];
-                    foreach ($data['title'] as $item) {
-                        if (isset($item['locale']) && isset($item['value'])) {
-                            $titleTranslations[$item['locale']] = $item['value'];
-                        }
-                    }
-                    $data['title'] = $titleTranslations; // Va fi transformat în JSON de Laravel
-                }
-
-                // Transformă repeaterul 'description' într-un array asociativ JSON
-                if (isset($data['description']) && is_array($data['description'])) {
-                    $descTranslations = [];
-                    foreach ($data['description'] as $item) {
-                        if (isset($item['locale']) && isset($item['value'])) {
-                            $descTranslations[$item['locale']] = $item['value'];
-                        }
-                    }
-                    $data['description'] = $descTranslations; // Va fi transformat în JSON de Laravel
-                }
-
-                // 'tech' este deja un array de stringuri, deci nu necesită transformare
-
-                return $data;
-            });
+            // NOTĂ: Această parte a fost mutată în afara apelului ->schema([...])
+            // și este acum o metodă separată a clasei ProjectResource.
             // ========================================================================
     }
+
+    // === METODĂ CORECTĂ PENTRU MUTARE DATE ===
+    // Aceasta este metoda care trebuie definită în clasa Resource, nu înlănțuită la form()
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Transformă repeaterul 'title' într-un array asociativ JSON
+        if (isset($data['title']) && is_array($data['title'])) {
+            $titleTranslations = [];
+            foreach ($data['title'] as $item) {
+                if (isset($item['locale']) && isset($item['value'])) {
+                    $titleTranslations[$item['locale']] = $item['value'];
+                }
+            }
+            $data['title'] = $titleTranslations; // Va fi transformat în JSON de Laravel
+        }
+
+        // Transformă repeaterul 'description' într-un array asociativ JSON
+        if (isset($data['description']) && is_array($data['description'])) {
+            $descTranslations = [];
+            foreach ($data['description'] as $item) {
+                if (isset($item['locale']) && isset($item['value'])) {
+                    $descTranslations[$item['locale']] = $item['value'];
+                }
+            }
+            $data['description'] = $descTranslations; // Va fi transformat în JSON de Laravel
+        }
+
+        // 'tech' este deja un array de stringuri, deci nu necesită transformare
+
+        return $data;
+    }
+    // =========================================
 
     public static function table(Table $table): Table
     {
@@ -197,13 +197,11 @@ class ProjectResource extends Resource
                         return (string) $titles;
                     })
                     ->formatStateUsing(fn ($state, $record) => $record->title), // Utilizează accessorul pentru afișare
-
                 TextColumn::make('tech')
                     ->label('Technologies')
                     ->badge() // Afișează ca badge-uri
                     // ->separator(',') // Nu mai e necesar, Filament gestionează array-urile
                     ->toggleable(),
-
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
