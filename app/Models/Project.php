@@ -33,11 +33,23 @@ class Project extends Model
      */
     public function getTitleAttribute($value)
     {
+        // If it's already an array, return the appropriate locale
         if (is_array($value)) {
             $locale = app()->getLocale();
-            return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? null;
+            return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? '';
         }
-        return $value;
+        
+        // If it's a string, try to decode it as JSON
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $locale = app()->getLocale();
+                return $decoded[$locale] ?? $decoded[config('app.fallback_locale', 'en')] ?? '';
+            }
+        }
+        
+        // Default to empty string
+        return $value ?? '';
     }
 
     /**
@@ -45,11 +57,57 @@ class Project extends Model
      */
     public function getDescriptionAttribute($value)
     {
+        // If it's already an array, return the appropriate locale
         if (is_array($value)) {
             $locale = app()->getLocale();
-            return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? null;
+            return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? '';
         }
-        return $value;
+        
+        // If it's a string, try to decode it as JSON
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $locale = app()->getLocale();
+                return $decoded[$locale] ?? $decoded[config('app.fallback_locale', 'en')] ?? '';
+            }
+        }
+        
+        // Default to empty string
+        return $value ?? '';
+    }
+
+    /**
+     * Get the raw title array.
+     */
+    public function getRawTitleAttribute()
+    {
+        $value = $this->getRawOriginal('title');
+        
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decoded;
+            }
+        }
+        
+        return is_array($value) ? $value : [];
+    }
+
+    /**
+     * Get the raw description array.
+     */
+    public function getRawDescriptionAttribute()
+    {
+        $value = $this->getRawOriginal('description');
+        
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decoded;
+            }
+        }
+        
+        return is_array($value) ? $value : [];
     }
 
     /**
