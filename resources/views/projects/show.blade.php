@@ -36,11 +36,11 @@
           <div class="relative inline-block mb-6">
             <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl opacity-30 blur-lg"></div>
             <h1 class="relative text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-              {{ $project->getTitleAttribute() }}
+              {{ $project->title }}
             </h1>
           </div>
           <p class="text-xl text-gray-300 leading-relaxed">
-            {{ $project->getDescriptionAttribute() }}
+            {{ $project->description }}
           </p>
         </div>
         
@@ -94,7 +94,7 @@
           <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-12 shadow-2xl border border-white/10">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
             <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" 
-                 alt="{{ $project->getTitleAttribute() }}" 
+                 alt="{{ $project->title }}" 
                  class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
           </div>
         </div>
@@ -133,7 +133,7 @@
     <!-- Gallery Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @foreach($project->image_urls as $index => $imageUrl)
-        <div class="group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer" onclick="openGalleryModal({{ json_encode($project->image_urls) }}, {{ $index }}, '{{ addslashes($project->getTitleAttribute()) }}')">
+        <div class="group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer" onclick="openGalleryModal({{ json_encode($project->image_urls) }}, {{ $index }}, '{{ addslashes($project->title) }}')">
           <!-- Glow Effect on Hover -->
           <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.3)] transition-all duration-500"></div>
           
@@ -161,89 +161,6 @@
             </div>
           </div>
         </div>
-      @endforeach
-    </div>
-  </div>
-</section>
-@endif
-
-<!-- Related Projects Section -->
-@if(isset($relatedProjects) && $relatedProjects->count() > 0)
-<section class="py-20 relative bg-black">
-  <!-- Background Elements -->
-  <div class="absolute inset-0">
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] animate-float-slow"></div>
-    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] animate-float-slow delay-1000"></div>
-  </div>
-  
-  <div class="container relative z-10">
-    <!-- Section Header -->
-    <div class="text-center mb-16">
-      <span class="text-purple-400 tracking-wider uppercase text-sm inline-flex items-center gap-2">
-        <span class="w-8 h-[2px] bg-purple-400"></span>
-        More Projects
-        <span class="w-8 h-[2px] bg-purple-400"></span>
-      </span>
-      <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-6">
-        <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient-x bg-[length:200%_auto]">
-          You Might Also Like
-        </span>
-      </h2>
-    </div>
-    
-    <!-- Projects Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      @foreach($relatedProjects as $relatedProject)
-        <article class="group relative transform hover:-translate-y-2 transition-all duration-500">
-          <!-- Glow Effect on Hover -->
-          <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.3)] transition-all duration-500"></div>
-          
-          <!-- Card Content -->
-          <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] h-full flex flex-col">
-            <!-- Featured Image -->
-            <div class="aspect-video overflow-hidden">
-              <img src="{{ $relatedProject->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" 
-                   alt="{{ $relatedProject->getTitleAttribute() }}"
-                   class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-            
-            <!-- Content -->
-            <div class="p-6 flex flex-col flex-grow">
-              <!-- Title -->
-              <h3 class="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
-                <a href="{{ route('project', [app()->getLocale(), $relatedProject]) }}">
-                  {{ $relatedProject->getTitleAttribute() }}
-                </a>
-              </h3>
-              
-              <!-- Description -->
-              <p class="text-gray-400 text-sm mb-4 line-clamp-2 flex-grow">
-                {{ $relatedProject->getDescriptionAttribute() }}
-              </p>
-              
-              <!-- Tech Stack Preview -->
-              <div class="flex flex-wrap gap-1 mb-4">
-                @foreach(array_slice($relatedProject->tech ?? [], 0, 3) as $tech)
-                  <span class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">
-                    {{ $tech }}
-                  </span>
-                @endforeach
-              </div>
-              
-              <!-- View Button -->
-              <div class="mt-auto">
-                <a href="{{ route('project', [app()->getLocale(), $relatedProject]) }}" 
-                   class="inline-flex items-center text-purple-400 hover:text-purple-300 text-sm font-medium group/btn">
-                  View Project
-                  <svg class="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-        </article>
       @endforeach
     </div>
   </div>

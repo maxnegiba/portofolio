@@ -87,18 +87,18 @@
               </div>
               <!-- Image -->
               <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" 
-                alt="{{ $project->getTitleAttribute() }}" 
+                alt="{{ $project->title }}" 
                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
             </div>
             <!-- Content -->
             <div class="p-6 flex-1 flex flex-col">
               <!-- Title -->
               <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">
-                {{ $project->getTitleAttribute() }}
+                {{ $project->title }}
               </h3>
               <!-- Description -->
               <p class="text-gray-400 mb-4 flex-1 line-clamp-3 group-hover:text-gray-300 transition-colors duration-300">
-                {{ $project->getDescriptionAttribute() }}
+                {{ $project->description }}
               </p>
               <!-- Tech Tags -->
               <div class="flex flex-wrap gap-2 mb-4">
@@ -116,7 +116,7 @@
                 <!-- View Images Button -->
                 <button type="button"
                   class="ml-auto text-purple-400 hover:text-purple-300 text-xs font-medium flex items-center group/view"
-                  onclick="openImageModal({{ json_encode($project->image_urls) }}, '{{ addslashes($project->getTitleAttribute()) }}', {{ $loop->index }})">
+                  onclick="openImageModal({{ json_encode($project->image_urls) }}, '{{ addslashes($project->title) }}', {{ $loop->index }})">
                   View <i class="fas fa-expand ml-1 group-hover/view:scale-110 transition-transform"></i>
                 </button>
               </div>
@@ -139,7 +139,7 @@
                 @if($project->live_url)
                 <a href="{{ $project->live_url }}" target="_blank"
                   class="group/btn relative"
-                  aria-label="Live Demo for {{ $project->getTitleAttribute() }}">
+                  aria-label="Live Demo for {{ $project->title }}">
                   <div class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
                     <i class="fas fa-external-link-alt text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
                   </div>
@@ -149,7 +149,7 @@
                 @if($project->github_url ?? false)
                 <a href="{{ $project->github_url }}" target="_blank"
                   class="group/btn relative"
-                  aria-label="GitHub repository for {{ $project->getTitleAttribute() }}">
+                  aria-label="GitHub repository for {{ $project->title }}">
                   <div class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
                     <i class="fab fa-github text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
                   </div>
