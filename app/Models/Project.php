@@ -18,12 +18,14 @@ class Project extends Model
         'live_url',
         'github_url',
         'thumbnail',
+        'images', // Add the new 'images' column to fillable
     ];
 
     protected $casts = [
         'title'       => 'array', // Cast la array pentru manipulare
         'description' => 'array',
         'tech'        => 'array',
+        'images'      => 'array', // Cast 'images' to array
     ];
 
     /**
@@ -69,6 +71,28 @@ class Project extends Model
     {
         return $this->thumbnail ? Storage::url($this->thumbnail) : null;
     }
+
+    /**
+     * Get the URLs of the additional images.
+     * Ensures each path is converted to a full URL.
+     * Usage: $project->image_urls // Returns array of full URLs
+     *
+     * @return array
+     */
+    public function getImageUrlsAttribute(): array
+    {
+        $urls = [];
+        if (is_array($this->images)) {
+            foreach ($this->images as $imagePath) {
+                // Assuming images are stored using the same disk as thumbnail
+                if ($imagePath) { // Check if path is not empty
+                     $urls[] = Storage::url($imagePath);
+                }
+            }
+        }
+        return $urls;
+    }
+
 
     public function getRouteKeyName()
     {

@@ -56,12 +56,27 @@ class ProjectResource extends Resource
                             ]),
                         FileUpload::make('thumbnail')
                             ->image()
-                            ->directory('projects')
+                            ->directory('projects/thumbnails') // Consider a specific directory
                             ->maxSize(2048)
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('16:9')
                             ->imageResizeTargetWidth('800')
-                            ->imageResizeTargetHeight('450'),
+                            ->imageResizeTargetHeight('450')
+                            ->label('Thumbnail Image'),
+                        // === NEW: Multiple Images Upload ===
+                        FileUpload::make('images')
+                            ->image()
+                            ->multiple() // Allow multiple files
+                            ->directory('projects/images') // Specific directory for additional images
+                            ->maxSize(2048)
+                            ->imageResizeMode('contain') // Or 'cover' if you prefer
+                            ->imageResizeTargetWidth('1200') // Adjust as needed
+                            ->imageResizeTargetHeight('900') // Adjust as needed
+                            ->reorderable() // Allow reordering
+                            ->label('Additional Images')
+                            ->helperText('Upload additional screenshots or images for this project.')
+                            ->columnSpanFull(),
+                         // =============================
                     ]),
                 Section::make('Translations')
                     ->schema([
@@ -109,20 +124,7 @@ class ProjectResource extends Resource
                                     config('app.available_locales', ['en'])
                                 )
                             ),
-                        // Presupunem că tech stack nu este tradus, ci doar o listă de tehnologii
-                        // Deci îl lăsăm ca TagsInput în secțiunea General sau aici, dar nu în Repeater
-                        // Dacă îl păstrezi în Repeater, trebuie să modifici logica de salvare.
-                        // Pentru simplitate, îl mutăm în General.
-                        // Repeater::make('tech')
-                        //     ->label('Tech Stack')
-                        //     ->schema([
-                        //         TextInput::make('value')
-                        //             ->label('Technology')
-                        //             ->required(),
-                        //     ])
-                        //     ->columns(1),
                     ]),
-                 // Adăugăm Tech Stack în afara secțiunii Translations
                  Section::make('Tech Stack')
                     ->schema([
                          Forms\Components\TagsInput::make('tech')
@@ -141,6 +143,7 @@ class ProjectResource extends Resource
 
     // === METODĂ CORECTĂ PENTRU MUTARE DATE ===
     // Aceasta este metoda care trebuie definită în clasa Resource, nu înlănțuită la form()
+    // Updated to handle 'images' which is now a direct array from FileUpload::multiple()
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Transformă repeaterul 'title' într-un array asociativ JSON
@@ -166,6 +169,9 @@ class ProjectResource extends Resource
         }
 
         // 'tech' este deja un array de stringuri, deci nu necesită transformare
+
+        // 'images' is already an array of paths from FileUpload::multiple(), no transformation needed
+        // It will be cast to JSON by Laravel automatically when saved.
 
         return $data;
     }
@@ -202,6 +208,15 @@ class ProjectResource extends Resource
                     ->badge() // Afișează ca badge-uri
                     // ->separator(',') // Nu mai e necesar, Filament gestionează array-urile
                     ->toggleable(),
+                 // === NEW: Column to show number of additional images ===
+                 TextColumn::make('images')
+                    ->label('Additional Images')
+                    ->formatStateUsing(fn ($state): string => is_array($state) ? count($state) . ' image(s)' : '0 images')
+                    ->description(fn ($record): string => 'Click to view')
+                    ->url(fn ($record) => $record->image_urls[0] ?? null) // Link to first image if exists
+                    ->openUrlInNewTab()
+                    ->toggleable(),
+                 // ========================================================
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
