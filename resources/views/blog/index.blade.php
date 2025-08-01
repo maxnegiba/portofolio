@@ -1,13 +1,15 @@
 <!-- resources\views\blog\index.blade.php -->
 @extends('layouts.app')
+
 @section('content')
 <section class="py-20 bg-black relative overflow-hidden">
-    <!-- Background Elements (opțional, poți copia unele din home) -->
+    <!-- Background Elements -->
     <div class="absolute inset-0 z-0">
         <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/10 rounded-full blur-[100px] animate-pulse"></div>
         <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] animate-pulse delay-700"></div>
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-50"></div>
     </div>
+
     <div class="container relative z-10">
         <header class="mb-16 text-center">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
@@ -19,6 +21,7 @@
                 {{ __('blog.subtitle') }}
             </p>
         </header>
+
         @if($posts->count() > 0)
             <!-- Grid Container pentru articole -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -28,10 +31,11 @@
                         @if($post->featured_image)
                             <div class="aspect-video overflow-hidden">
                                 <img src="{{ $post->image_url }}"
-                                     alt="{{ $post->getLocalizedTitle() }}" {{-- Actualizat --}}
+                                     alt="{{ $post->getLocalizedTitle() }}"
                                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             </div>
                         @endif
+
                         <!-- Conținut Card -->
                         <div class="p-6">
                             <!-- Meta Informații -->
@@ -48,22 +52,25 @@
                                     <span>{{ $post->reading_time }} min</span>
                                 @endif
                             </div>
+
                             <!-- Titlu -->
                             <h2 class="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors duration-300 line-clamp-2">
-                                <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getLocalizedSlug()]) }}"> {{-- Actualizat --}}
-                                    {{ $post->getLocalizedTitle() }} {{-- Actualizat --}}
+                                <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getLocalizedSlug()]) }}">
+                                    {{ $post->getLocalizedTitle() }}
                                 </a>
                             </h2>
+
                             <!-- Excerpt -->
                             @if($post->getTranslation('excerpt', app()->getLocale()))
                                 <p class="text-gray-300 text-sm mb-4 line-clamp-3">
                                     {{ $post->getTranslation('excerpt', app()->getLocale()) }}
                                 </p>
                             @endif
-                            <!-- Meta Keywords (opțional, mai compact) -->
+
+                            <!-- Meta Keywords -->
                             @if($post->meta_keywords && is_array($post->meta_keywords))
                                 <div class="flex flex-wrap gap-1 mb-4">
-                                    @foreach(array_slice($post->meta_keywords, 0, 3) as $keyword) {{-- Limităm la 3 --}}
+                                    @foreach(array_slice($post->meta_keywords, 0, 3) as $keyword)
                                         <span class="px-2 py-1 bg-white/10 text-gray-400 rounded-full text-xs">
                                             {{ $keyword }}
                                         </span>
@@ -75,8 +82,9 @@
                                     @endif
                                 </div>
                             @endif
+
                             <!-- Link Citește Mai Mult -->
-                            <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getLocalizedSlug()]) }}" {{-- CORECTAT AICI --}}
+                            <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getLocalizedSlug()]) }}"
                                class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium text-sm group-hover:translate-x-1 transition-transform duration-300">
                                 {{ __('blog.read_more') }}
                                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -87,9 +95,10 @@
                     </article>
                 @endforeach
             </div>
+
             <!-- Paginare -->
             <div class="mt-16 flex justify-center">
-                {{ $posts->links() }} {{-- Afișează linkurile de paginare --}}
+                {{ $posts->links() }}
             </div>
         @else
             <div class="text-center py-20">
@@ -102,9 +111,9 @@
         @endif
     </div>
 </section>
-<!-- CSS Suplimentar pentru animații (opțional, dacă nu sunt definite global) -->
+
+<!-- CSS Suplimentar pentru animații -->
 <style>
-/* Dacă nu sunt deja definite în layout sau home, adaugă-le aici */
 @keyframes gradient-x {
   0%, 100% {
     background-position: 0% 50%;
@@ -117,7 +126,7 @@
   animation: gradient-x 3s ease infinite;
   background-size: 200% auto;
 }
-/* Clamp lines */
+
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
