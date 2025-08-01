@@ -1,14 +1,18 @@
 <?php
+
 namespace App\Filament\Resources;
+
 // === Importuri pentru paginile Filament ===
 use App\Filament\Resources\ProjectResource\Pages;
 // =========================================
+
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+
 // === Importuri pentru componente (asigură-te că sunt corecte) ===
 // Acestea sunt importate de filament/forms și filament/tables, dar e bine să le ai explicite
 use Filament\Forms\Components\TextInput;
@@ -22,13 +26,17 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Columns\BadgeColumn;
 // ================================================================
+
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
+
     protected static ?string $navigationGroup = 'Portfolio';
+
     protected static ?int $navigationSort = 1;
-    
+
     public static function form(Form $form): Form
     {
         return $form
@@ -70,6 +78,7 @@ class ProjectResource extends Resource
                             ->helperText('Upload additional screenshots or images for this project.')
                             ->columnSpanFull(),
                     ]),
+
                 Section::make('Translations')
                     ->schema([
                         Repeater::make('title')
@@ -93,6 +102,7 @@ class ProjectResource extends Resource
                                     config('app.available_locales', ['en'])
                                 )
                             ),
+
                         Repeater::make('description')
                             ->label('Description Translations')
                             ->schema([
@@ -115,6 +125,7 @@ class ProjectResource extends Resource
                                 )
                             ),
                     ]),
+
                 Section::make('Tech Stack')
                     ->schema([
                         TagsInput::make('tech')
@@ -126,7 +137,7 @@ class ProjectResource extends Resource
                     ->collapsible(),
             ]);
     }
-    
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Transformă repeaterul 'title' într-un array asociativ JSON
@@ -139,7 +150,7 @@ class ProjectResource extends Resource
             }
             $data['title'] = $titleTranslations;
         }
-        
+
         // Transformă repeaterul 'description' într-un array asociativ JSON
         if (isset($data['description']) && is_array($data['description'])) {
             $descTranslations = [];
@@ -150,7 +161,7 @@ class ProjectResource extends Resource
             }
             $data['description'] = $descTranslations;
         }
-        
+
         // Ensure tech is an array
         if (isset($data['tech'])) {
             if (is_string($data['tech'])) {
@@ -170,10 +181,10 @@ class ProjectResource extends Resource
             // If tech is not set, set to empty array
             $data['tech'] = [];
         }
-        
+
         return $data;
     }
-    
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         // Ensure tech is an array when filling the form
@@ -185,10 +196,10 @@ class ProjectResource extends Resource
                 $data['tech'] = array_map('trim', explode(',', $data['tech']));
             }
         }
-        
+
         return $data;
     }
-    
+
     public static function table(Table $table): Table
     {
         return $table
@@ -197,16 +208,27 @@ class ProjectResource extends Resource
                     ->label('Thumbnail')
                     ->size(50)
                     ->circular(),
+
                 // Custom title column that uses the filament_title accessor
                 TextColumn::make('filament_title')
                     ->label('Title')
-                    ->searchable(query: function ($query, $search) {
-                         return $query->whereJsonContains('title', $search);
-                    })
+                    ->state(fn (Project $record): string => (string) $record->filament_title)
+                    ->searchable(query: fn ($query, $search) =>
+                        $query->whereJsonContains('title->' . app()->getLocale(), $search)
+                    )
                     ->limit(50)
+                    // Ensure tooltip always returns a string
                     ->tooltip(function (Project $record): string {
-                        return $record->filament_title;
+                        $title = $record->filament_title ?? '';
+                        // Even though filament_title should return a string,
+                        // explicitly handle potential array return for robustness
+                        if (is_array($title)) {
+                             // Get the first string value if available
+                             $title = reset($title) ?: '';
+                        }
+                        return (string) $title;
                     }),
+
                 // Custom tech column that ensures it's always an array
                 BadgeColumn::make('tech')
                     ->label('Technologies')
@@ -215,21 +237,19 @@ class ProjectResource extends Resource
                         if (is_array($state)) {
                             return $state;
                         }
-                        
                         // If it's a JSON string, decode it
                         if (is_string($state)) {
                             $decoded = json_decode($state, true);
                             if (json_last_error() === JSON_ERROR_NONE) {
                                 return $decoded;
                             }
-                            
                             // If it's a comma-separated string, split it
                             return array_map('trim', explode(',', $state));
                         }
-                        
                         // Default to empty array
                         return [];
                     }),
+
                 TextColumn::make('images')
                     ->label('Additional Images')
                     ->formatStateUsing(fn ($state): string => is_array($state) ? count($state) . ' image(s)' : '0 images')
@@ -237,6 +257,7 @@ class ProjectResource extends Resource
                     ->url(fn ($record) => $record->image_urls[0] ?? null)
                     ->openUrlInNewTab()
                     ->toggleable(),
+
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
@@ -257,14 +278,14 @@ class ProjectResource extends Resource
             ])
             ->defaultSort('created_at', 'desc');
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
