@@ -41,7 +41,7 @@
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 group-hover:w-3/4 transition-all duration-300"></div>
       </a>
       
-      <!-- Aici adăugăm linkul către blog -->
+      <!-- Link către blog -->
       <a href="{{ route('blog.index', ['locale' => app()->getLocale()]) }}" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
         <span class="relative z-10 text-gray-300 group-hover:text-white transition-colors duration-300 font-medium">
           Blog
@@ -112,8 +112,8 @@
         <span class="font-medium">{{ __('pages.projects_h1') }}</span>
       </a>
       
-      <!-- Aici adăugăm linkul către blog în meniul mobil -->
-      <a href="{{ route('blog.index', ['locale' => app()->getLocale()]) }}"" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
+      <!-- Link către blog în meniul mobil -->
+      <a href="{{ route('blog.index', ['locale' => app()->getLocale()]) }}" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
         <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span class="font-medium">Blog</span>
       </a>
