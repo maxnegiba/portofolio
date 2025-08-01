@@ -7,81 +7,120 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    private string $defaultLocale;
+
+    public function __construct()
+    {
+        // Obține limba implicită din configurația Laravel
+        $this->defaultLocale = config('app.locale', 'en');
+    }
+
     /**
      * Run the migrations.
+     * Transformă coloana `slug` din `string` în `json`, păstrând datele existente.
      */
     public function up(): void
     {
-        // Verificăm dacă coloana slug este încă de tip string/varchar
-        // Presupunem că este, deoarece altfel ai fi avut eroarea "column already exists" mai devreme
-        // și pentru că eroarea inițială indica că se încearcă inserarea unui JSON într-un varchar(255).
+        // Verificăm dacă coloana `slug` există și este de tip string
+        // Această verificare este pentru siguranță, dar în contextul tău probabil știi că există.
+        if (!Schema::hasColumn('blog_posts', 'slug')) {
+            // Dacă nu există, nu avem ce modifica
+            return;
+        }
 
-        // 1. Adăugăm o coloană temporară pentru a salva valorile vechi
+        // 1. Adăugăm o coloană temporară pentru a salva valorile vechi ale slug-ului
         Schema::table('blog_posts', function (Blueprint $table) {
-            $table->text('slug_temp_for_migration')->nullable();
+            $table->text('slug_temp_migration')->nullable();
         });
 
-        // 2. Copiem valorile actuale din slug în slug_temp_for_migration
-        // Presupunem că valorile actuale sunt string-uri simple (slug-uri globale)
-        DB::table('blog_posts')->update(['slug_temp_for_migration' => DB::raw('"slug"')]);
+        // 2. Copiem valorile existente din `slug` în coloana temporară
+        // Folosim `DB::raw` pentru a copia valoarea textuală direct.
+        DB::table('blog_posts')->update(['slug_temp_migration' => DB::raw('"slug"')]);
 
-        // 3. Ștergem vechea coloană slug (de tip string)
+        // 3. Ștergem vechea coloană `slug` (de tip string)
         Schema::table('blog_posts', function (Blueprint $table) {
             $table->dropColumn('slug');
         });
 
-        // 4. Adăugăm coloana slug ca json
+        // 4. Adăugăm coloana `slug` ca `json`
+        // Nu adăugăm index `btree` direct pe `json` în PostgreSQL.
         Schema::table('blog_posts', function (Blueprint $table) {
-            $table->json('slug')->nullable(); // Inițial o lăsăm nullable pentru a umple datele
-            $table->index('slug'); // Adăugăm index pentru performanță (opțional)
+            $table->json('slug')->nullable(); // Inițial nullable pentru populare
         });
 
-        // 5. Convertim valorile vechi în format JSON
-        // Presupunem că limba implicită este 'en'. Poți schimba această valoare.
-        $defaultLocale = config('app.locale', 'en');
-
-        // Actualizăm coloana slug cu valorile vechi transformate în JSON
+        // 5. Convertim valorile vechi din coloana temporară în format JSON
         // Ex: 'my-old-slug' -> {"en": "my-old-slug"}
-        // Verificăm să nu suprascriem slug-uri care ar putea fi deja json (dintr-o tentativă anterioară eșuată)
+        // Verificăm să nu lucrăm cu valori null sau empty
         DB::table('blog_posts')
-            ->whereNotNull('slug_temp_for_migration')
-            ->where('slug_temp_for_migration', '!=', '') // Ignorăm cele goale
+            ->whereNotNull('slug_temp_migration')
+            ->where('slug_temp_migration', '!=', '')
             ->update([
-                'slug' => DB::raw("jsonb_build_object('{$defaultLocale}', \"slug_temp_for_migration\")")
+                'slug' => DB::raw("jsonb_build_object('{$this->defaultLocale}', \"slug_temp_migration\")")
             ]);
 
         // 6. Ștergem coloana temporară
         Schema::table('blog_posts', function (Blueprint $table) {
-            $table->dropColumn('slug_temp_for_migration');
+            $table->dropColumn('slug_temp_migration');
         });
 
-        // 7. (Opțional) Dacă vrei ca slug-ul să fie obligatoriu în viitor:
+        // === OPȚIONAL: Adăugare index GIN pentru căutări rapide în JSON ===
+        // Dacă vrei să cauți eficient în interiorul slug-urilor (ex: `WHERE slug->>'en' = 'value'`)
         // Schema::table('blog_posts', function (Blueprint $table) {
-        //     $table->json('slug')->nullable(false)->change();
+        //     $table->index(['slug'], 'blog_posts_slug_gin_index', 'gin');
         // });
+        // ====================================================================
     }
 
     /**
      * Reverse the migrations.
+     * Revenim la coloana `slug` de tip `string`.
+     * ATENȚIE: Această operațiune poate duce la pierderi de date dacă ai slug-uri diferite pentru limbi diferite.
      */
     public function down(): void
     {
-        // Revenim la varianta anterioară: slug ca string unic
+        // 1. (Opțional) Ștergem indexul GIN dacă l-am creat
+        // if (Schema::hasIndex('blog_posts', 'blog_posts_slug_gin_index')) {
+        //     Schema::table('blog_posts', function (Blueprint $table) {
+        //         $table->dropIndex('blog_posts_slug_gin_index');
+        //     });
+        // }
+
+        // 2. Adăugăm o coloană temporară pentru a salva slug-ul implicit
         Schema::table('blog_posts', function (Blueprint $table) {
-            // Ștergem indexul dacă l-am creat
-            $table->dropIndex(['slug']); // Ajustează numele indexului dacă e diferit
-            // Ștergem coloana slug json
+            $table->text('slug_down_temp')->nullable();
+        });
+
+        // 3. Extragem slug-ul implicit (ex: 'en') și îl salvăm în coloana temporară
+        // Acest pas poate duce la pierderi de informații dacă ai slug-uri diferite pe limbi.
+        DB::table('blog_posts')
+            ->whereNotNull("slug") // Verificăm că slug-ul JSON nu e null
+            ->update([
+                'slug_down_temp' => DB::raw("slug->>'{$this->defaultLocale}'")
+            ]);
+
+        // 4. Ștergem vechea coloană `slug` (de tip json)
+        Schema::table('blog_posts', function (Blueprint $table) {
             $table->dropColumn('slug');
         });
 
-        // Adăugăm înapoi coloana slug string
+        // 5. Recreăm coloana `slug` ca `string` cu constrângerea `unique`
         Schema::table('blog_posts', function (Blueprint $table) {
-            $table->string('slug', 255)->unique();
-            // Dacă aveai un index separat înainte de unique, adaugă-l aici
-            // $table->index('slug');
+            $table->string('slug', 255)->unique()->nullable(); // Le facem nullable temporar
         });
 
-        // Nu vom încerca să reconstruim valorile vechi din JSON, pentru că procesul e ireversibil
-        // dacă ai slug-uri diferite pentru limbi diferite. Va trebui să le regenerezi manual dacă e nevoie.
+        // 6. Copiem valorile din coloana temporară înapoi în `slug`
+        DB::table('blog_posts')
+            ->whereNotNull('slug_down_temp')
+            ->update(['slug' => DB::raw('"slug_down_temp"')]);
+
+        // 7. Ștergem coloana temporară
+        Schema::table('blog_posts', function (Blueprint $table) {
+            $table->dropColumn('slug_down_temp');
+        });
+
+        // 8. (Opțional) Dacă vrei ca slug-ul să fie NOT NULL
+        // Schema::table('blog_posts', function (Blueprint $table) {
+        //     $table->string('slug', 255)->unique()->nullable(false)->change();
+        // });
     }
 };
