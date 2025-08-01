@@ -1,14 +1,16 @@
 <?php
-
 namespace App\Filament\Resources;
-
+// === Importuri pentru paginile Filament ===
 use App\Filament\Resources\ProjectResource\Pages;
+// =========================================
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+// === Importuri pentru componente (asigură-te că sunt corecte) ===
+// Acestea sunt importate de filament/forms și filament/tables, dar e bine să le ai explicite
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
@@ -18,14 +20,15 @@ use Filament\Forms\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\TagsInput;
-
+use Filament\Tables\Columns\BadgeColumn;
+// ================================================================
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
     protected static ?string $navigationGroup = 'Portfolio';
     protected static ?int $navigationSort = 1;
-
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -123,7 +126,7 @@ class ProjectResource extends Resource
                     ->collapsible(),
             ]);
     }
-
+    
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Transformă repeaterul 'title' într-un array asociativ JSON
@@ -136,7 +139,7 @@ class ProjectResource extends Resource
             }
             $data['title'] = $titleTranslations;
         }
-
+        
         // Transformă repeaterul 'description' într-un array asociativ JSON
         if (isset($data['description']) && is_array($data['description'])) {
             $descTranslations = [];
@@ -147,26 +150,30 @@ class ProjectResource extends Resource
             }
             $data['description'] = $descTranslations;
         }
-
+        
         // Ensure tech is an array
         if (isset($data['tech'])) {
             if (is_string($data['tech'])) {
+                // If it's a JSON string, decode it
                 $decoded = json_decode($data['tech'], true);
                 if (json_last_error() === JSON_ERROR_NONE) {
                     $data['tech'] = $decoded;
                 } else {
+                    // If it's a comma-separated string, split it
                     $data['tech'] = array_map('trim', explode(',', $data['tech']));
                 }
             } elseif (!is_array($data['tech'])) {
+                // If it's neither string nor array, set to empty array
                 $data['tech'] = [];
             }
         } else {
+            // If tech is not set, set to empty array
             $data['tech'] = [];
         }
-
+        
         return $data;
     }
-
+    
     protected function mutateFormDataBeforeFill(array $data): array
     {
         // Ensure tech is an array when filling the form
@@ -178,10 +185,10 @@ class ProjectResource extends Resource
                 $data['tech'] = array_map('trim', explode(',', $data['tech']));
             }
         }
-
+        
         return $data;
     }
-
+    
     public static function table(Table $table): Table
     {
         return $table
@@ -190,35 +197,39 @@ class ProjectResource extends Resource
                     ->label('Thumbnail')
                     ->size(50)
                     ->circular(),
-                TextColumn::make('title')
+                // Custom title column that uses the filament_title accessor
+                TextColumn::make('filament_title')
                     ->label('Title')
-                    ->getStateUsing(fn (Project $record) => $record->title)
-                    ->html()
                     ->searchable(query: function ($query, $search) {
-                        return $query->whereJsonContains('title', $search);
+                         return $query->whereJsonContains('title', $search);
                     })
                     ->limit(50)
-                    ->tooltip(fn (Project $record): string => $record->title),
-                TextColumn::make('tech')
+                    ->tooltip(function (Project $record): string {
+                        return $record->filament_title;
+                    }),
+                // Custom tech column that ensures it's always an array
+                BadgeColumn::make('tech')
                     ->label('Technologies')
-                    ->badge()
                     ->formatStateUsing(function ($state) {
+                        // Ensure we're working with an array
                         if (is_array($state)) {
                             return $state;
                         }
-
+                        
+                        // If it's a JSON string, decode it
                         if (is_string($state)) {
                             $decoded = json_decode($state, true);
                             if (json_last_error() === JSON_ERROR_NONE) {
                                 return $decoded;
                             }
-
+                            
+                            // If it's a comma-separated string, split it
                             return array_map('trim', explode(',', $state));
                         }
-
+                        
+                        // Default to empty array
                         return [];
-                    })
-                    ->toggleable(),
+                    }),
                 TextColumn::make('images')
                     ->label('Additional Images')
                     ->formatStateUsing(fn ($state): string => is_array($state) ? count($state) . ' image(s)' : '0 images')
@@ -246,14 +257,14 @@ class ProjectResource extends Resource
             ])
             ->defaultSort('created_at', 'desc');
     }
-
+    
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-
+    
     public static function getPages(): array
     {
         return [

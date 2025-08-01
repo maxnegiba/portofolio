@@ -77,6 +77,30 @@ class Project extends Model
     }
 
     /**
+     * Get the title for Filament admin panel.
+     */
+    public function getFilamentTitleAttribute()
+    {
+        $value = $this->getRawOriginal('title');
+        
+        // If it's already an array, get the first available title
+        if (is_array($value)) {
+            return reset($value) ?? '';
+        }
+        
+        // If it's a string, try to decode it as JSON
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return reset($decoded) ?? '';
+            }
+        }
+        
+        // Default to empty string
+        return $value ?? '';
+    }
+
+    /**
      * Get the raw title array.
      */
     public function getRawTitleAttribute()
