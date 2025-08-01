@@ -1,6 +1,4 @@
-<!-- resources/views/projects/index.blade.php -->
 @extends('layouts.app')
-
 @section('content')
 <!-- Projects Hero Section -->
 <section class="relative py-20 bg-black overflow-hidden">
@@ -41,7 +39,9 @@
   </div>
 </section>
 
- <!-- Projects Grid -->
+<!-- Projects Grid Section -->
+<section class="py-16 bg-black">
+  <div class="container">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @forelse($projects as $project)
         <div class="group relative animate-fade-in-up" style="animation-delay: {{ $loop->index * 100 }}ms">
@@ -61,84 +61,77 @@
                                 {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
                             </span>
                         </div>
-                      <!-- Tech Stack Icons -->
-<div class="absolute top-4 right-4 z-20 flex gap-2">
-    @php
-        $techIcons = [
-            'Laravel' => 'fab fa-laravel text-red-400',
-            'Vue.js' => 'fab fa-vuejs text-green-400',
-            'JavaScript' => 'fab fa-js text-yellow-400',
-            'PHP' => 'fab fa-php text-purple-400',
-            'MySQL' => 'fas fa-database text-blue-400',
-            'PostgreSQL' => 'fas fa-database text-blue-300',
-            'Tailwind' => 'fas fa-wind text-cyan-400',
-            'Bootstrap' => 'fab fa-bootstrap text-purple-500'
-        ];
-        // Verificare defensivă pentru $project->tech
-        $safeProjectTech = is_array($project->tech ?? null) ? $project->tech : [];
-    @endphp
-    @foreach(array_slice($safeProjectTech, 0, 3) as $tech)
-        @if(isset($techIcons[$tech]))
-        <div class="w-8 h-8 bg-black/50 backdrop-blur-sm rounded-lg flex items-center justify-center">
-            <i class="{{ $techIcons[$tech] }} text-sm"></i>
-        </div>
-        @endif
-    @endforeach
-</div>
-</div><!-- Tech Tags -->
+                       <!-- Tech Stack Icons -->
+                        <div class="absolute top-4 right-4 z-20 flex gap-2">
+                            @php
+                                $techIcons = [
+                                    'Laravel' => 'fab fa-laravel text-red-400',
+                                    'Vue.js' => 'fab fa-vuejs text-green-400',
+                                    'JavaScript' => 'fab fa-js text-yellow-400',
+                                    'PHP' => 'fab fa-php text-purple-400',
+                                    'MySQL' => 'fas fa-database text-blue-400',
+                                    'PostgreSQL' => 'fas fa-database text-blue-300',
+                                    'Tailwind' => 'fas fa-wind text-cyan-400',
+                                    'Bootstrap' => 'fab fa-bootstrap text-purple-500'
+                                ];
+                                // Verificare defensivă pentru $project->tech
+                                $projectTech = is_array($project->tech ?? null) ? $project->tech : [];
+                            @endphp
+                            @foreach(array_slice($projectTech, 0, 3) as $tech)
+                                @if(isset($techIcons[$tech]))
+                                <div class="w-8 h-8 bg-black/50 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                                    <i class="{{ $techIcons[$tech] }} text-sm"></i>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
                         <!-- Image -->
-                        <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" {{-- Folosim accessorul --}}
-                            alt="{{ $project->getTitleAttribute() }}" {{-- Folosim accessorul --}}
+                        <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}"
+                            alt="{{ $project->getTitleAttribute() }}"
                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <!-- Content -->
                     <div class="p-6 flex-1 flex flex-col">
                         <!-- Title -->
-                        <h3
-                            class="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">
-                            {{ $project->getTitleAttribute() }} {{-- Folosim accessorul --}}
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">
+                            {{ $project->getTitleAttribute() }}
                         </h3>
                         <!-- Description -->
-                        <p
-                            class="text-gray-400 mb-4 flex-1 line-clamp-3 group-hover:text-gray-300 transition-colors duration-300">
-                            {{ $project->getDescriptionAttribute() }} {{-- Folosim accessorul --}}
+                        <p class="text-gray-400 mb-4 flex-1 line-clamp-3 group-hover:text-gray-300 transition-colors duration-300">
+                            {{ $project->getDescriptionAttribute() }}
                         </p>
-                       <!-- Tech Tags -->
- <div class="flex flex-wrap gap-2 mb-4">
-     @foreach($safeProjectTech as $tech)
-     <span class="px-3 py-1 text-xs font-medium bg-white/5 border border-white/10 rounded-full text-gray-400 group-hover:border-white/20 group-hover:text-gray-300 transition-all duration-300">
-         {{ $tech }}
-     </span>
-     @endforeach
- </div>
-                        <!-- === NEW: Indicators for Additional Images === -->
+                        <!-- Tech Tags -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            @foreach($projectTech as $tech)
+                            <span class="px-3 py-1 text-xs font-medium bg-white/5 border border-white/10 rounded-full text-gray-400 group-hover:border-white/20 group-hover:text-gray-300 transition-all duration-300">
+                                {{ $tech }}
+                            </span>
+                            @endforeach
+                        </div>
+                        <!-- Indicators for Additional Images -->
                         @if($project->image_urls && count($project->image_urls) > 0)
                         <div class="flex items-center text-gray-500 text-sm mb-4">
                             <i class="fas fa-images mr-2 text-purple-400"></i>
-                            <span>{{ count($project->image_urls) }} {{ str_plural('image', count($project->image_urls)) }}</span>
+                            <span>{{ count($project->image_urls) }} image{{ count($project->image_urls) != 1 ? 's' : '' }}</span>
                             <!-- Optional: View Images Button -->
                             <button type="button"
                                 class="ml-auto text-purple-400 hover:text-purple-300 text-xs font-medium flex items-center group/view"
-                                onclick="openImageModal({{ json_encode($project->image_urls) }}, '{{ addslashes($project->getTitleAttribute()) }}', {{ $loop->parent->index ?? 0 }})">
+                                onclick="openImageModal({{ json_encode($project->image_urls) }}, '{{ addslashes($project->getTitleAttribute()) }}', {{ $loop->index }})">
                                 View <i class="fas fa-expand ml-1 group-hover/view:scale-110 transition-transform"></i>
                             </button>
                         </div>
                         @endif
-                        <!-- ============================================== -->
                         <!-- Actions -->
                         <div class="flex items-center gap-3 mt-auto">
                             <!-- View Details -->
-                            <a href="{{ route('project', [app()->getLocale(), $project]) }}" {{-- Route model binding --}}
+                            <a href="{{ route('project', [app()->getLocale(), $project]) }}"
                                 class="group/btn relative flex-1">
-                                <div
-                                    class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover/btn:opacity-70 blur transition-opacity duration-300">
+                                <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover/btn:opacity-70 blur transition-opacity duration-300">
                                 </div>
-                                <div
-                                    class="relative px-4 py-2.5 bg-black rounded-xl text-white text-center font-medium group-hover/btn:scale-105 transition-transform duration-300">
+                                <div class="relative px-4 py-2.5 bg-black rounded-xl text-white text-center font-medium group-hover/btn:scale-105 transition-transform duration-300">
                                     <span class="flex items-center justify-center gap-2">
                                         View Details
-                                        <i
-                                            class="fas fa-arrow-right text-sm group-hover/btn:translate-x-1 transition-transform duration-300"></i>
+                                        <i class="fas fa-arrow-right text-sm group-hover/btn:translate-x-1 transition-transform duration-300"></i>
                                     </span>
                                 </div>
                             </a>
@@ -147,10 +140,8 @@
                             <a href="{{ $project->live_url }}" target="_blank"
                                 class="group/btn relative"
                                 aria-label="Live Demo for {{ $project->getTitleAttribute() }}">
-                                <div
-                                    class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
-                                    <i
-                                        class="fas fa-external-link-alt text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
+                                <div class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
+                                    <i class="fas fa-external-link-alt text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
                                 </div>
                             </a>
                             @endif
@@ -159,10 +150,8 @@
                             <a href="{{ $project->github_url }}" target="_blank"
                                 class="group/btn relative"
                                 aria-label="GitHub repository for {{ $project->getTitleAttribute() }}">
-                                <div
-                                    class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
-                                    <i
-                                        class="fab fa-github text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
+                                <div class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
+                                    <i class="fab fa-github text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
                                 </div>
                             </a>
                             @endif
@@ -187,7 +176,7 @@
   </div>
 </section>
 
-<!-- === NEW: Modal for Additional Images === -->
+<!-- Modal for Additional Images -->
 <div id="projectImageModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md">
   <div class="relative w-full max-w-6xl h-[90vh] flex flex-col">
     <!-- Modal Header -->
@@ -197,30 +186,26 @@
         <i class="fas fa-times"></i>
       </button>
     </div>
-
     <!-- Modal Body - Image Carousel -->
     <div class="relative flex-1 overflow-hidden rounded-2xl border border-white/10">
       <!-- Carousel Container -->
       <div id="imageCarousel" class="relative w-full h-full">
          <!-- Images will be injected here by JS -->
       </div>
-
       <!-- Navigation Arrows -->
-      <button id="prevImageBtn" onclick="changeImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+      <button id="prevImageBtn" onclick="changeImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full opacity-0 transition-opacity">
         <i class="fas fa-chevron-left"></i>
       </button>
-      <button id="nextImageBtn" onclick="changeImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+      <button id="nextImageBtn" onclick="changeImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full opacity-0 transition-opacity">
         <i class="fas fa-chevron-right"></i>
       </button>
     </div>
-
     <!-- Modal Footer - Image Counter -->
     <div class="flex justify-center items-center mt-4 text-gray-400">
       <span id="imageCounter">1 / 1</span>
     </div>
   </div>
 </div>
-<!-- ======================================== -->
 
 <!-- CTA Section -->
 <section class="py-20 bg-black relative overflow-hidden">
@@ -277,7 +262,6 @@
 }
 .delay-200 { animation-delay: 200ms; }
 .delay-400 { animation-delay: 400ms; }
-
 /* Modal Styles */
 #projectImageModal {
     /* Use flexbox for centering */
@@ -313,7 +297,7 @@
 </style>
 
 <script>
-// === NEW: JavaScript for Image Modal ===
+// JavaScript for Image Modal
 let currentImages = [];
 let currentIndex = 0;
 let modalElement = document.getElementById('projectImageModal');
@@ -325,11 +309,9 @@ let nextBtn = document.getElementById('nextImageBtn');
 
 function openImageModal(imageUrls, projectTitle, projectIndex) {
     if (!imageUrls || imageUrls.length === 0) return;
-
     currentImages = imageUrls;
     currentIndex = 0; // Reset to first image
     titleElement.textContent = projectTitle;
-
     updateCarousel();
     modalElement.classList.add('active'); // Add class for fade-in
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
@@ -355,10 +337,8 @@ function changeImage(direction) {
 
 function updateCarousel() {
     if (currentImages.length === 0) return;
-
     // Update counter
     counterElement.textContent = `${currentIndex + 1} / ${currentImages.length}`;
-
     // Update image source
     // Simple approach: replace the image source
     // More robust: pre-load images or use a proper carousel library
@@ -370,23 +350,23 @@ function updateCarousel() {
     }
     imgElement.src = currentImages[currentIndex];
     imgElement.alt = `Image ${currentIndex + 1} for project`;
-
     // Update button visibility
     prevBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
     nextBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
 }
 
 // Close modal if clicked outside the content
-modalElement?.addEventListener('click', function(event) {
-    if (event.target === modalElement) {
-        closeImageModal();
-    }
-});
-// ======================================
+if (modalElement) {
+    modalElement.addEventListener('click', function(event) {
+        if (event.target === modalElement) {
+            closeImageModal();
+        }
+    });
+}
 
 // Optional: Close modal with Escape key
 document.addEventListener('keydown', function(event) {
-    if (event.key === "Escape" && modalElement?.classList.contains('active')) {
+    if (event.key === "Escape" && modalElement && modalElement.classList.contains('active')) {
         closeImageModal();
     }
 });
