@@ -521,10 +521,14 @@
 }
 
 @keyframes text-slide {
-  0%, 25% { transform: translateY(0); }
-  25%, 50% { transform: translateY(-100%); }
-  50%, 75% { transform: translateY(-200%); }
-  75%, 100% { transform: translateY(-300%); }
+  0%, 15% { transform: translateY(0); }          /* Pauză la primul text */
+  20%, 35% { transform: translateY(-100%); }     /* Pauză la al doilea text */
+  40%, 55% { transform: translateY(-200%); }     /* Pauză la al treilea text */
+  60%, 75% { transform: translateY(-300%); }     /* Pauză la al patrulea text */
+  80%, 95% { transform: translateY(-400%); }     /* Pauză la primul text din nou */
+  100% { transform: translateY(-400%); }         /* Menține poziția pentru restart */
+}
+
 }
 
 @keyframes scroll {
@@ -589,13 +593,11 @@
 .animate-blink {
   animation: blink 1s infinite;
 }
+.animate-text-slide {
+
 
 .animate-text-slide {
-  animation: text-slide 8s ease-in-out infinite;
-}
-
-.animate-scroll {
-  animation: scroll 2s ease-in-out infinite;
+  animation: text-slide 16s ease-in-out infinite; /* Durată mai lungă: 16s în loc de 8s */
 }
 
 .animate-fade-in-down {
