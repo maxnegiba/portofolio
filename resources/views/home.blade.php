@@ -521,15 +521,14 @@
 }
 
 @keyframes text-slide {
-  0%, 15% { transform: translateY(0); }          /* Pauză la primul text */
-  20%, 35% { transform: translateY(-100%); }     /* Pauză la al doilea text */
-  40%, 55% { transform: translateY(-200%); }     /* Pauză la al treilea text */
-  60%, 75% { transform: translateY(-300%); }     /* Pauză la al patrulea text */
-  80%, 95% { transform: translateY(-400%); }     /* Pauză la primul text din nou */
-  100% { transform: translateY(-400%); }         /* Menține poziția pentru restart */
+  0%, 18%   { transform: translateY(0); }           /* Full Stack Developer */
+  20%, 38%  { transform: translateY(-100%); }      /* Laravel Expert */
+  40%, 58%  { transform: translateY(-200%); }      /* UI/UX Enthusiast */
+  60%, 78%  { transform: translateY(-300%); }      /* Problem Solver */
+  80%, 100% { transform: translateY(-400%); }      /* pauză lungă înainte de restart */
 }
 
-}
+
 
 @keyframes scroll {
   0% { transform: translateY(0); opacity: 0; }
@@ -597,7 +596,7 @@
 
 
 .animate-text-slide {
-  animation: text-slide 16s ease-in-out infinite; /* Durată mai lungă: 16s în loc de 8s */
+  animation: text-slide 40s ease-in-out infinite;
 }
 
 .animate-fade-in-down {
