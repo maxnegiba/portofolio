@@ -262,20 +262,7 @@
         @endif
     </div>
 </section>
-<!-- DEBUG IMAGE -->
-<div style="background-color: #333; color: #fff; padding: 15px; margin: 10px 0; border: 1px solid #666;">
-    <p><strong>Featured Image (DB Value):</strong> "{{ $post->featured_image }}"</p>
-    <p><strong>Image URL (Accessor):</strong> "{{ $post->image_url }}"</p>
-    <p><strong>Generated Storage URL:</strong> "{{ Storage::url('blog/featured/' . $post->featured_image) }}"</p>
-     <p><strong>File Exists?</strong>
-        @if($post->featured_image && file_exists(storage_path('app/public/blog/featured/' . $post->featured_image)))
-            <span style="color: lightgreen;">YES</span>
-        @else
-            <span style="color: red;">NO</span>
-        @endif
-    </p>
-</div>
-<!-- /DEBUG IMAGE -->
+
 
 <!-- CSS Suplimentar -->
 <style>
