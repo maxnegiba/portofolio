@@ -593,7 +593,7 @@
 .animate-blink {
   animation: blink 1s infinite;
 }
-.animate-text-slide {
+
 
 
 .animate-text-slide {
