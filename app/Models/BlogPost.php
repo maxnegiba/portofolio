@@ -68,9 +68,9 @@ class BlogPost extends Model
      public function getImageUrlAttribute()
     {
         if ($this->featured_image) {
-            // Construiește URL-ul corect către fișierul din storage/app/public/blog/featured/
-            // Presupunând că $this->featured_image conține numele fișierului (e.g., 01K1JJGPWHGHC7HPAR92DVM5PB.jpg)
-            return Storage::url('blog/featured/' . $this->featured_image);
+            // Deoarece $this->featured_image este deja 'blog/featured/filename.jpg',
+            // trebuie doar să îl pasăm direct lui Storage::url().
+            return Storage::url($this->featured_image);
         }
 
         // Opțional: Returnează un placeholder dacă nu există imagine
@@ -78,4 +78,5 @@ class BlogPost extends Model
 
         return null; // Sau '' dacă preferi un string gol
     }
-}
+
+    }
