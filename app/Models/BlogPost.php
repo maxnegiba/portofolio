@@ -62,4 +62,18 @@ class BlogPost extends Model
     {
         return $this->getTranslation('slug', app()->getLocale());
     }
+    // Adaugă această metodă:
+     public function getImageUrlAttribute()
+    {
+        if ($this->featured_image) {
+            // Construiește URL-ul corect către fișierul din storage/app/public/blog/featured/
+            // Presupunând că $this->featured_image conține numele fișierului (e.g., 01K1JJGPWHGHC7HPAR92DVM5PB.jpg)
+            return Storage::url('blog/featured/' . $this->featured_image);
+        }
+
+        // Opțional: Returnează un placeholder dacă nu există imagine
+        // return asset('images/default-post-image.jpg');
+
+        return null; // Sau '' dacă preferi un string gol
+    }
 }
