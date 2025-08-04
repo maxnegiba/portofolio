@@ -127,8 +127,8 @@ return [
     'contact_email_label' => 'Email',
    'contact_email' => 'negibamaxim@gmail.com', // Înlocuiește cu emailul tău real
     'contact_phone_label' => 'Phone',
-    'contact_phone' => '+40 793 537 712', // Înlocuiește cu numărul tău real
-    'contact_location' => 'Bucharest, Romania',
+    'contact_phone' => '+40793537712', // Înlocuiește cu numărul tău real
+    'contact_location' => 'Romania',
     'contact_social_title' => 'Find me on',
 
     // Translations for the contact form

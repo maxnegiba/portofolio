@@ -122,18 +122,23 @@ return [
         'no_posts_message' => 'Revino mai târziu pentru articole noi.',
     ],
 
-        // Contact Page
-    'contact_subtitle' => 'Hai să discutăm ideile tale de proiect sau doar să ne salutăm. Sunt mereu deschis pentru noi oportunități și colaborări.',
+    // Traduceri pentru pagina de contact
+    'contact_h1' => 'Contact',
+    'contact_subtitle' => 'Ai întrebări sau vrei să colaborezi? Trimite-mi un mesaj!',
     'contact_email_label' => 'Email',
-    'contact_email' => 'negibamaxim@gmail.com',
+    'contact_email' => 'negibamaxim@gmail.com', // Înlocuiește cu emailul tău real
     'contact_phone_label' => 'Telefon',
-    'contact_phone' => '+40 793 537 712',
+    'contact_phone' => '+40793537712', // Înlocuiește cu numărul tău real
     'contact_location_label' => 'Locație',
-    'contact_location' => ' România',
-    'contact_social_title' => 'Conectează-te cu mine',
-    'contact_form_name' => 'Numele tău',
-    'contact_form_email' => 'Adresă Email',
-    'contact_form_message' => 'Mesajul tău',
+    'contact_location' => 'România',
+    'contact_social_title' => 'Găsește-mă și pe',
+
+    // Traduceri pentru formularul de contact
+    'contact_form_name' => 'Nume',
+    'contact_form_email' => 'Email',
+    'contact_form_subject' => 'Subiect', // Adăugat pentru câmpul nou
+    'contact_form_message' => 'Mesaj',
     'contact_form_submit' => 'Trimite Mesajul',
-    'contact_form_success' => 'Îți mulțumesc pentru mesaj! Te voi contacta în curând.',
+    'contact_form_success' => 'Mesajul a fost trimis cu succes!',
+    'contact_form_error' => 'A apărut o eroare la trimiterea mesajului. Te rog încearcă din nou.',
 ];
