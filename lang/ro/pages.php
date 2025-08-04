@@ -121,4 +121,19 @@ return [
         'no_posts' => 'Nu s-au găsit articole',
         'no_posts_message' => 'Revino mai târziu pentru articole noi.',
     ],
+
+        // Contact Page
+    'contact_subtitle' => 'Hai să discutăm ideile tale de proiect sau doar să ne salutăm. Sunt mereu deschis pentru noi oportunități și colaborări.',
+    'contact_email_label' => 'Email',
+    'contact_email' => 'your.email@example.com',
+    'contact_phone_label' => 'Telefon',
+    'contact_phone' => '+40 123 456 789',
+    'contact_location_label' => 'Locație',
+    'contact_location' => 'București, România',
+    'contact_social_title' => 'Conectează-te cu mine',
+    'contact_form_name' => 'Numele tău',
+    'contact_form_email' => 'Adresă Email',
+    'contact_form_message' => 'Mesajul tău',
+    'contact_form_submit' => 'Trimite Mesajul',
+    'contact_form_success' => 'Îți mulțumesc pentru mesaj! Te voi contacta în curând.',
 ];

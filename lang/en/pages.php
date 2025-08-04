@@ -120,4 +120,19 @@ return [
         'no_posts' => 'No Posts Found',
         'no_posts_message' => 'Check back later for new posts.',
     ],
+
+    // Contact Page
+    'contact_subtitle' => 'Let\'s discuss your project ideas or just say hello. I\'m always open to new opportunities and collaborations.',
+    'contact_email_label' => 'Email',
+    'contact_email' => 'your.email@example.com',
+    'contact_phone_label' => 'Phone',
+    'contact_phone' => '+40 123 456 789',
+    'contact_location_label' => 'Location',
+    'contact_location' => 'Bucharest, Romania',
+    'contact_social_title' => 'Connect with me',
+    'contact_form_name' => 'Your Name',
+    'contact_form_email' => 'Email Address',
+    'contact_form_message' => 'Your Message',
+    'contact_form_submit' => 'Send Message',
+    'contact_form_success' => 'Thank you for your message! I\'ll get back to you soon.',
 ];
