@@ -26,7 +26,7 @@
           </span>
         </a>
         <p class="text-gray-400 leading-relaxed max-w-xs">
-          Crafting scalable, pixel-perfect web experiences with Laravel, Vue & automation superpowers.
+          {{ __('pages.footer_brand_subtitle') }}
         </p>
         <div class="flex space-x-4 pt-2">
           @foreach([
@@ -47,7 +47,7 @@
 
       <!-- 2. Quick Links -->
       <div>
-        <h4 class="text-white font-semibold mb-6 text-lg">Quick Links</h4>
+        <h4 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_quick_links') }}</h4>
         <ul class="space-y-3">
           <li>
             <a href="{{ route('home', app()->getLocale()) }}#about" 
@@ -75,7 +75,7 @@
 
       <!-- 3. Technologies -->
       <div>
-        <h4 class="text-white font-semibold mb-6 text-lg">Technologies</h4>
+        <h4 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_technologies') }}</h4>
         <ul class="space-y-3 text-gray-400">
           <li class="flex items-center space-x-2"><i class="fab fa-laravel text-red-500"></i><span>Laravel</span></li>
           <li class="flex items-center space-x-2"><i class="fab fa-vuejs text-green-500"></i><span>Vue.js</span></li>
@@ -87,20 +87,20 @@
 
       <!-- 4. Contact / CTA -->
       <div>
-        <h4 class="text-white font-semibold mb-6 text-lg">Let's Connect</h4>
-        <p class="text-gray-400 mb-4">Ready to start your next project? Drop a line and let's talk.</p>
+        <h4 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_connect') }}</h4>
+        <p class="text-gray-400 mb-4">{{ __('pages.footer_connect_text') }}</p>
         <a href="{{ route('contact', app()->getLocale()) }}" 
            class="group relative inline-flex items-center space-x-2 w-full justify-center mb-4">
           <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-70 blur group-hover:opacity-100 transition duration-300"></div>
           <button class="relative px-6 py-3 bg-black rounded-xl text-white font-medium w-full">
             <span class="flex items-center justify-center space-x-2">
               <i class="fas fa-envelope"></i>
-              <span>Get in Touch</span>
+              <span>{{ __('pages.footer_get_in_touch') }}</span>
             </span>
           </button>
         </a>
         <p class="text-sm text-gray-500 text-center">
-          your.email@example.com
+          {{ __('pages.footer_email') }}
         </p>
       </div>
     </div>
@@ -110,11 +110,11 @@
 
     <!-- Bottom bar -->
     <div class="flex flex-col md:flex-row justify-between items-center py-6 text-sm text-gray-500">
-      <p>&copy; {{ date('Y') }} Doctor It. All rights reserved.</p>
+      <p>&copy; {{ date('Y') }} {{ __('pages.footer_copyright') }}</p>
       <p class="flex items-center space-x-2">
-        <span>Made with</span>
+        <span>{{ __('pages.footer_made_with') }}</span>
         <i class="fas fa-heart text-red-500 animate-pulse"></i>
-        <span>in Bucharest</span>
+        <span>{{ __('pages.footer_in_bucharest') }}</span>
       </p>
     </div>
   </div>

@@ -18,27 +18,9 @@
         </span>
       </h1>
       <p class="text-xl text-gray-400 max-w-3xl mx-auto animate-fade-in-up delay-200">
-        Explore my portfolio of web applications, each crafted with passion and attention to detail
+        {{ __('pages.projects_subtitle') }}
       </p>
     </div>
-    <!-- Filter Tags (Optional) -->
-    <div class="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in-up delay-400">
-      <button class="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium transition-all duration-300 hover:scale-105">
-        All Projects
-      </button>
-      <button class="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-gray-300 font-medium hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-        Laravel
-      </button>
-      <button class="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-gray-300 font-medium hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-        Vue.js
-      </button>
-      <button class="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-gray-300 font-medium hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-        Full Stack
-      </button>
-    </div>
-  </div>
-</section>
-
 <!-- Projects Grid Section -->
 <section class="py-16 relative bg-black">
   <div class="container relative z-10">
@@ -112,12 +94,12 @@
               @if($project->image_urls && count($project->image_urls) > 0)
               <div class="flex items-center text-gray-500 text-sm mb-4">
                 <i class="fas fa-images mr-2 text-purple-400"></i>
-                <span>{{ count($project->image_urls) }} {{ count($project->image_urls) == 1 ? 'image' : 'images' }}</span>
+                <span>{{ count($project->image_urls) }} {{ count($project->image_urls) == 1 ? __('pages.projects_image') : __('pages.projects_images') }}</span>
                 <!-- View Images Button -->
                 <button type="button"
                   class="ml-auto text-purple-400 hover:text-purple-300 text-xs font-medium flex items-center group/view"
                   onclick="openImageModal({{ json_encode($project->image_urls) }}, '{{ addslashes($project->getLocalizedTitle()) }}', {{ $loop->index }})">
-                  View <i class="fas fa-expand ml-1 group-hover/view:scale-110 transition-transform"></i>
+                  {{ __('pages.projects_view_images') }} <i class="fas fa-expand ml-1 group-hover/view:scale-110 transition-transform"></i>
                 </button>
               </div>
               @endif
@@ -130,7 +112,7 @@
                   </div>
                   <div class="relative px-4 py-2.5 bg-black rounded-xl text-white text-center font-medium group-hover/btn:scale-105 transition-transform duration-300">
                     <span class="flex items-center justify-center gap-2">
-                      View Details
+                      {{ __('pages.projects_view_details') }}
                       <i class="fas fa-arrow-right text-sm group-hover/btn:translate-x-1 transition-transform duration-300"></i>
                     </span>
                   </div>
@@ -139,7 +121,7 @@
                 @if($project->live_url)
                 <a href="{{ $project->live_url }}" target="_blank"
                   class="group/btn relative"
-                  aria-label="Live Demo for {{ $project->getLocalizedTitle() }}">
+                  aria-label="{{ __('pages.projects_live_demo') }} for {{ $project->getLocalizedTitle() }}">
                   <div class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
                     <i class="fas fa-external-link-alt text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
                   </div>
@@ -149,7 +131,7 @@
                 @if($project->github_url ?? false)
                 <a href="{{ $project->github_url }}" target="_blank"
                   class="group/btn relative"
-                  aria-label="GitHub repository for {{ $project->getLocalizedTitle() }}">
+                  aria-label="{{ __('pages.projects_github') }} repository for {{ $project->getLocalizedTitle() }}">
                   <div class="relative w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-all duration-300">
                     <i class="fab fa-github text-gray-400 group-hover/btn:text-white transition-colors duration-300"></i>
                   </div>
@@ -162,8 +144,8 @@
       </div>
       @empty
       <div class="col-span-full text-center py-20">
-        <h2 class="text-2xl font-semibold text-white mb-4">No Projects Found</h2>
-        <p class="text-gray-400">Check back later for new projects.</p>
+        <h2 class="text-2xl font-semibold text-white mb-4">{{ __('pages.projects_no_projects') }}</h2>
+        <p class="text-gray-400">{{ __('pages.projects_check_back') }}</p>
       </div>
       @endforelse
     </div>
@@ -175,7 +157,6 @@
     @endif
   </div>
 </section>
-
 <!-- CTA Section -->
 <section class="py-20 bg-black relative overflow-hidden">
   <div class="absolute inset-0">
@@ -184,22 +165,21 @@
   <div class="container relative z-10 text-center">
     <h2 class="text-4xl md:text-5xl font-bold mb-6">
       <span class="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-        Have a Project in Mind?
+        {{ __('pages.projects_cta_title') }}
       </span>
     </h2>
     <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-      Let's work together to bring your ideas to life
+      {{ __('pages.projects_cta_subtitle') }}
     </p>
     <a href="{{ route('contact', app()->getLocale()) }}" class="group relative inline-block">
       <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-70 blur group-hover:opacity-100 transition duration-300"></div>
       <button class="relative px-8 py-4 bg-black rounded-full text-white font-medium flex items-center space-x-3 group-hover:scale-105 transition-transform duration-300">
-        <span>Start a Conversation</span>
+        <span>{{ __('pages.projects_cta_button') }}</span>
         <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"></i>
       </button>
     </a>
   </div>
 </section>
-
 <!-- Modal for Additional Images -->
 <div id="projectImageModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md">
   <div class="relative w-full max-w-6xl h-[90vh] flex flex-col">
@@ -230,7 +210,6 @@
     </div>
   </div>
 </div>
-
 <style>
 @keyframes fade-in-up {
   from {
@@ -293,7 +272,6 @@
   background: linear-gradient(to bottom, #a855f7, #60a5fa);
 }
 </style>
-
 <script>
 // JavaScript for Image Modal
 let currentImages = [];
@@ -304,7 +282,6 @@ let counterElement = document.getElementById('imageCounter');
 let titleElement = document.getElementById('modalProjectTitle');
 let prevBtn = document.getElementById('prevImageBtn');
 let nextBtn = document.getElementById('nextImageBtn');
-
 function openImageModal(imageUrls, projectTitle, projectIndex) {
     if (!imageUrls || imageUrls.length === 0) return;
     currentImages = imageUrls;
@@ -314,14 +291,12 @@ function openImageModal(imageUrls, projectTitle, projectIndex) {
     modalElement.classList.add('active'); // Add class for fade-in
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
 }
-
 function closeImageModal() {
     modalElement.classList.remove('active');
     // Clear carousel content
     carouselElement.innerHTML = '';
     document.body.style.overflow = ''; // Restore background scrolling
 }
-
 function changeImage(direction) {
     currentIndex += direction;
     // Handle boundaries
@@ -332,7 +307,6 @@ function changeImage(direction) {
     }
     updateCarousel();
 }
-
 function updateCarousel() {
     if (currentImages.length === 0) return;
     // Update counter
@@ -350,14 +324,12 @@ function updateCarousel() {
     prevBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
     nextBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
 }
-
 // Close modal if clicked outside the content
 modalElement?.addEventListener('click', function(event) {
     if (event.target === modalElement) {
         closeImageModal();
     }
 });
-
 // Close modal with Escape key
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape" && modalElement?.classList.contains('active')) {
