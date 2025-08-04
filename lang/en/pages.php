@@ -121,18 +121,22 @@ return [
         'no_posts_message' => 'Check back later for new posts.',
     ],
 
-    // Contact Page
-    'contact_subtitle' => 'Let\'s discuss your project ideas or just say hello. I\'m always open to new opportunities and collaborations.',
+     // Translations for the contact page
+    'contact_h1' => 'Contact',
+    'contact_subtitle' => 'Have questions or want to collaborate? Send me a message!',
     'contact_email_label' => 'Email',
-    'contact_email' => 'your.email@example.com',
+   'contact_email' => 'negibamaxim@gmail.com', // Înlocuiește cu emailul tău real
     'contact_phone_label' => 'Phone',
-    'contact_phone' => '+40 123 456 789',
-    'contact_location_label' => 'Location',
+    'contact_phone' => '+40 793 537 712', // Înlocuiește cu numărul tău real
     'contact_location' => 'Bucharest, Romania',
-    'contact_social_title' => 'Connect with me',
-    'contact_form_name' => 'Your Name',
-    'contact_form_email' => 'Email Address',
-    'contact_form_message' => 'Your Message',
+    'contact_social_title' => 'Find me on',
+
+    // Translations for the contact form
+    'contact_form_name' => 'Name',
+    'contact_form_email' => 'Email',
+    'contact_form_subject' => 'Subject', // Added for the new field
+    'contact_form_message' => 'Message',
     'contact_form_submit' => 'Send Message',
-    'contact_form_success' => 'Thank you for your message! I\'ll get back to you soon.',
+    'contact_form_success' => 'Message sent successfully!',
+    'contact_form_error' => 'There was an error sending your message. Please try again.',
 ];

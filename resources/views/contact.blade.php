@@ -30,7 +30,7 @@
           </p>
         </div>
         
-        <!-- Contact Details -->
+                <!-- Contact Details -->
         <div class="space-y-6">
           <div class="group flex items-center space-x-4">
             <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -38,20 +38,24 @@
             </div>
             <div>
               <span class="text-gray-400 text-sm">{{ __('pages.contact_email_label') }}</span>
-              <p class="text-white font-medium">{{ __('pages.contact_email') }}</p>
+              <!-- Link către clientul de email -->
+              <a href="mailto:{{ __('pages.contact_email') }}" class="text-white font-medium hover:text-purple-400 transition-colors duration-300">
+                 {{ __('pages.contact_email') }}
+              </a>
             </div>
           </div>
-          
           <div class="group flex items-center space-x-4">
             <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <i class="fas fa-phone-alt text-white"></i>
             </div>
             <div>
               <span class="text-gray-400 text-sm">{{ __('pages.contact_phone_label') }}</span>
-              <p class="text-white font-medium">{{ __('pages.contact_phone') }}</p>
+              <!-- Link pentru apel telefonic -->
+              <a href="tel:{{ __('pages.contact_phone') }}" class="text-white font-medium hover:text-cyan-400 transition-colors duration-300">
+                {{ __('pages.contact_phone') }}
+              </a>
             </div>
           </div>
-          
           <div class="group flex items-center space-x-4">
             <div class="w-12 h-12 bg-gradient-to-br from-cyan-600 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <i class="fas fa-map-marker-alt text-white"></i>
@@ -108,7 +112,14 @@
                 <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
               @enderror
             </div>
-            
+                        <!-- Subject Input -->
+            <div class="relative group">
+              <label for="subject" class="absolute -top-2 left-4 bg-black px-2 text-sm text-gray-400 group-focus-within:text-purple-400 transition-colors duration-300">{{ __('pages.contact_form_subject') }}</label>
+              <input type="text" id="subject" name="subject" required class="w-full px-4 py-3 bg-white/5 border {{ $errors->has('subject') ? 'border-red-500' : 'border-white/10' }} rounded-xl text-white focus:border-purple-500 focus:bg-white/10 transition-all duration-300 outline-none">
+              @error('subject')
+                <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+              @enderror
+            </div>
             <!-- Message Input -->
             <div class="relative group">
               <label for="message" class="absolute -top-2 left-4 bg-black px-2 text-sm text-gray-400 group-focus-within:text-purple-400 transition-colors duration-300">{{ __('pages.contact_form_message') }}</label>
