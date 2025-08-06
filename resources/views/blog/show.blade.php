@@ -134,9 +134,9 @@
                 <div class="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl opacity-20 blur-xl"></div>
                 <div class="absolute -bottom-6 -right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl opacity-20 blur-xl"></div>
                 
-               <div class="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12 prose prose-invert prose-lg max-w-none
+               <div class="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12 prose prose-invert prose-xl max-w-none
             prose-headings:text-white prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-            prose-p:text-gray-300 prose-a:text-purple-400 hover:prose-a:text-purple-300
+            prose-p:text-white prose-a:text-purple-400 hover:prose-a:text-purple-300
             prose-strong:text-white prose-em:text-gray-200
             prose-blockquote:border-l-purple-500 prose-blockquote:text-gray-300 prose-blockquote:bg-purple-900/10 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-2xl
             prose-li:text-gray-300 prose-li:marker:text-purple-400
@@ -150,23 +150,43 @@
             </div>
             
             <!-- Share Buttons -->
-            <div class="mt-12 pt-8 border-t border-white/10">
-                <h3 class="text-lg font-semibold text-white mb-4">Share this article</h3>
-                <div class="flex space-x-4">
-                    <a href="#" class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="#" class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="#" class="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                </div>
-            </div>
+            <!-- Share Buttons -->
+<div class="mt-12 pt-8 border-t border-white/10">
+    <h3 class="text-lg font-semibold text-white mb-4">Share this article</h3>
+    <div class="flex space-x-4">
+        <!-- Twitter -->
+        <a href="https://twitter.com/intent/tweet?url={{ urlencode(url()->current()) }}&text={{ urlencode($post->getLocalizedTitle()) }}"
+           target="_blank"
+           class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+           aria-label="Share on Twitter">
+            <i class="fab fa-twitter"></i>
+        </a>
+
+        <!-- LinkedIn -->
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(url()->current()) }}"
+           target="_blank"
+           class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+           aria-label="Share on LinkedIn">
+            <i class="fab fa-linkedin"></i>
+        </a>
+
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}"
+           target="_blank"
+           class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+           aria-label="Share on Facebook">
+            <i class="fab fa-facebook"></i>
+        </a>
+
+        <!-- WhatsApp -->
+        <a href="https://wa.me/?text={{ urlencode($post->getLocalizedTitle() . ' ' . url()->current()) }}"
+           target="_blank"
+           class="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+           aria-label="Share on WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+</div>
         </article>
         
         <!-- Articole Recente cu design îmbunătățit -->
