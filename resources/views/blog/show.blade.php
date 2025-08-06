@@ -135,17 +135,17 @@
                 <div class="absolute -bottom-6 -right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl opacity-20 blur-xl"></div>
                 
                 <div class="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12 prose prose-invert prose-lg max-w-none
-                            prose-headings:text-white prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-                            prose-p:text-gray-300 prose-a:text-purple-400 hover:prose-a:text-purple-300
-                            prose-strong:text-white prose-em:text-gray-200
-                            prose-blockquote:border-l-purple-500 prose-blockquote:text-gray-300 prose-blockquote:bg-purple-900/10 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-2xl
-                            prose-li:text-gray-300 prose-li:marker:text-purple-400
-                            prose-code:bg-black/50 prose-code:text-purple-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-purple-500/30
-                            prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:overflow-hidden
-                            prose-img:rounded-2xl prose-img:shadow-lg prose-img:border prose-img:border-white/10
-                            prose-table:text-gray-300 prose-th:bg-white/5 prose-th:border prose-th:border-white/10 prose-td:border prose-td:border-white/10 prose-table:rounded-xl prose-table:overflow-hidden">
-                    {!! $post->getTranslation('content', app()->getLocale()) !!}
-                </div>
+            prose-headings:text-white prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
+            prose-p:text-white prose-a:text-purple-400 hover:prose-a:text-purple-300
+            prose-strong:text-white prose-em:text-gray-200
+            prose-blockquote:border-l-purple-500 prose-blockquote:text-gray-300 prose-blockquote:bg-purple-900/10 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-2xl
+            prose-li:text-gray-300 prose-li:marker:text-purple-400
+            prose-code:bg-black/50 prose-code:text-purple-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-purple-500/30
+            prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:overflow-hidden
+            prose-img:rounded-2xl prose-img:shadow-lg prose-img:border prose-img:border-white/10
+            prose-table:text-gray-300 prose-th:bg-white/5 prose-th:border prose-th:border-white/10 prose-td:border prose-td:border-white/10 prose-table:rounded-xl prose-table:overflow-hidden">
+    {!! $post->getTranslation('content', app()->getLocale()) !!}
+</div>
             </div>
             
             <!-- Share Buttons -->
