@@ -1,20 +1,16 @@
-<nav class="fixed top-0 left-0 right-0 z-50 py-3 bg-black/80 backdrop-blur-xl border-b border-white/10 transition-all duration-500" id="navbar">
-  <div class="container mx-auto px-4 flex justify-between items-center">
-    <!-- Logo cu animație și gradient -->
-    <!-- Logo cu imagine -->
 <a href="{{ route('home', app()->getLocale()) }}" class="group flex items-center space-x-3 relative">
   <!-- Glow effect behind logo -->
   <div class="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
   
-  <!-- Container logo imagine -->
-  <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 p-[2px] shadow-lg group-hover:shadow-purple-500/25 transition-all duration-300 group-hover:scale-110">
+  <!-- Container logo imagine - MAI MARE -->
+  <div class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 p-[3px] shadow-lg group-hover:shadow-purple-500/25 transition-all duration-300 group-hover:scale-110">
     <div class="w-full h-full rounded-2xl bg-black flex items-center justify-center overflow-hidden">
       <!-- Înlocuiește 'images/logo.png' cu calea reală către logo-ul tău -->
       <img src="{{ asset('img/logo.png') }}" alt="Doctor It Logo" class="w-full h-full object-contain">
     </div>
   </div>
   
-  <span class="relative text-2xl font-bold">
+  <span class="relative text-3xl font-bold"> <!-- Text mai mare -->
     <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent group-hover:from-purple-300 group-hover:to-cyan-300 transition-all duration-300">
       Doctor It
     </span>
