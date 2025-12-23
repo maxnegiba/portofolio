@@ -3,10 +3,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\RootRedirectController;
 use Livewire\Volt\Volt;
 
-// Redirect pentru rădăcină
-Route::redirect('/', '/en');
+// Redirect pentru rădăcină (auto-detect)
+Route::get('/', RootRedirectController::class)->name('root');
 
 // Grupul principal de rute localizate
 Route::prefix('{locale}')

@@ -299,7 +299,7 @@ class BlogPostResource extends Resource
     {
         // Ensure the Pages namespace alias is correctly imported at the top
         return [
-            'index' => Pages\ListBlogPost::route('/'), // Standard index route
+            'index' => Pages\ListBlogPosts::route('/'), // Standard index route
             'create' => Pages\CreateBlogPost::route('/create'),
             'edit' => Pages\EditBlogPost::route('/{record}/edit'),
             // Removed the redundant 'list' route pointing to the same page class

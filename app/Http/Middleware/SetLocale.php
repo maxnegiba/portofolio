@@ -22,6 +22,9 @@ class SetLocale
         if ($locale && in_array($locale, config('app.available_locales', ['en']))) {
             // Setează limba aplicației
             app()->setLocale($locale);
+
+            // Stochează locale-ul în cookie pentru 1 an (365 zile * 24 ore * 60 minute)
+            return $next($request)->withCookie(cookie('user_locale', $locale, 60 * 24 * 365));
         }
         // Dacă nu e valid sau nu e prezent, Laravel va folosi limba implicită din config/app.php
 
