@@ -105,8 +105,8 @@
               @endif
               <!-- Actions -->
               <div class="flex items-center gap-3 mt-auto">
-                <!-- View Details -->
-                <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project]) }}"
+                <!-- View Details - FIXED: Using getLocalizedSlug() instead of $project object -->
+                <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project->getLocalizedSlug()]) }}"
                   class="group/btn relative flex-1">
                   <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover/btn:opacity-70 blur transition-opacity duration-300">
                   </div>
