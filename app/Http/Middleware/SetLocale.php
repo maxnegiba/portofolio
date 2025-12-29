@@ -15,6 +15,11 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Optimization: Skip locale logic for static assets if they somehow hit this middleware
+        if ($request->is('css/*', 'js/*', 'images/*', 'fonts/*', 'storage/*')) {
+            return $next($request);
+        }
+
         $locale = null;
 
         // 1. Check for locale in query string (explicit override)
@@ -52,7 +57,10 @@ class SetLocale
         app()->setLocale($locale);
 
         // Persist to session so it sticks if we go to a non-localized route (if any)
-        session(['locale' => $locale]);
+        // Optimization: Only write to session if the locale actually changed to avoid unnecessary I/O
+        if (session('locale') !== $locale) {
+            session(['locale' => $locale]);
+        }
 
         return $next($request);
     }
