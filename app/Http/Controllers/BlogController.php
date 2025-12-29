@@ -21,9 +21,12 @@ class BlogController extends Controller
             ->with('user')
             ->when($request->search, function ($query, $search) use ($locale) {
                 return $query->where(function ($q) use ($search, $locale) {
-                    // Căutare în titlu și conținut în limba curentă
+                    // Search in title and content in current language
                     $q->where("title->{$locale}", 'like', "%{$search}%")
-                      ->orWhere("content->{$locale}", 'like', "%{$search}%");
+                      ->orWhere("content->{$locale}", 'like', "%{$search}%")
+                      // Fallback search in other languages if not found in current locale
+                      ->orWhere("title->en", 'like', "%{$search}%")
+                      ->orWhere("content->en", 'like', "%{$search}%");
                 });
             })
             ->latest('published_at')
@@ -33,7 +36,7 @@ class BlogController extends Controller
     }
 
     /**
-     * Display the specified blog post.
+     * Display the specified blog post with fallback language support.
      *
      * @param string $locale The current locale.
      * @param string $slug The slug of the post.
@@ -43,13 +46,42 @@ class BlogController extends Controller
     {
         app()->setLocale($locale);
         
-        // Căutare folosind slug-ul tradus
+        // First, try to find post using slug in current locale
         $post = BlogPost::published()
             ->with('user')
             ->where("slug->{$locale}", $slug)
-            ->firstOrFail();
-            
-        // Recent posts - conținutul va fi în limba curentă
+            ->first();
+        
+        // If not found in current locale, try English as fallback
+        if (!$post && $locale !== 'en') {
+            $post = BlogPost::published()
+                ->with('user')
+                ->where("slug->en", $slug)
+                ->first();
+        }
+        
+        // If still not found, try Romanian as second fallback
+        if (!$post && $locale !== 'ro') {
+            $post = BlogPost::published()
+                ->with('user')
+                ->where("slug->ro", $slug)
+                ->first();
+        }
+        
+        // If still not found, try Vietnamese as third fallback
+        if (!$post && $locale !== 'vi') {
+            $post = BlogPost::published()
+                ->with('user')
+                ->where("slug->vi", $slug)
+                ->first();
+        }
+        
+        // If post not found after all attempts, throw 404
+        if (!$post) {
+            abort(404, "Blog post not found");
+        }
+        
+        // Recent posts - content will be in current language
         $recentPosts = BlogPost::published()
             ->where('id', '!=', $post->id)
             ->latest('published_at')
