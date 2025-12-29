@@ -121,6 +121,10 @@ return [
     |
     */
 
+    'matomo_url'   => env('MATOMO_URL'),
+'matomo_site_id' => env('MATOMO_SITE_ID'),
+'matomo_token'   => env('MATOMO_TOKEN'),
+
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),

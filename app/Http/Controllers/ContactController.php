@@ -26,11 +26,11 @@ class ContactController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'subject' => $validated['subject'],
-                'message' => $validated['message']
+                'userMessage' => $validated['message']  // Folosim $userMessage în loc de $message
             ], function ($mail) use ($validated) {
-                $mail->from('contact@negibamaxim.eu', 'Doctor IT')
-                     ->to('negibamaxim@gmail.com')  // Înlocuiește cu adresa unde vrei să primești email-uri
-                     ->subject('Mesaj nou Doctor IT: ' . $validated['subject']);
+                $mail->from('contact@negibamaxim.eu', 'Portofoliu Maxim')
+                     ->to('negibamaxim@gmail.com')
+                     ->subject('Mesaj nou de pe portofoliu: ' . $validated['subject']);
             });
 
             Log::info('Email sent successfully', ['to' => 'negibamaxim@gmail.com']);
@@ -38,6 +38,8 @@ class ContactController extends Controller
         } catch (\Exception $e) {
             Log::error('Email sending failed: ' . $e->getMessage(), [
                 'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
 
