@@ -22,9 +22,12 @@ class TranslateToVitamezaIncremental extends Command
      *
      * @var string
      */
-    protected $description = 'Translate ONLY missing items to Vitameza (skips already translated)';
+    protected $description = 'Translate ONLY missing items to Vietnamese (vi) (skips already translated)';
 
     protected GroqTranslationService $translator;
+
+    // Standardize on 'vi'
+    protected string $targetLocale = 'vi';
 
     /**
      * Execute the console command.
@@ -33,7 +36,7 @@ class TranslateToVitamezaIncremental extends Command
     {
         $this->translator = new GroqTranslationService();
 
-        $this->info('🚀 Starting INCREMENTAL translation (skipping already translated)...');
+        $this->info("🚀 Starting INCREMENTAL translation to Vietnamese ({$this->targetLocale})...");
         $this->newLine();
 
         $onlyBlog = $this->option('only-blog');
@@ -82,10 +85,15 @@ class TranslateToVitamezaIncremental extends Command
         $missingPosts = [];
         $skippedCount = 0;
 
-        // Filter only posts WITHOUT vitameza translation
+        // Filter only posts WITHOUT target translation
         foreach ($allPosts as $post) {
-            $vitamezaTitle = $post->getTranslation('title', 'vitameza', false);
-            if (!$vitamezaTitle) {
+            // Check 'vi' translation
+            $viTitle = $post->getTranslation('title', $this->targetLocale, false);
+
+            // OPTIONAL: Check legacy 'vitameza' if needed, but we want to standardize on 'vi'.
+            // If 'vitameza' exists but 'vi' doesn't, we should probably translate (copy) to 'vi'.
+
+            if (!$viTitle) {
                 $missingPosts[] = $post;
             } else {
                 $skippedCount++;
@@ -128,21 +136,21 @@ class TranslateToVitamezaIncremental extends Command
         // Translate title
         $translatedTitle = $this->translator->translate(
             $originalTitle,
-            'vitameza',
+            $this->targetLocale,
             'Blog post title'
         );
 
         // Translate excerpt
         $translatedExcerpt = $this->translator->translate(
             $originalExcerpt,
-            'vitameza',
+            $this->targetLocale,
             'Blog post excerpt - short summary'
         );
 
         // Translate content
         $translatedContent = $this->translator->translate(
             $originalContent,
-            'vitameza',
+            $this->targetLocale,
             'Blog post content - preserve markdown formatting if present'
         );
 
@@ -153,16 +161,16 @@ class TranslateToVitamezaIncremental extends Command
         $metaDescription = $post->getTranslation('meta_description', 'en');
         $translatedMetaDesc = $this->translator->translate(
             $metaDescription,
-            'vitameza',
+            $this->targetLocale,
             'SEO meta description'
         );
 
         if (!$dryRun) {
-            $post->setTranslation('title', 'vitameza', $translatedTitle);
-            $post->setTranslation('excerpt', 'vitameza', $translatedExcerpt);
-            $post->setTranslation('content', 'vitameza', $translatedContent);
-            $post->setTranslation('slug', 'vitameza', $translatedSlug);
-            $post->setTranslation('meta_description', 'vitameza', $translatedMetaDesc);
+            $post->setTranslation('title', $this->targetLocale, $translatedTitle);
+            $post->setTranslation('excerpt', $this->targetLocale, $translatedExcerpt);
+            $post->setTranslation('content', $this->targetLocale, $translatedContent);
+            $post->setTranslation('slug', $this->targetLocale, $translatedSlug);
+            $post->setTranslation('meta_description', $this->targetLocale, $translatedMetaDesc);
             $post->save();
         }
     }
@@ -180,12 +188,12 @@ class TranslateToVitamezaIncremental extends Command
         $missingProjects = [];
         $skippedCount = 0;
 
-        // Filter only projects WITHOUT vitameza translation
+        // Filter only projects WITHOUT target translation
         foreach ($allProjects as $project) {
             $titleData = $project->getRawOriginal('title');
             $titleArray = is_string($titleData) ? json_decode($titleData, true) : $titleData;
             
-            if (!is_array($titleArray) || !isset($titleArray['vitameza'])) {
+            if (!is_array($titleArray) || !isset($titleArray[$this->targetLocale])) {
                 $missingProjects[] = $project;
             } else {
                 $skippedCount++;
@@ -232,13 +240,13 @@ class TranslateToVitamezaIncremental extends Command
         // Translate
         $translatedTitle = $this->translator->translate(
             $originalTitle,
-            'vitameza',
+            $this->targetLocale,
             'Project title'
         );
 
         $translatedDesc = $this->translator->translate(
             $originalDesc,
-            'vitameza',
+            $this->targetLocale,
             'Project description - preserve formatting'
         );
 
@@ -250,7 +258,7 @@ class TranslateToVitamezaIncremental extends Command
             if (!is_array($titleData)) {
                 $titleData = [];
             }
-            $titleData['vitameza'] = $translatedTitle;
+            $titleData[$this->targetLocale] = $translatedTitle;
             $project->title = $titleData;
 
             // Update description
@@ -258,7 +266,7 @@ class TranslateToVitamezaIncremental extends Command
             if (!is_array($descData)) {
                 $descData = [];
             }
-            $descData['vitameza'] = $translatedDesc;
+            $descData[$this->targetLocale] = $translatedDesc;
             $project->description = $descData;
 
             // Update slug
@@ -267,7 +275,7 @@ class TranslateToVitamezaIncremental extends Command
             if (!is_array($slugData)) {
                 $slugData = [];
             }
-            $slugData['vitameza'] = $translatedSlug;
+            $slugData[$this->targetLocale] = $translatedSlug;
             $project->slug = $slugData;
 
             $project->save();
