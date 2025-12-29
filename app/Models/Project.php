@@ -23,6 +23,7 @@ class Project extends Model
     ];
 
     protected $casts = [
+        'slug' => 'array',
         'title' => 'array',
         'description' => 'array',
         'images' => 'array',
@@ -230,15 +231,56 @@ class Project extends Model
 
     /**
      * Get the value of the model's route key.
-     * FIXED: Returns the raw slug value directly without JSON processing.
+     * Handles multilingual JSON slugs and returns the slug for the current locale.
      *
      * @return mixed
      */
     public function getRouteKey()
     {
-        // Simply return the raw slug value from the database
-        // This ensures Laravel routing gets a simple string, not JSON
-        return $this->getAttribute($this->getRouteKeyName());
+        $value = $this->getAttribute($this->getRouteKeyName());
+        $locale = app()->getLocale();
+        $fallbackLocale = config('app.fallback_locale', 'en');
+
+        // If slug is an array (Laravel already casted it)
+        if (is_array($value)) {
+            // Return slug for current locale, fallback to default locale, or first available
+            return $value[$locale] ?? $value[$fallbackLocale] ?? reset($value) ?? '';
+        }
+
+        // If it's a string (might be JSON)
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            
+            // If it's valid JSON
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? reset($decoded) ?? '';
+            }
+            
+            // If it's just a plain string slug, return it
+            return $value;
+        }
+
+        // Fallback for any other type
+        return $value ?? '';
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     * This is called when Laravel tries to find the model by slug from the URL.
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $locale = app()->getLocale();
+        
+        // Try to find by localized slug
+        return $this->where(function ($query) use ($value, $locale) {
+            $query->where("slug->{$locale}", $value)
+                  ->orWhere('slug', $value); // Fallback to direct match
+        })->first();
     }
 
     /**
