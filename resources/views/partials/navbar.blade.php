@@ -1,7 +1,27 @@
+@php
+    $localeInfo = [
+        'en' => ['icon' => 'fas fa-globe-americas', 'label' => 'EN', 'full_label' => 'English'],
+        'ro' => ['icon' => 'fas fa-globe-europe', 'label' => 'RO', 'full_label' => 'Română'],
+        'vi' => ['icon' => 'fas fa-globe-asia', 'label' => 'VI', 'full_label' => 'Tiếng Việt'],
+    ];
+
+    $currentRouteName = Route::currentRouteName();
+    $safeRoutes = ['home', 'projects', 'blog.index', 'contact'];
+
+    // Helper to get the correct URL for the target locale
+    $getSwitchUrl = function($targetLocale) use ($currentRouteName, $safeRoutes) {
+        if (in_array($currentRouteName, $safeRoutes)) {
+             // If we are on a page that doesn't depend on content slugs, stay on the page
+             return route($currentRouteName, ['locale' => $targetLocale]);
+        }
+        // Fallback to home for dynamic pages (posts, projects) to avoid 404s due to untranslated slugs
+        return route('home', ['locale' => $targetLocale]);
+    };
+@endphp
+
 <nav class="fixed top-0 left-0 right-0 z-50 py-3 bg-black/80 backdrop-blur-xl border-b border-white/10 transition-all duration-500" id="navbar">
   <div class="container mx-auto px-4 flex justify-between items-center">
     <!-- Logo cu animație și gradient -->
-    <!-- Logo cu imagine -->
     <a href="{{ route('home', app()->getLocale()) }}" class="group flex items-center space-x-3 relative">
       <!-- Glow effect behind logo -->
       <div class="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -22,10 +42,11 @@
         <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-cyan-400 group-hover:w-full transition-all duration-300"></span>
       </span>
     </a>
+
     <!-- Desktop Navigation -->
     <div class="hidden md:flex items-center space-x-2 lg:space-x-6">
       <!-- Nav Links with modern hover effects -->
-      <a href="{{ route('home', app()->getLocale()) }}#about" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300"> <!-- CORECTAT: Link către #about pe homepage -->
+      <a href="{{ route('home', app()->getLocale()) }}#about" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
         <span class="relative z-10 text-gray-300 group-hover:text-white transition-colors duration-300 font-medium">
           {{ __('pages.about_h1') }}
         </span>
@@ -56,32 +77,41 @@
         <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 group-hover:w-3/4 transition-all duration-300"></div>
       </a>
+
       <!-- Separator -->
       <div class="w-px h-6 bg-gradient-to-b from-transparent via-gray-600 to-transparent"></div>
+
       <!-- Language Selector cu design modern -->
       <div class="relative group">
         <button class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
-          <i class="fas fa-language text-sm"></i> <!-- CORECTAT: Iconiță Font Awesome pentru limbă -->
+          <i class="fas fa-language text-sm"></i>
           <span class="font-medium">{{ strtoupper(app()->getLocale()) }}</span>
           <i class="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
         </button>
         <!-- Dropdown cu animație smooth -->
-        <div class="absolute top-full right-0 mt-2 w-32 bg-black/90 backdrop-blur-xl rounded-xl shadow-2xl shadow-black/50 border border-white/10 py-1 opacity-0 invisible scale-95 transform origin-top-right transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:scale-100">
-          <a href="{{ route('home', 'en') }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ app()->getLocale() === 'en' ? 'text-white bg-white/5' : 'text-gray-400' }}">
-            <i class="fas fa-globe-americas text-lg"></i> <!-- CORECTAT: Iconiță Font Awesome -->
-            <span class="font-medium">EN</span> <!-- CORECTAT: Cod limbă corect -->
-          </a>
-          <a href="{{ route('home', 'ro') }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ app()->getLocale() === 'ro' ? 'text-white bg-white/5' : 'text-gray-400' }}">
-            <i class="fas fa-globe-europe text-lg"></i> <!-- CORECTAT: Iconiță Font Awesome -->
-            <span class="font-medium">RO</span> <!-- CORECTAT: Cod limbă corect -->
-          </a>
+        <div class="absolute top-full right-0 mt-2 w-40 bg-black/90 backdrop-blur-xl rounded-xl shadow-2xl shadow-black/50 border border-white/10 py-1 opacity-0 invisible scale-95 transform origin-top-right transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:scale-100">
+            @foreach(config('app.available_locales') as $locale)
+                @php
+                    $info = $localeInfo[$locale] ?? ['icon' => 'fas fa-globe', 'label' => strtoupper($locale)];
+                    $isActive = app()->getLocale() === $locale;
+                @endphp
+                <a href="{{ $getSwitchUrl($locale) }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ $isActive ? 'text-white bg-white/5' : 'text-gray-400' }}">
+                    <i class="{{ $info['icon'] }} text-lg w-6 text-center"></i>
+                    <span class="font-medium">{{ $info['label'] }}</span>
+                    @if($isActive)
+                        <i class="fas fa-check text-xs ml-auto text-purple-400"></i>
+                    @endif
+                </a>
+            @endforeach
         </div>
       </div>
+
       <!-- CTA Button (opțional) -->
       <a href="{{ route('contact', app()->getLocale()) }}" class="ml-4 px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300">
         Hire Me
       </a>
     </div>
+
     <!-- Mobile Menu Button cu animație -->
     <button class="md:hidden relative w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-300 group" id="mobile-menu-btn">
       <span class="sr-only">Toggle menu</span>
@@ -92,10 +122,11 @@
       </div>
     </button>
   </div>
+
   <!-- Mobile Menu cu design modern -->
   <div class="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10 opacity-0 invisible transform -translate-y-4 transition-all duration-300" id="mobile-menu">
     <div class="container mx-auto px-4 py-6 space-y-2">
-      <a href="{{ route('home', app()->getLocale()) }}#about" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group"> <!-- CORECTAT: Link către #about pe homepage -->
+      <a href="{{ route('home', app()->getLocale()) }}#about" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
         <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span class="font-medium">{{ __('pages.about_h1') }}</span>
       </a>
@@ -112,20 +143,24 @@
         <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span class="font-medium">{{ __('pages.contact_h1') }}</span>
       </a>
+
       <!-- Language selector pentru mobile -->
       <div class="pt-4 mt-4 border-t border-white/10">
         <p class="text-xs text-gray-500 uppercase tracking-wider mb-3 px-4">Language</p>
-        <div class="grid grid-cols-2 gap-2">
-          <a href="{{ route('home', 'en') }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ app()->getLocale() === 'en' ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
-            <i class="fas fa-globe-americas"></i> <!-- CORECTAT: Iconiță Font Awesome -->
-            <span class="font-medium">EN</span> <!-- CORECTAT: Cod limbă corect -->
-          </a>
-          <a href="{{ route('home', 'ro') }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ app()->getLocale() === 'ro' ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
-            <i class="fas fa-globe-europe"></i> <!-- CORECTAT: Iconiță Font Awesome -->
-            <span class="font-medium">RO</span> <!-- CORECTAT: Cod limbă corect -->
-          </a>
+        <div class="grid grid-cols-3 gap-2">
+            @foreach(config('app.available_locales') as $locale)
+                @php
+                    $info = $localeInfo[$locale] ?? ['icon' => 'fas fa-globe', 'label' => strtoupper($locale)];
+                    $isActive = app()->getLocale() === $locale;
+                @endphp
+                <a href="{{ $getSwitchUrl($locale) }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ $isActive ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
+                    <i class="{{ $info['icon'] }}"></i>
+                    <span class="font-medium">{{ $info['label'] }}</span>
+                </a>
+            @endforeach
         </div>
       </div>
+
       <!-- Mobile CTA -->
       <div class="pt-4">
         <a href="{{ route('contact', app()->getLocale()) }}" class="block w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center font-medium shadow-lg shadow-purple-500/25">
@@ -135,6 +170,7 @@
     </div>
   </div>
 </nav>
+
 <!-- Script complet pentru funcționalitate -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -158,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileMenu.classList.remove('opacity-0', 'invisible', '-translate-y-4');
             mobileMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
             // Animație hamburger to X
-            // Verifică dacă elementele există înainte de a le accesa
             const line1 = document.getElementById('line1');
             const line2 = document.getElementById('line2');
             const line3 = document.getElementById('line3');
@@ -222,7 +257,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.group').forEach(group => {
         const button = group.querySelector('button');
         const dropdown = group.querySelector('.absolute');
-        if (button && dropdown) {
+        // Only target the dropdown toggle buttons, not all groups (like nav links)
+        // Check if it's the language selector which has specific structure or assume logic check
+        // The language selector button has fa-chevron-down
+        if (button && dropdown && button.querySelector('.fa-chevron-down')) {
             button.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isOpen = dropdown.classList.contains('opacity-100');
