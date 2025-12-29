@@ -1,0 +1,350 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\BlogPost;
+use App\Models\Project;
+use App\Services\GroqTranslationService;
+use Illuminate\Console\Command;
+use Illuminate\Support\Str;
+
+class TranslateToVitamezaIncremental extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'translate:vitameza-incremental {--only-blog} {--only-projects} {--dry-run}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Translate ONLY missing items to Vitameza (skips already translated)';
+
+    protected GroqTranslationService $translator;
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): int
+    {
+        $this->translator = new GroqTranslationService();
+
+        $this->info('🚀 Starting INCREMENTAL translation (skipping already translated)...');
+        $this->newLine();
+
+        $onlyBlog = $this->option('only-blog');
+        $onlyProjects = $this->option('only-projects');
+        $dryRun = $this->option('dry-run');
+
+        $totalTranslated = 0;
+        $totalSkipped = 0;
+
+        // Translate Blog Posts
+        if (!$onlyProjects) {
+            [$blogTranslated, $blogSkipped] = $this->translateBlogPostsIncremental($dryRun);
+            $totalTranslated += $blogTranslated;
+            $totalSkipped += $blogSkipped;
+        }
+
+        // Translate Projects
+        if (!$onlyBlog) {
+            [$projectTranslated, $projectSkipped] = $this->translateProjectsIncremental($dryRun);
+            $totalTranslated += $projectTranslated;
+            $totalSkipped += $projectSkipped;
+        }
+
+        $this->newLine();
+        $this->info("✅ Translation complete!");
+        $this->info("   📝 New translations: {$totalTranslated}");
+        $this->info("   ⏭️  Already translated (skipped): {$totalSkipped}");
+
+        if ($dryRun) {
+            $this->warn('⚠️  DRY RUN - No changes were saved to the database.');
+        }
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Translate only missing blog posts
+     * @return array [translated_count, skipped_count]
+     */
+    protected function translateBlogPostsIncremental(bool $dryRun = false): array
+    {
+        $this->info('📝 Translating Missing Blog Posts...');
+        $this->newLine();
+
+        $allPosts = BlogPost::all();
+        $missingPosts = [];
+        $skippedCount = 0;
+
+        // Filter only posts WITHOUT vitameza translation
+        foreach ($allPosts as $post) {
+            $vitamezaTitle = $post->getTranslation('title', 'vitameza', false);
+            if (!$vitamezaTitle) {
+                $missingPosts[] = $post;
+            } else {
+                $skippedCount++;
+            }
+        }
+
+        $count = 0;
+
+        if (count($missingPosts) === 0) {
+            $this->info('✅ All blog posts already translated!');
+            $this->newLine(2);
+            return [0, $skippedCount];
+        }
+
+        $this->withProgressBar($missingPosts, function ($post) use ($dryRun, &$count) {
+            try {
+                $this->translateBlogPost($post, $dryRun);
+                $count++;
+            } catch (\Exception $e) {
+                $postTitle = $this->getSafeTitle($post->title);
+                $this->error("Error translating post '{$postTitle}': {$e->getMessage()}");
+            }
+        });
+
+        $this->newLine(2);
+        $this->info("✅ Translated {$count} new blog posts");
+
+        return [$count, $skippedCount];
+    }
+
+    /**
+     * Translate a single blog post
+     */
+    protected function translateBlogPost(BlogPost $post, bool $dryRun = false): void
+    {
+        $originalTitle = $post->getTranslation('title', 'en');
+        $originalExcerpt = $post->getTranslation('excerpt', 'en');
+        $originalContent = $post->getTranslation('content', 'en');
+
+        // Translate title
+        $translatedTitle = $this->translator->translate(
+            $originalTitle,
+            'vitameza',
+            'Blog post title'
+        );
+
+        // Translate excerpt
+        $translatedExcerpt = $this->translator->translate(
+            $originalExcerpt,
+            'vitameza',
+            'Blog post excerpt - short summary'
+        );
+
+        // Translate content
+        $translatedContent = $this->translator->translate(
+            $originalContent,
+            'vitameza',
+            'Blog post content - preserve markdown formatting if present'
+        );
+
+        // Generate slug from translated title
+        $translatedSlug = Str::slug($translatedTitle);
+
+        // Translate meta description
+        $metaDescription = $post->getTranslation('meta_description', 'en');
+        $translatedMetaDesc = $this->translator->translate(
+            $metaDescription,
+            'vitameza',
+            'SEO meta description'
+        );
+
+        if (!$dryRun) {
+            $post->setTranslation('title', 'vitameza', $translatedTitle);
+            $post->setTranslation('excerpt', 'vitameza', $translatedExcerpt);
+            $post->setTranslation('content', 'vitameza', $translatedContent);
+            $post->setTranslation('slug', 'vitameza', $translatedSlug);
+            $post->setTranslation('meta_description', 'vitameza', $translatedMetaDesc);
+            $post->save();
+        }
+    }
+
+    /**
+     * Translate only missing projects
+     * @return array [translated_count, skipped_count]
+     */
+    protected function translateProjectsIncremental(bool $dryRun = false): array
+    {
+        $this->info('🏗️ Translating Missing Projects...');
+        $this->newLine();
+
+        $allProjects = Project::all();
+        $missingProjects = [];
+        $skippedCount = 0;
+
+        // Filter only projects WITHOUT vitameza translation
+        foreach ($allProjects as $project) {
+            $titleData = $project->getRawOriginal('title');
+            $titleArray = is_string($titleData) ? json_decode($titleData, true) : $titleData;
+            
+            if (!is_array($titleArray) || !isset($titleArray['vitameza'])) {
+                $missingProjects[] = $project;
+            } else {
+                $skippedCount++;
+            }
+        }
+
+        $count = 0;
+
+        if (count($missingProjects) === 0) {
+            $this->info('✅ All projects already translated!');
+            $this->newLine(2);
+            return [0, $skippedCount];
+        }
+
+        $this->withProgressBar($missingProjects, function ($project) use ($dryRun, &$count) {
+            try {
+                $this->translateProject($project, $dryRun);
+                $count++;
+            } catch (\Exception $e) {
+                $projectTitle = $this->getSafeTitle($project->title);
+                $this->error("Error translating project '{$projectTitle}': {$e->getMessage()}");
+            }
+        });
+
+        $this->newLine(2);
+        $this->info("✅ Translated {$count} new projects");
+
+        return [$count, $skippedCount];
+    }
+
+    /**
+     * Translate a single project
+     */
+    protected function translateProject(Project $project, bool $dryRun = false): void
+    {
+        // Get raw title and description
+        $titleArray = $project->getRawOriginal('title');
+        $descArray = $project->getRawOriginal('description');
+
+        // Parse title
+        $originalTitle = $this->extractTextFromLocalized($titleArray, 'en');
+        $originalDesc = $this->extractTextFromLocalized($descArray, 'en');
+
+        // Translate
+        $translatedTitle = $this->translator->translate(
+            $originalTitle,
+            'vitameza',
+            'Project title'
+        );
+
+        $translatedDesc = $this->translator->translate(
+            $originalDesc,
+            'vitameza',
+            'Project description - preserve formatting'
+        );
+
+        $translatedSlug = Str::slug($translatedTitle);
+
+        if (!$dryRun) {
+            // Update title
+            $titleData = is_string($titleArray) ? json_decode($titleArray, true) : $titleArray;
+            if (!is_array($titleData)) {
+                $titleData = [];
+            }
+            $titleData['vitameza'] = $translatedTitle;
+            $project->title = $titleData;
+
+            // Update description
+            $descData = is_string($descArray) ? json_decode($descArray, true) : $descArray;
+            if (!is_array($descData)) {
+                $descData = [];
+            }
+            $descData['vitameza'] = $translatedDesc;
+            $project->description = $descData;
+
+            // Update slug
+            $slugArray = $project->getRawOriginal('slug');
+            $slugData = is_string($slugArray) ? json_decode($slugArray, true) : $slugArray;
+            if (!is_array($slugData)) {
+                $slugData = [];
+            }
+            $slugData['vitameza'] = $translatedSlug;
+            $project->slug = $slugData;
+
+            $project->save();
+        }
+    }
+
+    /**
+     * Extract English text from localized data
+     * Returns string in all cases
+     */
+    protected function extractTextFromLocalized($data, string $locale = 'en'): string
+    {
+        // If it's a JSON string
+        if (is_string($data)) {
+            $decoded = json_decode($data, true);
+            if (is_array($decoded)) {
+                // Try to get specific locale
+                $value = $decoded[$locale] ?? null;
+                if (is_string($value)) {
+                    return $value;
+                }
+                
+                // Fallback to first string value
+                foreach ($decoded as $v) {
+                    if (is_string($v)) {
+                        return $v;
+                    }
+                }
+                
+                return '';
+            }
+            return $data;
+        }
+
+        // If it's already an array
+        if (is_array($data)) {
+            // Try to get specific locale
+            $value = $data[$locale] ?? null;
+            if (is_string($value)) {
+                return $value;
+            }
+            
+            // Fallback to first string value
+            foreach ($data as $v) {
+                if (is_string($v)) {
+                    return $v;
+                }
+            }
+            
+            return '';
+        }
+
+        return '';
+    }
+
+    /**
+     * Safely get title from post (handles both string and array)
+     */
+    protected function getSafeTitle($title): string
+    {
+        if (is_string($title)) {
+            // Try to decode JSON
+            $decoded = json_decode($title, true);
+            if (is_array($decoded)) {
+                return $decoded['en'] ?? reset($decoded) ?? 'Unknown';
+            }
+            return $title;
+        }
+
+        if (is_array($title)) {
+            return $title['en'] ?? reset($title) ?? 'Unknown';
+        }
+
+        if (is_object($title) && isset($title->en)) {
+            return $title->en;
+        }
+
+        return 'Unknown';
+    }
+}
