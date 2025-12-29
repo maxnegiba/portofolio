@@ -8,13 +8,27 @@
     $currentRouteName = Route::currentRouteName();
     $safeRoutes = ['home', 'projects', 'blog.index', 'contact'];
 
+    // Ensure alternateUrls is defined to avoid undefined variable errors
+    // and allow it to be passed into the closure scope.
+    $alternateUrls = isset($alternateUrls) ? $alternateUrls : [];
+
     // Helper to get the correct URL for the target locale
-    $getSwitchUrl = function($targetLocale) use ($currentRouteName, $safeRoutes) {
+    // Uses $alternateUrls if available (for dynamic pages like blog posts),
+    // otherwise falls back to standard routing logic.
+    // ADDED: $alternateUrls to the use() clause
+    $getSwitchUrl = function($targetLocale) use ($currentRouteName, $safeRoutes, $alternateUrls) {
+        // Check if alternateUrls is passed from the controller (e.g. BlogController)
+        if (array_key_exists($targetLocale, $alternateUrls)) {
+            return $alternateUrls[$targetLocale];
+        }
+
         if (in_array($currentRouteName, $safeRoutes)) {
              // If we are on a page that doesn't depend on content slugs, stay on the page
              return route($currentRouteName, ['locale' => $targetLocale]);
         }
+
         // Fallback to home for dynamic pages (posts, projects) to avoid 404s due to untranslated slugs
+        // if no alternateUrl is provided.
         return route('home', ['locale' => $targetLocale]);
     };
 @endphp
@@ -90,7 +104,7 @@
         </button>
         <!-- Dropdown cu animație smooth -->
         <div class="lang-dropdown absolute top-full right-0 mt-2 w-40 bg-black/90 backdrop-blur-xl rounded-xl shadow-2xl shadow-black/50 border border-white/10 py-1 opacity-0 invisible scale-95 transform origin-top-right transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:scale-100">
-            @foreach(config('app.available_locales') as $locale)
+            @foreach(['en', 'ro', 'vi'] as $locale)
                 @php
                     $info = $localeInfo[$locale] ?? ['icon' => 'fas fa-globe', 'label' => strtoupper($locale)];
                     $isActive = app()->getLocale() === $locale;
@@ -150,7 +164,7 @@
       <div class="pt-4 mt-4 border-t border-white/10">
         <p class="text-xs text-gray-500 uppercase tracking-wider mb-3 px-4">Language</p>
         <div class="grid grid-cols-3 gap-2">
-            @foreach(config('app.available_locales') as $locale)
+            @foreach(['en', 'ro', 'vi'] as $locale)
                 @php
                     $info = $localeInfo[$locale] ?? ['icon' => 'fas fa-globe', 'label' => strtoupper($locale)];
                     $isActive = app()->getLocale() === $locale;
