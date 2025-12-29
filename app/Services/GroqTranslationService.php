@@ -71,13 +71,21 @@ class GroqTranslationService
      */
     protected function makeTranslationRequest(string $text, string $targetLanguage, string $context): string
     {
-        $systemPrompt = "You are an expert translator. Translate the following text to {$targetLanguage}.";
+        // Map common codes to full names to help the AI
+        $languageName = match (strtolower($targetLanguage)) {
+            'vitameza', 'vi' => 'Vietnamese',
+            'ro' => 'Romanian',
+            'en' => 'English',
+            default => $targetLanguage,
+        };
+
+        $systemPrompt = "You are an expert translator. Translate the following text to {$languageName}.";
         
         if ($context) {
             $systemPrompt .= " Context: {$context}";
         }
         
-        $systemPrompt .= " Maintain the same tone and style. Only return the translated text, nothing else.";
+        $systemPrompt .= " Maintain the same tone and style. Only return the translated text, nothing else. Do not add explanations.";
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$this->apiKey}",
@@ -112,7 +120,7 @@ class GroqTranslationService
 
         $translated = $response->json('choices.0.message.content');
 
-        if (!$translated) {
+        if (!$translated || trim($translated) === '') {
             throw new \Exception('No translation received from Groq API');
         }
 

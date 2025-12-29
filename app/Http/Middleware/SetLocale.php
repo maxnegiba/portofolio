@@ -41,6 +41,13 @@ class SetLocale
             $locale = 'en';
         }
 
+        // STANDARDIZATION: Map legacy 'vitameza' to standard 'vi'
+        // This ensures that even if the URL is /vitameza/, the app uses 'vi' internally
+        // which matches the database keys we are now enforcing.
+        if ($locale === 'vitameza') {
+            $locale = 'vi';
+        }
+
         // Set the application locale
         app()->setLocale($locale);
 

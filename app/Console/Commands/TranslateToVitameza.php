@@ -22,9 +22,12 @@ class TranslateToVitameza extends Command
      *
      * @var string
      */
-    protected $description = 'Translate all blog posts and projects to Vitameza language using Groq API';
+    protected $description = 'Translate all blog posts and projects to Vietnamese language (stored as vi) using Groq API';
 
     protected GroqTranslationService $translator;
+
+    // Standardize on 'vi' key, but keep 'vitameza' awareness if needed for legacy migration
+    protected string $targetLocale = 'vi';
 
     /**
      * Execute the console command.
@@ -33,7 +36,7 @@ class TranslateToVitameza extends Command
     {
         $this->translator = new GroqTranslationService();
 
-        $this->info('🚀 Starting translation to Vitameza language...');
+        $this->info("🚀 Starting translation to Vietnamese language ({$this->targetLocale})...");
         $this->newLine();
 
         $onlyBlog = $this->option('only-blog');
@@ -103,21 +106,21 @@ class TranslateToVitameza extends Command
         // Translate title
         $translatedTitle = $this->translator->translate(
             $originalTitle,
-            'vitameza',
+            $this->targetLocale, // 'vi'
             'Blog post title'
         );
 
         // Translate excerpt
         $translatedExcerpt = $this->translator->translate(
             $originalExcerpt,
-            'vitameza',
+            $this->targetLocale,
             'Blog post excerpt - short summary'
         );
 
         // Translate content (might be long, so be careful)
         $translatedContent = $this->translator->translate(
             $originalContent,
-            'vitameza',
+            $this->targetLocale,
             'Blog post content - preserve markdown formatting if present'
         );
 
@@ -128,16 +131,21 @@ class TranslateToVitameza extends Command
         $metaDescription = $post->getTranslation('meta_description', 'en');
         $translatedMetaDesc = $this->translator->translate(
             $metaDescription,
-            'vitameza',
+            $this->targetLocale,
             'SEO meta description'
         );
 
         if (!$dryRun) {
-            $post->setTranslation('title', 'vitameza', $translatedTitle);
-            $post->setTranslation('excerpt', 'vitameza', $translatedExcerpt);
-            $post->setTranslation('content', 'vitameza', $translatedContent);
-            $post->setTranslation('slug', 'vitameza', $translatedSlug);
-            $post->setTranslation('meta_description', 'vitameza', $translatedMetaDesc);
+            // Save to 'vi'
+            $post->setTranslation('title', $this->targetLocale, $translatedTitle);
+            $post->setTranslation('excerpt', $this->targetLocale, $translatedExcerpt);
+            $post->setTranslation('content', $this->targetLocale, $translatedContent);
+            $post->setTranslation('slug', $this->targetLocale, $translatedSlug);
+            $post->setTranslation('meta_description', $this->targetLocale, $translatedMetaDesc);
+
+            // OPTIONAL: Also save to 'vitameza' for backward compatibility if needed,
+            // but we want to standardize. Let's just stick to 'vi' as requested.
+
             $post->save();
         }
     }
@@ -185,13 +193,13 @@ class TranslateToVitameza extends Command
         // Translate
         $translatedTitle = $this->translator->translate(
             $originalTitle,
-            'vitameza',
+            $this->targetLocale,
             'Project title'
         );
 
         $translatedDesc = $this->translator->translate(
             $originalDesc,
-            'vitameza',
+            $this->targetLocale,
             'Project description - preserve formatting'
         );
 
@@ -203,7 +211,7 @@ class TranslateToVitameza extends Command
             if (!is_array($titleData)) {
                 $titleData = [];
             }
-            $titleData['vitameza'] = $translatedTitle;
+            $titleData[$this->targetLocale] = $translatedTitle;
             $project->title = $titleData;
 
             // Update description
@@ -211,7 +219,7 @@ class TranslateToVitameza extends Command
             if (!is_array($descData)) {
                 $descData = [];
             }
-            $descData['vitameza'] = $translatedDesc;
+            $descData[$this->targetLocale] = $translatedDesc;
             $project->description = $descData;
 
             // Update slug
@@ -220,7 +228,7 @@ class TranslateToVitameza extends Command
             if (!is_array($slugData)) {
                 $slugData = [];
             }
-            $slugData['vitameza'] = $translatedSlug;
+            $slugData[$this->targetLocale] = $translatedSlug;
             $project->slug = $slugData;
 
             $project->save();
