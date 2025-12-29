@@ -15,6 +15,7 @@ class BlogController extends Controller
      */
     public function index($locale, Request $request)
     {
+        // Middleware handles setting locale, but we can reinforce it
         app()->setLocale($locale);
         
         $posts = BlogPost::published()
@@ -46,39 +47,56 @@ class BlogController extends Controller
     {
         app()->setLocale($locale);
         
-        // First, try to find post using slug in current locale
+        // 1. Attempt to find the post by looking up the slug in the CURRENT locale
         $post = BlogPost::published()
             ->with('user')
             ->where("slug->{$locale}", $slug)
             ->first();
-        
-        // If not found in current locale, try English as fallback
-        if (!$post && $locale !== 'en') {
-            $post = BlogPost::published()
+
+        // 2. Fallback strategy: If not found, check if the slug matches ANY language
+        // This handles the case where a user visits /ro/blog/english-slug
+        // We find the post, then we can redirect them to the correct localized slug if we wanted,
+        // but for now we just show the post.
+        if (!$post) {
+             $post = BlogPost::published()
                 ->with('user')
-                ->where("slug->en", $slug)
+                ->where(function($query) use ($slug) {
+                    $query->where('slug->en', $slug)
+                          ->orWhere('slug->ro', $slug)
+                          ->orWhere('slug->vi', $slug)
+                          ->orWhere('slug->vitameza', $slug);
+                })
                 ->first();
         }
         
-        // If still not found, try Romanian as second fallback
-        if (!$post && $locale !== 'ro') {
-            $post = BlogPost::published()
-                ->with('user')
-                ->where("slug->ro", $slug)
-                ->first();
-        }
-        
-        // If still not found, try Vietnamese as third fallback
-        if (!$post && $locale !== 'vi') {
-            $post = BlogPost::published()
-                ->with('user')
-                ->where("slug->vi", $slug)
-                ->first();
-        }
-        
-        // If post not found after all attempts, throw 404
         if (!$post) {
             abort(404, "Blog post not found");
+        }
+
+        // 3. Generate Alternate URLs for Language Switcher
+        // This allows the navbar to switch to the translated version of THIS post
+        // instead of redirecting to home.
+        $alternateUrls = [];
+        $supportedLocales = ['en', 'ro', 'vi'];
+
+        foreach ($supportedLocales as $lang) {
+            // Get the slug for the target language.
+            // If it doesn't exist, we might fall back to English or current slug,
+            // but ideally we want the specific translation.
+            $translatedSlug = $post->getTranslation('slug', $lang, false);
+
+            // Handle vitameza fallback if 'vi' is missing but 'vitameza' exists
+            if ($lang === 'vi' && empty($translatedSlug)) {
+                $translatedSlug = $post->getTranslation('slug', 'vitameza', false);
+            }
+
+            if (!empty($translatedSlug)) {
+                $alternateUrls[$lang] = route('blog.show', ['locale' => $lang, 'slug' => $translatedSlug]);
+            } else {
+                // If translation doesn't exist, we could link to blog index or home
+                // For now, let's link to blog index of that language
+                $alternateUrls[$lang] = route('blog.index', ['locale' => $lang]);
+            }
         }
         
         // Recent posts - content will be in current language
@@ -88,7 +106,7 @@ class BlogController extends Controller
             ->limit(3)
             ->get();
             
-        return view('blog.show', compact('post', 'recentPosts'));
+        return view('blog.show', compact('post', 'recentPosts', 'alternateUrls'));
     }
 
     /**

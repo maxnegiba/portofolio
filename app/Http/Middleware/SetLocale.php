@@ -15,26 +15,37 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check for locale in query string (?lang=vitameza)
+        $locale = null;
+
+        // 1. Check for locale in query string (explicit override)
         if ($request->has('lang')) {
             $locale = $request->get('lang');
-            // Set locale for this request
-            app()->setLocale($locale);
-            // Store in session for persistence
-            session(['locale' => $locale]);
         }
-        // Check for locale in session (from previous request)
+        // 2. Check for locale in route parameter (e.g., /ro/about)
+        elseif ($request->route('locale')) {
+            $locale = $request->route('locale');
+        }
+        // 3. Check for locale in session
         elseif (session()->has('locale')) {
-            app()->setLocale(session('locale'));
+            $locale = session('locale');
         }
-        // Check for locale in cookie
+        // 4. Check for locale in cookie
         elseif ($request->cookie('locale')) {
-            app()->setLocale($request->cookie('locale'));
+            $locale = $request->cookie('locale');
         }
-        // Default to English
-        else {
-            app()->setLocale('en');
+
+        // Validate locale against allowed list to prevent injection
+        // Allowing vitameza for backward compatibility if needed, though 'vi' is preferred
+        $allowedLocales = ['en', 'ro', 'vi', 'vitameza'];
+        if (!$locale || !in_array($locale, $allowedLocales)) {
+            $locale = 'en';
         }
+
+        // Set the application locale
+        app()->setLocale($locale);
+
+        // Persist to session so it sticks if we go to a non-localized route (if any)
+        session(['locale' => $locale]);
 
         return $next($request);
     }
