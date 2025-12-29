@@ -229,6 +229,7 @@ class TranslateToVitameza extends Command
 
     /**
      * Extract English text from localized data
+     * Returns string in all cases
      */
     protected function extractTextFromLocalized($data, string $locale = 'en'): string
     {
@@ -236,14 +237,40 @@ class TranslateToVitameza extends Command
         if (is_string($data)) {
             $decoded = json_decode($data, true);
             if (is_array($decoded)) {
-                return $decoded[$locale] ?? reset($decoded) ?? '';
+                // Try to get specific locale
+                $value = $decoded[$locale] ?? null;
+                if (is_string($value)) {
+                    return $value;
+                }
+                
+                // Fallback to first string value
+                foreach ($decoded as $v) {
+                    if (is_string($v)) {
+                        return $v;
+                    }
+                }
+                
+                return '';
             }
             return $data;
         }
 
         // If it's already an array
         if (is_array($data)) {
-            return $data[$locale] ?? reset($data) ?? '';
+            // Try to get specific locale
+            $value = $data[$locale] ?? null;
+            if (is_string($value)) {
+                return $value;
+            }
+            
+            // Fallback to first string value
+            foreach ($data as $v) {
+                if (is_string($v)) {
+                    return $v;
+                }
+            }
+            
+            return '';
         }
 
         return '';
