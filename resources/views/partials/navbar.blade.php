@@ -82,24 +82,26 @@
       <div class="w-px h-6 bg-gradient-to-b from-transparent via-gray-600 to-transparent"></div>
 
       <!-- Language Selector cu design modern -->
-      <div class="relative group">
-        <button class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
+      <div class="relative group language-selector-group">
+        <button class="lang-toggle flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300">
           <i class="fas fa-language text-sm"></i>
-          <span class="font-medium">{{ strtoupper(app()->getLocale()) }}</span>
+          <span class="font-medium lang-display">{{ strtoupper(app()->getLocale()) }}</span>
           <i class="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
         </button>
         <!-- Dropdown cu animație smooth -->
-        <div class="absolute top-full right-0 mt-2 w-40 bg-black/90 backdrop-blur-xl rounded-xl shadow-2xl shadow-black/50 border border-white/10 py-1 opacity-0 invisible scale-95 transform origin-top-right transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:scale-100">
+        <div class="lang-dropdown absolute top-full right-0 mt-2 w-40 bg-black/90 backdrop-blur-xl rounded-xl shadow-2xl shadow-black/50 border border-white/10 py-1 opacity-0 invisible scale-95 transform origin-top-right transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:scale-100">
             @foreach(config('app.available_locales') as $locale)
                 @php
                     $info = $localeInfo[$locale] ?? ['icon' => 'fas fa-globe', 'label' => strtoupper($locale)];
                     $isActive = app()->getLocale() === $locale;
                 @endphp
-                <a href="{{ $getSwitchUrl($locale) }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ $isActive ? 'text-white bg-white/5' : 'text-gray-400' }}">
+                <a href="{{ $getSwitchUrl($locale) }}" 
+                   data-locale="{{ $locale }}"
+                   class="lang-option flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ $isActive ? 'text-white bg-white/5' : 'text-gray-400' }}">
                     <i class="{{ $info['icon'] }} text-lg w-6 text-center"></i>
                     <span class="font-medium">{{ $info['label'] }}</span>
                     @if($isActive)
-                        <i class="fas fa-check text-xs ml-auto text-purple-400"></i>
+                        <i class="fas fa-check text-xs ml-auto text-purple-400 lang-check"></i>
                     @endif
                 </a>
             @endforeach
@@ -153,7 +155,9 @@
                     $info = $localeInfo[$locale] ?? ['icon' => 'fas fa-globe', 'label' => strtoupper($locale)];
                     $isActive = app()->getLocale() === $locale;
                 @endphp
-                <a href="{{ $getSwitchUrl($locale) }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ $isActive ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
+                <a href="{{ $getSwitchUrl($locale) }}" 
+                   data-locale="{{ $locale }}"
+                   class="lang-option-mobile flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ $isActive ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
                     <i class="{{ $info['icon'] }}"></i>
                     <span class="font-medium">{{ $info['label'] }}</span>
                 </a>
@@ -184,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Unul sau mai multe elemente esențiale ale navbar-ului nu au fost găsite.");
         return; // Oprește execuția scriptului dacă elementele lipsesc
     }
-
 
     // Mobile menu toggle cu animație hamburger
     mobileMenuBtn.addEventListener('click', function(e) {
@@ -254,42 +257,57 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Language dropdown functionality
-    document.querySelectorAll('.group').forEach(group => {
-        const button = group.querySelector('button');
-        const dropdown = group.querySelector('.absolute');
-        // Only target the dropdown toggle buttons, not all groups (like nav links)
-        // Check if it's the language selector which has specific structure or assume logic check
-        // The language selector button has fa-chevron-down
-        if (button && dropdown && button.querySelector('.fa-chevron-down')) {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isOpen = dropdown.classList.contains('opacity-100');
-                // Close all other dropdowns
-                document.querySelectorAll('.absolute.opacity-100').forEach(openDropdown => {
-                    if (openDropdown !== dropdown) {
-                        openDropdown.classList.remove('opacity-100', 'visible', 'scale-100');
-                        openDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
-                    }
+    const langSelectorGroup = document.querySelector('.language-selector-group');
+    if (langSelectorGroup) {
+        const langToggle = langSelectorGroup.querySelector('.lang-toggle');
+        const langDropdown = langSelectorGroup.querySelector('.lang-dropdown');
+        const langDisplay = langSelectorGroup.querySelector('.lang-display');
+        const langOptions = document.querySelectorAll('.lang-option');
+        
+        // Toggle dropdown
+        langToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = langDropdown.classList.contains('opacity-100');
+            if (isOpen) {
+                langDropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+                langDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+            } else {
+                langDropdown.classList.add('opacity-100', 'visible', 'scale-100');
+                langDropdown.classList.remove('opacity-0', 'invisible', 'scale-95');
+            }
+        });
+        
+        // Handle language selection
+        langOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                const locale = option.dataset.locale;
+                // Update display immediately (optimistic update)
+                langDisplay.textContent = locale.toUpperCase();
+                // Update active state
+                langOptions.forEach(opt => {
+                    opt.classList.remove('text-white', 'bg-white/5');
+                    opt.classList.add('text-gray-400');
+                    const checkIcon = opt.querySelector('.lang-check');
+                    if (checkIcon) checkIcon.remove();
                 });
-                // Toggle current dropdown
-                if (isOpen) {
-                    dropdown.classList.remove('opacity-100', 'visible', 'scale-100');
-                    dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
-                } else {
-                    dropdown.classList.add('opacity-100', 'visible', 'scale-100');
-                    dropdown.classList.remove('opacity-0', 'invisible', 'scale-95');
-                }
+                option.classList.add('text-white', 'bg-white/5');
+                const checkIcon = document.createElement('i');
+                checkIcon.className = 'fas fa-check text-xs ml-auto text-purple-400 lang-check';
+                option.appendChild(checkIcon);
+                // Close dropdown
+                langDropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+                langDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
             });
-        }
-    });
+        });
+    }
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.group')) {
-            document.querySelectorAll('.absolute.opacity-100').forEach(dropdown => {
-                dropdown.classList.remove('opacity-100', 'visible', 'scale-100');
-                dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
-            });
+        const langDropdown = document.querySelector('.lang-dropdown');
+        const langSelectorGroup = document.querySelector('.language-selector-group');
+        if (langDropdown && langSelectorGroup && !langSelectorGroup.contains(e.target)) {
+            langDropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+            langDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
         }
     });
 
