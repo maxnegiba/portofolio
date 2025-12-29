@@ -126,6 +126,51 @@
                         @endforeach
                     </div>
                 @endif
+                
+                <!-- Language Fallback Indicator -->
+                @php
+                    $currentLocale = app()->getLocale();
+                    $currentContent = $post->getTranslation('content', $currentLocale);
+                    $displayedLocale = $currentLocale;
+                    
+                    // Determine which language is actually being displayed
+                    if (!$currentContent || empty($currentContent)) {
+                        // Try fallback languages
+                        foreach(['en', 'ro', 'vi'] as $fallbackLocale) {
+                            if ($fallbackLocale !== $currentLocale) {
+                                $fallbackContent = $post->getTranslation('content', $fallbackLocale);
+                                if ($fallbackContent && !empty($fallbackContent)) {
+                                    $displayedLocale = $fallbackLocale;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                @endphp
+                
+                @if($displayedLocale !== $currentLocale)
+                    <div class="mt-4 p-3 bg-blue-500/20 border border-blue-500/30 rounded-lg flex items-start space-x-3 text-sm">
+                        <i class="fas fa-info-circle text-blue-400 flex-shrink-0 mt-0.5"></i>
+                        <p class="text-blue-200">
+                            <strong>Note:</strong> This article is not available in 
+                            @if($currentLocale === 'en')
+                                English
+                            @elseif($currentLocale === 'ro')
+                                Romanian
+                            @elseif($currentLocale === 'vi')
+                                Vietnamese
+                            @endif
+                            yet. Displaying in
+                            @if($displayedLocale === 'en')
+                                <strong>English</strong>.
+                            @elseif($displayedLocale === 'ro')
+                                <strong>Romanian</strong>.
+                            @elseif($displayedLocale === 'vi')
+                                <strong>Vietnamese</strong>.
+                            @endif
+                        </p>
+                    </div>
+                @endif
             </header>
             
             <!-- Conținut Articol cu design premium -->
@@ -134,59 +179,74 @@
                 <div class="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl opacity-20 blur-xl"></div>
                 <div class="absolute -bottom-6 -right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl opacity-20 blur-xl"></div>
                 
-               <div class="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12 prose prose-invert prose-xl max-w-none
-            prose-headings:text-white prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-            prose-p:text-white prose-a:text-purple-400 hover:prose-a:text-purple-300
-            prose-strong:text-white prose-em:text-gray-200
-            prose-blockquote:border-l-purple-500 prose-blockquote:text-gray-300 prose-blockquote:bg-purple-900/10 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-2xl
-            prose-li:text-gray-300 prose-li:marker:text-purple-400
-            prose-code:bg-black/50 prose-code:text-purple-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-purple-500/30
-            prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:overflow-hidden
-            prose-img:rounded-2xl prose-img:shadow-lg prose-img:border prose-img:border-white/10
-            prose-table:text-gray-300 prose-th:bg-white/5 prose-th:border prose-th:border-white/10 prose-td:border prose-td:border-white/10 prose-table:rounded-xl prose-table:overflow-hidden
-            article-content-bright">
-    {!! $post->getTranslation('content', app()->getLocale()) !!}
-</div>
+                <div class="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12 prose prose-invert prose-xl max-w-none
+                prose-headings:text-white prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
+                prose-p:text-white prose-a:text-purple-400 hover:prose-a:text-purple-300
+                prose-strong:text-white prose-em:text-gray-200
+                prose-blockquote:border-l-purple-500 prose-blockquote:text-gray-300 prose-blockquote:bg-purple-900/10 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-2xl
+                prose-li:text-gray-300 prose-li:marker:text-purple-400
+                prose-code:bg-black/50 prose-code:text-purple-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-purple-500/30
+                prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:overflow-hidden
+                prose-img:rounded-2xl prose-img:shadow-lg prose-img:border prose-img:border-white/10
+                prose-table:text-gray-300 prose-th:bg-white/5 prose-th:border prose-th:border-white/10 prose-td:border prose-td:border-white/10 prose-table:rounded-xl prose-table:overflow-hidden
+                article-content-bright">
+                    @php
+                        $content = $post->getTranslation('content', $currentLocale);
+                        
+                        // If content is empty, try fallback languages
+                        if (!$content || empty($content)) {
+                            foreach(['en', 'ro', 'vi'] as $fallbackLocale) {
+                                if ($fallbackLocale !== $currentLocale) {
+                                    $fallbackContent = $post->getTranslation('content', $fallbackLocale);
+                                    if ($fallbackContent && !empty($fallbackContent)) {
+                                        $content = $fallbackContent;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    @endphp
+                    {!! $content !!}
+                </div>
             </div>
             
             <!-- Share Buttons -->
-            <!-- Share Buttons -->
-<div class="mt-12 pt-8 border-t border-white/10">
-    <h3 class="text-lg font-semibold text-white mb-4">Share this article</h3>
-    <div class="flex space-x-4">
-        <!-- Twitter -->
-        <a href="https://twitter.com/intent/tweet?url={{ urlencode(url()->current()) }}&text={{ urlencode($post->getLocalizedTitle()) }}"
-           target="_blank"
-           class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
-           aria-label="Share on Twitter">
-            <i class="fab fa-twitter"></i>
-        </a>
+            <div class="mt-12 pt-8 border-t border-white/10">
+                <h3 class="text-lg font-semibold text-white mb-4">Share this article</h3>
+                <div class="flex space-x-4">
+                    <!-- Twitter -->
+                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(url()->current()) }}&text={{ urlencode($post->getLocalizedTitle()) }}"
+                       target="_blank"
+                       class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+                       aria-label="Share on Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
 
-        <!-- LinkedIn -->
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(url()->current()) }}"
-           target="_blank"
-           class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
-           aria-label="Share on LinkedIn">
-            <i class="fab fa-linkedin"></i>
-        </a>
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(url()->current()) }}"
+                       target="_blank"
+                       class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+                       aria-label="Share on LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
 
-        <!-- Facebook -->
-        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}"
-           target="_blank"
-           class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
-           aria-label="Share on Facebook">
-            <i class="fab fa-facebook"></i>
-        </a>
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}"
+                       target="_blank"
+                       class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+                       aria-label="Share on Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
 
-        <!-- WhatsApp -->
-        <a href="https://wa.me/?text={{ urlencode($post->getLocalizedTitle() . ' ' . url()->current()) }}"
-           target="_blank"
-           class="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
-           aria-label="Share on WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-    </div>
-</div>
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/?text={{ urlencode($post->getLocalizedTitle() . ' ' . url()->current()) }}"
+                       target="_blank"
+                       class="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center text-white hover:scale-110 transition-transform duration-300 shadow-lg"
+                       aria-label="Share on WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
         </article>
         
         <!-- Articole Recente cu design îmbunătățit -->
@@ -314,8 +374,6 @@
 .rotate-y-6 {
   transform: rotateY(6deg);
 }
-<style>
-/* ... regulile tale existente ... */
 
 /* Stiluri pentru text luminos în conținutul articolului */
 .article-content-bright {
@@ -325,16 +383,14 @@
 .article-content-bright li,
 .article-content-bright td,
 .article-content-bright span,
-.article-content-bright div:not(.hljs) { /* Excludem highlight.js dacă este folosit */
-    color: #ffffff !important; /* Forțează alb pentru elementele comune */
+.article-content-bright div:not(.hljs) {
+    color: #ffffff !important;
 }
-/* Asigură-te că linkurile rămân vizibile */
 .article-content-bright a {
-    color: #c084fc; /* Ex: purple-400 */
+    color: #c084fc; /* purple-400 */
 }
 .article-content-bright a:hover {
-    color: #d8b4fe; /* Ex: purple-300 */
+    color: #d8b4fe; /* purple-300 */
 }
-</style>
 </style>
 @endsection
