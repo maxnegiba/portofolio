@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Project extends Model
@@ -113,7 +114,7 @@ class Project extends Model
                 return (string) $rawValue;
             }
         } catch (\Exception $e) {
-            \Log::warning("Error in getFilamentTitleAttribute for project ID {$this->id}: " . $e->getMessage());
+            Log::warning("Error in getFilamentTitleAttribute for project ID {$this->id}: " . $e->getMessage());
         }
         
         // Ultimate fallback
@@ -237,31 +238,64 @@ class Project extends Model
      */
     public function getRouteKey()
     {
-        $value = $this->getAttribute($this->getRouteKeyName());
         $locale = app()->getLocale();
         $fallbackLocale = config('app.fallback_locale', 'en');
+        
+        // Get raw slug value from database
+        $rawSlug = $this->getRawOriginal('slug');
+        
+        // Log for debugging (remove after fixing)
+        Log::debug('Project getRouteKey', [
+            'id' => $this->id,
+            'raw_slug' => $rawSlug,
+            'locale' => $locale
+        ]);
 
-        // If slug is an array (Laravel already casted it)
-        if (is_array($value)) {
-            // Return slug for current locale, fallback to default locale, or first available
-            return $value[$locale] ?? $value[$fallbackLocale] ?? reset($value) ?? '';
-        }
-
-        // If it's a string (might be JSON)
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
+        // If slug is a JSON string, decode it
+        if (is_string($rawSlug)) {
+            $decoded = json_decode($rawSlug, true);
             
-            // If it's valid JSON
             if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? reset($decoded) ?? '';
+                // Filter out empty values
+                $decoded = array_filter($decoded, function($value) {
+                    return !empty($value);
+                });
+                
+                // Try current locale, then fallback, then any available value
+                $slug = $decoded[$locale] ?? $decoded[$fallbackLocale] ?? reset($decoded) ?? null;
+                
+                if (!empty($slug)) {
+                    return $slug;
+                }
+            } else {
+                // If it's a plain string and not empty, return it
+                if (!empty($rawSlug)) {
+                    return $rawSlug;
+                }
             }
-            
-            // If it's just a plain string slug, return it
-            return $value;
         }
 
-        // Fallback for any other type
-        return $value ?? '';
+        // If slug is already an array (Laravel casted it)
+        if (is_array($rawSlug)) {
+            // Filter out empty values
+            $rawSlug = array_filter($rawSlug, function($value) {
+                return !empty($value);
+            });
+            
+            $slug = $rawSlug[$locale] ?? $rawSlug[$fallbackLocale] ?? reset($rawSlug) ?? null;
+            
+            if (!empty($slug)) {
+                return $slug;
+            }
+        }
+
+        // Ultimate fallback: use ID if slug is empty
+        Log::warning('Project slug is empty or invalid', [
+            'id' => $this->id,
+            'raw_slug' => $rawSlug
+        ]);
+        
+        return $this->id ?? 'unknown';
     }
 
     /**
@@ -275,6 +309,11 @@ class Project extends Model
     public function resolveRouteBinding($value, $field = null)
     {
         $locale = app()->getLocale();
+        
+        // If the value is numeric, try to find by ID
+        if (is_numeric($value)) {
+            return $this->where('id', $value)->first();
+        }
         
         // Try to find by localized slug
         return $this->where(function ($query) use ($value, $locale) {
@@ -393,5 +432,38 @@ class Project extends Model
 
         // Fallback final
         return '';
+    }
+    
+    /**
+     * Get localized slug for use in views
+     */
+    public function getLocalizedSlug()
+    {
+        $locale = app()->getLocale();
+        $fallbackLocale = config('app.fallback_locale', 'en');
+        
+        $rawSlug = $this->getRawOriginal('slug');
+        
+        // If it's a JSON string
+        if (is_string($rawSlug)) {
+            $decoded = json_decode($rawSlug, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $decoded = array_filter($decoded, function($value) {
+                    return !empty($value);
+                });
+                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? reset($decoded) ?? $this->id;
+            }
+            return !empty($rawSlug) ? $rawSlug : $this->id;
+        }
+        
+        // If it's already an array
+        if (is_array($rawSlug)) {
+            $rawSlug = array_filter($rawSlug, function($value) {
+                return !empty($value);
+            });
+            return $rawSlug[$locale] ?? $rawSlug[$fallbackLocale] ?? reset($rawSlug) ?? $this->id;
+        }
+        
+        return $this->id;
     }
 }
