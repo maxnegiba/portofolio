@@ -15,15 +15,26 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Obține locale-ul din parametrul rutei
-        $locale = $request->route('locale');
-
-        // Verifică dacă locale-ul este valid (existent în config)
-        if ($locale && in_array($locale, config('app.available_locales', ['en']))) {
-            // Setează limba aplicației
+        // Check for locale in query string (?lang=vitameza)
+        if ($request->has('lang')) {
+            $locale = $request->get('lang');
+            // Set locale for this request
             app()->setLocale($locale);
+            // Store in session for persistence
+            session(['locale' => $locale]);
         }
-        // Dacă nu e valid sau nu e prezent, Laravel va folosi limba implicită din config/app.php
+        // Check for locale in session (from previous request)
+        elseif (session()->has('locale')) {
+            app()->setLocale(session('locale'));
+        }
+        // Check for locale in cookie
+        elseif ($request->cookie('locale')) {
+            app()->setLocale($request->cookie('locale'));
+        }
+        // Default to English
+        else {
+            app()->setLocale('en');
+        }
 
         return $next($request);
     }
