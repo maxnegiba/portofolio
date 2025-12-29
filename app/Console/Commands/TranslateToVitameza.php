@@ -80,7 +80,8 @@ class TranslateToVitameza extends Command
                 $this->translateBlogPost($post, $dryRun);
                 $count++;
             } catch (\Exception $e) {
-                $this->error("Error translating post '{$post->title->en}': {$e->getMessage()}");
+                $postTitle = $this->getSafeTitle($post->title);
+                $this->error("Error translating post '{$postTitle}': {$e->getMessage()}");
             }
         });
 
@@ -146,7 +147,7 @@ class TranslateToVitameza extends Command
      */
     protected function translateProjects(bool $dryRun = false): int
     {
-        $this->info('🎯 Translating Projects...');
+        $this->info('🏗️ Translating Projects...');
         $this->newLine();
 
         $projects = Project::all();
@@ -157,7 +158,8 @@ class TranslateToVitameza extends Command
                 $this->translateProject($project, $dryRun);
                 $count++;
             } catch (\Exception $e) {
-                $this->error("Error translating project '{$project->title}': {$e->getMessage()}");
+                $projectTitle = $this->getSafeTitle($project->title);
+                $this->error("Error translating project '{$projectTitle}': {$e->getMessage()}");
             }
         });
 
@@ -245,5 +247,30 @@ class TranslateToVitameza extends Command
         }
 
         return '';
+    }
+
+    /**
+     * Safely get title from post (handles both string and array)
+     */
+    protected function getSafeTitle($title): string
+    {
+        if (is_string($title)) {
+            // Try to decode JSON
+            $decoded = json_decode($title, true);
+            if (is_array($decoded)) {
+                return $decoded['en'] ?? reset($decoded) ?? 'Unknown';
+            }
+            return $title;
+        }
+
+        if (is_array($title)) {
+            return $title['en'] ?? reset($title) ?? 'Unknown';
+        }
+
+        if (is_object($title) && isset($title->en)) {
+            return $title->en;
+        }
+
+        return 'Unknown';
     }
 }
