@@ -8,9 +8,9 @@ use Livewire\Volt\Volt;
 // Redirect pentru rădăcină
 Route::redirect('/', '/en');
 
-// Grupul principal de rute localizate
+// Grupul principal de rute localizate (inclusiv vitameza)
 Route::prefix('{locale}')
-    ->where(['locale' => 'en|ro|vi'])
+    ->where(['locale' => 'en|ro|vi|vitameza'])
     ->group(function () {
         // Pagini existente
         Route::get('/', fn () => view('home'))->name('home');
@@ -19,7 +19,7 @@ Route::prefix('{locale}')
         Route::get('/contact', fn () => view('contact'))->name('contact');
         Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
         
-        // Rute pentru blog - MODIFICATE
+        // Rute pentru blog
         Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
         Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
         Route::get('/blog/feed', [BlogController::class, 'feed'])->name('blog.feed');
