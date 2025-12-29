@@ -10,7 +10,7 @@ Route::redirect('/', '/en');
 
 // Grupul principal de rute localizate
 Route::prefix('{locale}')
-    ->where(['locale' => 'en|ro'])
+    ->where(['locale' => 'en|ro|vi'])
     ->group(function () {
         // Pagini existente
         Route::get('/', fn () => view('home'))->name('home');
