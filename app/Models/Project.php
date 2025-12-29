@@ -230,44 +230,15 @@ class Project extends Model
 
     /**
      * Get the value of the model's route key.
+     * FIXED: Returns the raw slug value directly without JSON processing.
      *
      * @return mixed
      */
     public function getRouteKey()
     {
-        $value = $this->getAttribute($this->getRouteKeyName());
-
-        // Attempt to handle JSON slugs similar to title/description
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-
-            // If it's valid JSON
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                $locale = app()->getLocale();
-                $fallbackLocale = config('app.fallback_locale', 'en');
-
-                // Case 1: Array of objects (custom format)
-                if (isset($decoded[0]) && is_array($decoded[0]) && isset($decoded[0]['locale'])) {
-                    foreach ($decoded as $item) {
-                        if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
-                            return $item['value'];
-                        }
-                    }
-                    foreach ($decoded as $item) {
-                        if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
-                            return $item['value'];
-                        }
-                    }
-                    return $decoded[0]['value'] ?? $value;
-                }
-
-                // Case 2: Standard Key-Value JSON
-                return $decoded[$locale] ?? $decoded[$fallbackLocale] ?? reset($decoded) ?? $value;
-            }
-        }
-
-        // If not JSON or just a string, return as is
-        return $value;
+        // Simply return the raw slug value from the database
+        // This ensures Laravel routing gets a simple string, not JSON
+        return $this->getAttribute($this->getRouteKeyName());
     }
 
     /**
