@@ -9,7 +9,7 @@ class GroqTranslationService
 {
     protected string $apiKey;
     protected string $apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
-    protected string $model = 'llama-3.1-70b-versatile';
+    protected string $model = 'llama-3.3-70b-versatile'; // Updated: was llama-3.1-70b-versatile (decommissioned)
     protected float $temperature = 0.3; // Lower for consistency
     protected int $maxRetries = 3;
     protected int $retryDelay = 2000; // milliseconds
