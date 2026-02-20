@@ -29,19 +29,12 @@
           {{ __('pages.footer_brand_subtitle') }}
         </p>
         <div class="flex space-x-4 pt-2">
-          @foreach([
-            ['github', 'fab fa-github', 'https://github.com/yourusername'],
-            ['linkedin', 'fab fa-linkedin', 'https://linkedin.com/in/yourusername'],
-            ['twitter', 'fab fa-twitter', 'https://twitter.com/yourusername'],
-            ['instagram', 'fab fa-instagram', 'https://instagram.com/yourusername']
-          ] as $social)
-          <a href="{{ $social[2] }}" target="_blank" class="group relative">
+          <a href="https://www.facebook.com/profile.php?id=100001274142909" target="_blank" aria-label="Facebook" class="group relative">
             <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg opacity-0 blur group-hover:opacity-40 transition duration-300"></div>
             <div class="relative w-10 h-10 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300">
-              <i class="{{ $social[1] }} text-gray-400 group-hover:text-white transition-colors duration-300"></i>
+              <i class="fab fa-facebook text-gray-400 group-hover:text-white transition-colors duration-300"></i>
             </div>
           </a>
-          @endforeach
         </div>
       </div>
 
@@ -99,7 +92,7 @@
             </span>
           </button>
         </a>
-        <p class="text-sm text-gray-500 text-center">
+        <p class="text-sm text-gray-400 text-center">
           {{ __('pages.footer_email') }}
         </p>
       </div>
@@ -109,7 +102,7 @@
     <div class="border-t border-white/10"></div>
 
     <!-- Bottom bar -->
-    <div class="flex flex-col md:flex-row justify-between items-center py-6 text-sm text-gray-500">
+    <div class="flex flex-col md:flex-row justify-between items-center py-6 text-sm text-gray-400">
       <p>&copy; {{ date('Y') }} {{ __('pages.footer_copyright') }}</p>
       <p class="flex items-center space-x-2">
         <span>{{ __('pages.footer_made_with') }}</span>
