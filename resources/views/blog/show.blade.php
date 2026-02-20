@@ -1,5 +1,31 @@
 @extends('layouts.app')
 
+@section('meta')
+    @php
+        $metaDescription = $post->getTranslation('meta_description', app()->getLocale())
+            ?: \Illuminate\Support\Str::limit(strip_tags($post->getTranslation('excerpt', app()->getLocale()) ?? ''), 150);
+    @endphp
+
+    <meta name="description" content="{{ $metaDescription }}">
+
+    {{-- Open Graph / Facebook --}}
+    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $post->getLocalizedTitle() }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:image" content="{{ $post->image_url }}">
+    <meta property="article:published_time" content="{{ $post->published_at->toIso8601String() }}">
+    <meta property="article:author" content="{{ $post->user->name }}">
+
+    {{-- Twitter --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ $post->getLocalizedTitle() }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $post->image_url }}">
+@endsection
+
 @section('content')
 <!-- Hero Section pentru articol cu design premium -->
 <section class="relative py-20 md:py-32 bg-black overflow-hidden">
