@@ -139,4 +139,20 @@ return [
     'contact_form_submit' => 'Send Message',
     'contact_form_success' => 'Message sent successfully!',
     'contact_form_error' => 'There was an error sending your message. Please try again.',
+
+    // Homepage - Dynamic Sections
+    'latest_projects_title' => 'Recent Projects',
+    'latest_projects_subtitle' => 'Check out my latest creations',
+    'recent_articles_title' => 'Recent Articles',
+    'recent_articles_subtitle' => 'Latest insights and tutorials from the blog',
+    'testimonials_title' => 'What Clients Say',
+    'testimonials_subtitle' => 'Feedback from amazing people I\'ve worked with',
+    'testimonial_form_title' => 'Leave a Testimonial',
+    'testimonial_form_name' => 'Your Name',
+    'testimonial_form_role' => 'Role / Title (optional)',
+    'testimonial_form_content' => 'Your Message',
+    'testimonial_form_rating' => 'Rating',
+    'testimonial_form_submit' => 'Submit Testimonial',
+    'testimonial_submitted' => 'Thank you for your feedback! It will be reviewed shortly.',
+    'no_active_testimonials' => 'No testimonials yet. Be the first to leave one!',
 ];

@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BlogController;
@@ -13,7 +14,9 @@ Route::prefix('{locale}')
     ->where(['locale' => 'en|ro'])
     ->group(function () {
         // Pagini existente
-        Route::get('/', fn () => view('home'))->name('home');
+        Route::get('/', [HomeController::class, 'index'])->name('home');
+        Route::post('/testimonials', [HomeController::class, 'storeTestimonial'])->name('testimonials.store');
+
         Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
         Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('project');
         Route::get('/contact', fn () => view('contact'))->name('contact');
