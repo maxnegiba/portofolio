@@ -6,7 +6,7 @@ use App\Filament\Resources\BlogPostResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListBlogPost extends ListRecords
+class ListBlogPosts extends ListRecords
 {
     protected static string $resource = BlogPostResource::class;
 

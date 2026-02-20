@@ -6,6 +6,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+     <script defer src="https://stats.posesoart.ro/script.js" data-website-id="8119a26e-b8bb-409e-8c74-46a74a188299"></script>
+
 </head>
 <body>
     @include('partials.navbar')

@@ -58,7 +58,18 @@
                   ];
                   // Verificare defensivă pentru $project->tech
                   $projectTech = is_array($project->tech ?? null) ? $project->tech : [];
+
+                  // IMPORTANT: slug trebuie să fie scalar (string). Dacă e gol, facem fallback pe id.
+                  $projectSlug = trim((string)($project->slug ?? ''));
+
+                  if ($projectSlug === '') {
+                      $projectSlug = (string)($project->id ?? '');
+                  }
+
+                  // Dacă nici id nu există (nu ar trebui), dezactivăm linkul.
+                  $canGenerateProjectUrl = $projectSlug !== '';
                 @endphp
+
                 @foreach(array_slice($projectTech, 0, 3) as $tech)
                   @if(isset($techIcons[$tech]))
                   <div class="w-8 h-8 bg-black/50 backdrop-blur-sm rounded-lg flex items-center justify-center">
@@ -68,8 +79,8 @@
                 @endforeach
               </div>
               <!-- Image -->
-              <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" 
-                alt="{{ $project->getLocalizedTitle() }}" 
+              <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}"
+                alt="{{ $project->getLocalizedTitle() }}"
                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
             </div>
             <!-- Content -->
@@ -106,7 +117,11 @@
               <!-- Actions -->
               <div class="flex items-center gap-3 mt-auto">
                 <!-- View Details -->
-                <a href="{{ route('project', [app()->getLocale(), $project]) }}" 
+                @if($canGenerateProjectUrl)
+                <a href="{{ route('project', [
+                      'locale'  => app()->getLocale(),
+                      'project' => $projectSlug,
+                ]) }}"
                   class="group/btn relative flex-1">
                   <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover/btn:opacity-70 blur transition-opacity duration-300">
                   </div>
@@ -117,6 +132,12 @@
                     </span>
                   </div>
                 </a>
+                @else
+                <div class="flex-1 px-4 py-2.5 bg-black/40 rounded-xl text-gray-400 text-center text-sm">
+                  {{ __('pages.projects_view_details') }}
+                </div>
+                @endif
+
                 <!-- Live Demo -->
                 @if($project->live_url)
                 <a href="{{ $project->live_url }}" target="_blank"
