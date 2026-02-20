@@ -29,5 +29,16 @@ Route::prefix('{locale}')
         Route::get('/blog/sitemap', [BlogController::class, 'sitemap'])->name('blog.sitemap');
     });
 
+// Dashboard & Settings (Outside locale prefix to match tests/legacy behavior)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
+
+    Route::redirect('settings', 'settings/profile');
+
+    Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
+    Volt::route('settings/password', 'settings.password')->name('settings.password');
+    Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+});
+
 // Rutele de autentificare (dacă nu au nevoie de locale)
 require __DIR__.'/auth.php';
