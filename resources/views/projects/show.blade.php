@@ -1,5 +1,29 @@
 @extends('layouts.app')
 
+@section('meta')
+    @php
+        $metaDescription = $project->getLocalizedDescription()
+            ?: \Illuminate\Support\Str::limit($project->getLocalizedTitle(), 150);
+    @endphp
+
+    <meta name="description" content="{{ $metaDescription }}">
+
+    {{-- Open Graph / Facebook --}}
+    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $project->getLocalizedTitle() }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:image" content="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}">
+
+    {{-- Twitter --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ $project->getLocalizedTitle() }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}">
+@endsection
+
 @section('content')
 <!-- Project Detail Hero Section -->
 <section class="relative py-20 bg-black overflow-hidden">
