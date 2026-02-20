@@ -20,7 +20,7 @@
           <div class="relative w-40 h-40 md:w-48 md:h-48">
             <div class="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full animate-spin-slow"></div>
             <div class="absolute inset-1 bg-black rounded-full"></div>
-            <img src="{{ asset('img/avatar.jpg') }}" alt="avatar" class="absolute inset-2 w-full h-full object-cover rounded-full border-2 border-black transform group-hover:scale-105 transition-transform duration-500">
+            <img src="{{ asset('img/avatar.webp') }}" alt="avatar" fetchpriority="high" width="400" height="400" class="absolute inset-2 w-full h-full object-cover rounded-full border-2 border-black transform group-hover:scale-105 transition-transform duration-500">
             <div class="absolute bottom-2 right-2 flex items-center space-x-1 bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.5)]">
               <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
               <span class="text-xs text-green-400 font-medium">{{ __('pages.available_status') }}</span>
@@ -65,23 +65,16 @@
           </a>
         </div>
         <div class="flex justify-center space-x-6 animate-fade-in delay-800">
-          @foreach([
-            ['github', 'fab fa-github', '#333'],
-            ['linkedin', 'fab fa-linkedin', '#0077B5'],
-            ['twitter', 'fab fa-twitter', '#1DA1F2'],
-            ['instagram', 'fab fa-instagram', '#E4405F']
-          ] as $social)
-          <a href="#" class="group relative transform hover:-translate-y-2 transition-all duration-300">
+          <a href="https://www.facebook.com/profile.php?id=100001274142909" target="_blank" aria-label="Facebook" class="group relative transform hover:-translate-y-2 transition-all duration-300">
             <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg opacity-0 blur group-hover:opacity-60 transition duration-300"></div>
             <div class="relative w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300 group-hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
-              <i class="{{ $social[1] }} text-gray-400 group-hover:text-white transition-colors duration-300"></i>
+              <i class="fab fa-facebook text-gray-400 group-hover:text-white transition-colors duration-300"></i>
             </div>
           </a>
-          @endforeach
         </div>
       </div>
       <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <a href="#about" class="flex flex-col items-center text-gray-500 hover:text-white transition-colors duration-300 group">
+        <a href="#about" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors duration-300 group">
           <span class="text-xs uppercase tracking-wider mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ __('pages.scroll_text') }}</span>
           <div class="w-6 h-10 border-2 border-gray-600 rounded-full p-1 group-hover:border-white transition-colors duration-300 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]">
             <div class="w-1 h-2 bg-gray-600 rounded-full mx-auto animate-scroll group-hover:bg-white transition-colors duration-300"></div>
@@ -106,7 +99,7 @@
           <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl animate-pulse delay-500"></div>
           <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-12">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
-            <img src="{{ asset('img/avatar.jpg') }}" alt="About" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+            <img src="{{ asset('img/avatar.webp') }}" alt="About" width="800" height="800" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
           </div>
           <div class="absolute -bottom-8 -right-8 bg-black/60 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
             <div class="flex items-center space-x-4">
@@ -293,7 +286,7 @@
                         <div class="ml-3">
                             <h4 class="text-white font-bold">{{ $testimonial->name }}</h4>
                             @if($testimonial->role)
-                                <p class="text-gray-500 text-sm">{{ $testimonial->role }}</p>
+                                <p class="text-gray-400 text-sm">{{ $testimonial->role }}</p>
                             @endif
                         </div>
                     </div>

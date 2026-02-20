@@ -10,7 +10,7 @@
       <div class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 p-[3px] shadow-lg group-hover:shadow-purple-500/25 transition-all duration-300 group-hover:scale-110">
         <div class="w-full h-full rounded-2xl bg-black flex items-center justify-center overflow-hidden">
           <!-- Înlocuiește 'images/logo.png' cu calea reală către logo-ul tău -->
-          <img src="{{ asset('img/logo.png') }}" alt="Doctor It Logo" class="w-full h-full object-contain">
+          <img src="{{ asset('img/logo.webp') }}" alt="Doctor It Logo" width="64" height="64" class="w-full h-full object-contain">
         </div>
       </div>
       

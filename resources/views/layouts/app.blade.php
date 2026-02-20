@@ -3,7 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="@yield('og:description', __('pages.hero_subtitle'))">
     <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="@yield('og:type', 'website')">
@@ -37,7 +44,5 @@
     <!-- Footer inclus aici -->
     @include('partials.footer')
     
-    <!-- Linia de mai jos a fost eliminata pentru ca este incorecta si redundanta -->
-    <!-- @vite9('resources/css/app.css') -->
 </body>
 </html>

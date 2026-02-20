@@ -1,16 +1,6 @@
 @import 'tailwindcss';
-
-/* Bootstrap CSS */
-@import 'bootstrap/dist/css/bootstrap.min.css';
-
-/* Font Awesome */
-@import '@fortawesome/fontawesome-free/css/all.min.css';
-
-/* Tailwind și restul codului tău existent */
-@import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
-/* ... restul codului tău CSS ... */
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';

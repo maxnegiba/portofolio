@@ -1,12 +1,7 @@
-import * as bootstrap from 'bootstrap';
-import '@fortawesome/fontawesome-free/js/all.min';
 
-// Initialize Bootstrap tooltips
+// Parallax effect
 document.addEventListener('DOMContentLoaded', () => {
-  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  tooltipTriggerList.map(trigger => new bootstrap.Tooltip(trigger));
   
-  // Parallax effect
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     document.querySelectorAll('.parallax-layer').forEach(layer => {
@@ -41,13 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
 // Mobile menu toggle
 const mobileBtn = document.getElementById('mobile-menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
-mobileBtn.addEventListener('click', () => {
-  mobileMenu.classList.toggle('max-h-0');
-  mobileMenu.classList.toggle('max-h-screen');
-  const icon = mobileBtn.querySelector('i');
-  icon.classList.toggle('fa-bars');
-  icon.classList.toggle('fa-times');
-});
+if (mobileBtn && mobileMenu) {
+  mobileBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('max-h-0');
+    mobileMenu.classList.toggle('max-h-screen');
+    const icon = mobileBtn.querySelector('i');
+    if (icon) {
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    }
+  });
+}
 
 // Fade-in on scroll
 const sections = document.querySelectorAll('.animate-fadeIn');
