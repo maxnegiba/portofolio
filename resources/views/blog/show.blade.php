@@ -1,5 +1,27 @@
 @extends('layouts.app')
 
+@php
+    $imageUrl = $post->image_url;
+    if ($imageUrl && !Str::startsWith($imageUrl, ['http://', 'https://'])) {
+        $imageUrl = asset($imageUrl);
+    }
+    // Fallback if no image is available
+    $imageUrl = $imageUrl ?? asset('img/avatar.jpg');
+@endphp
+
+@section('og:title', $post->getLocalizedTitle())
+@section('og:description', Str::limit(strip_tags($post->getTranslation('excerpt', app()->getLocale())), 160))
+@section('og:image', $imageUrl)
+@section('og:type', 'article')
+
+@section('meta')
+    <meta property="article:published_time" content="{{ $post->published_at->toIso8601String() }}">
+    <meta property="article:author" content="{{ $post->user->name }}">
+    @if($post->meta_keywords && is_array($post->meta_keywords))
+        <meta name="keywords" content="{{ implode(', ', $post->meta_keywords) }}">
+    @endif
+@endsection
+
 @section('content')
 <!-- Hero Section pentru articol cu design premium -->
 <section class="relative py-20 md:py-32 bg-black overflow-hidden">

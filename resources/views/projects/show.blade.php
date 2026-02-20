@@ -1,5 +1,17 @@
 @extends('layouts.app')
 
+@php
+    $thumbnail = $project->thumbnail_url;
+    if ($thumbnail && !Str::startsWith($thumbnail, ['http://', 'https://'])) {
+        $thumbnail = asset($thumbnail);
+    }
+    $thumbnail = $thumbnail ?? asset('img/default-thumbnail.jpg');
+@endphp
+
+@section('og:title', $project->getLocalizedTitle())
+@section('og:description', Str::limit(strip_tags($project->getLocalizedDescription()), 160))
+@section('og:image', $thumbnail)
+
 @section('content')
 <!-- Project Detail Hero Section -->
 <section class="relative py-20 bg-black overflow-hidden">
