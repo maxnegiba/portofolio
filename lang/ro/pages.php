@@ -141,4 +141,20 @@ return [
     'contact_form_submit' => 'Trimite Mesajul',
     'contact_form_success' => 'Mesajul a fost trimis cu succes!',
     'contact_form_error' => 'A apărut o eroare la trimiterea mesajului. Te rog încearcă din nou.',
+
+    // Homepage - Dynamic Sections
+    'latest_projects_title' => 'Proiecte Recente',
+    'latest_projects_subtitle' => 'Aruncă o privire la ultimele mele creații',
+    'recent_articles_title' => 'Articole Recente',
+    'recent_articles_subtitle' => 'Ultimele noutăți și tutoriale de pe blog',
+    'testimonials_title' => 'Ce spun clienții',
+    'testimonials_subtitle' => 'Părerile celor cu care am colaborat',
+    'testimonial_form_title' => 'Lasă un Testimonial',
+    'testimonial_form_name' => 'Numele tău',
+    'testimonial_form_role' => 'Rol / Funcție (opțional)',
+    'testimonial_form_content' => 'Mesajul tău',
+    'testimonial_form_rating' => 'Rating',
+    'testimonial_form_submit' => 'Trimite Testimonial',
+    'testimonial_submitted' => 'Mulțumim pentru feedback! Va fi revizuit în curând.',
+    'no_active_testimonials' => 'Momentan nu există testimoniale. Fii primul care lasă unul!',
 ];

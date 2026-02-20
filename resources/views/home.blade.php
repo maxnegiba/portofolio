@@ -488,6 +488,204 @@
     </div>
   </div>
 </section>
+
+<!-- Latest Projects Section -->
+<section id="projects" class="py-20 bg-black relative overflow-hidden">
+    <div class="container relative z-10">
+        <div class="text-center mb-16">
+             <span class="text-purple-400 tracking-wider uppercase text-sm inline-flex items-center gap-2">
+                <span class="w-8 h-[2px] bg-purple-400"></span>
+                {{ __('pages.latest_projects_title') }}
+                <span class="w-8 h-[2px] bg-purple-400"></span>
+            </span>
+            <h2 class="text-3xl md:text-5xl font-bold mt-4 mb-4 text-white">
+                {{ __('pages.latest_projects_subtitle') }}
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($projects as $project)
+                <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500">
+                    <div class="aspect-video relative overflow-hidden">
+                        @if($project->thumbnail_url)
+                            <img src="{{ $project->thumbnail_url }}" alt="{{ $project->title }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        @else
+                            <div class="w-full h-full bg-gray-800 flex items-center justify-center">
+                                <i class="fas fa-code text-4xl text-gray-600"></i>
+                            </div>
+                        @endif
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="px-6 py-2 bg-purple-600 rounded-full text-white text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                {{ __('pages.projects_view_details') }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{{ $project->title }}</h3>
+                        <p class="text-gray-400 text-sm line-clamp-2">{{ Str::limit(strip_tags($project->description), 100) }}</p>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+        <div class="text-center mt-12">
+            <a href="{{ route('projects', app()->getLocale()) }}" class="inline-flex items-center space-x-2 text-purple-400 hover:text-white transition-colors">
+                <span>{{ __('pages.see_work') }}</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Articles Section -->
+<section id="blog" class="py-20 bg-gradient-to-b from-black to-gray-900 relative">
+    <div class="container relative z-10">
+        <div class="text-center mb-16">
+             <span class="text-blue-400 tracking-wider uppercase text-sm inline-flex items-center gap-2">
+                <span class="w-8 h-[2px] bg-blue-400"></span>
+                {{ __('pages.recent_articles_title') }}
+                <span class="w-8 h-[2px] bg-blue-400"></span>
+            </span>
+            <h2 class="text-3xl md:text-5xl font-bold mt-4 mb-4 text-white">
+                {{ __('pages.recent_articles_subtitle') }}
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($blogPosts as $post)
+                <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->slug]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-500">
+                    <div class="aspect-video relative overflow-hidden">
+                        @if($post->image_url)
+                            <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        @else
+                            <div class="w-full h-full bg-gray-800 flex items-center justify-center">
+                                <i class="fas fa-newspaper text-4xl text-gray-600"></i>
+                            </div>
+                        @endif
+                         <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs text-white border border-white/10">
+                                {{ $post->published_at->format('M d, Y') }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{{ $post->title }}</h3>
+                        <p class="text-gray-400 text-sm line-clamp-3">{{ Str::limit(strip_tags($post->excerpt), 120) }}</p>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+         <div class="text-center mt-12">
+            <a href="{{ route('blog.index', app()->getLocale()) }}" class="inline-flex items-center space-x-2 text-blue-400 hover:text-white transition-colors">
+                <span>{{ __('pages.blog.read_more') }}</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-20 bg-black relative overflow-hidden">
+    <div class="container relative z-10">
+         <div class="text-center mb-16">
+             <span class="text-green-400 tracking-wider uppercase text-sm inline-flex items-center gap-2">
+                <span class="w-8 h-[2px] bg-green-400"></span>
+                {{ __('pages.testimonials_title') }}
+                <span class="w-8 h-[2px] bg-green-400"></span>
+            </span>
+            <h2 class="text-3xl md:text-5xl font-bold mt-4 mb-4 text-white">
+                {{ __('pages.testimonials_subtitle') }}
+            </h2>
+        </div>
+
+        <!-- Testimonials Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+            @forelse($testimonials as $testimonial)
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-8 relative">
+                    <div class="flex text-yellow-400 mb-4">
+                        @for($i = 0; $i < $testimonial->rating; $i++)
+                            <i class="fas fa-star text-sm"></i>
+                        @endfor
+                    </div>
+                    <p class="text-gray-300 mb-6 italic">"{{ $testimonial->content }}"</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center font-bold text-white">
+                            {{ substr($testimonial->name, 0, 1) }}
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-white font-bold">{{ $testimonial->name }}</h4>
+                            @if($testimonial->role)
+                                <p class="text-gray-500 text-sm">{{ $testimonial->role }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full text-center text-gray-400">
+                    {{ __('pages.no_active_testimonials') }}
+                </div>
+            @endforelse
+        </div>
+
+        <!-- Submission Form -->
+        <div class="max-w-2xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden">
+             <!-- Background Glow -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-green-500/20 rounded-full blur-[80px]"></div>
+
+            <div class="relative z-10">
+                <h3 class="text-2xl font-bold text-white mb-6 text-center">{{ __('pages.testimonial_form_title') }}</h3>
+
+                @if(session('success'))
+                    <div class="mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-xl text-green-300 text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 text-center">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('testimonials.store', app()->getLocale()) }}" method="POST" class="space-y-6">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-400 text-sm mb-2">{{ __('pages.testimonial_form_name') }}</label>
+                            <input type="text" name="name" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 text-sm mb-2">{{ __('pages.testimonial_form_role') }}</label>
+                            <input type="text" name="role" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-2">{{ __('pages.testimonial_form_rating') }}</label>
+                        <div class="flex space-x-4">
+                            @foreach([5, 4, 3, 2, 1] as $rating)
+                                <label class="cursor-pointer flex items-center space-x-2">
+                                    <input type="radio" name="rating" value="{{ $rating }}" {{ $loop->first ? 'checked' : '' }} class="form-radio text-green-500 bg-transparent border-white/20 focus:ring-0">
+                                    <span class="text-yellow-400 flex">
+                                        @for($i = 0; $i < $rating; $i++) <i class="fas fa-star text-xs"></i> @endfor
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-2">{{ __('pages.testimonial_form_content') }}</label>
+                        <textarea name="content" rows="4" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 transition-colors"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                        {{ __('pages.testimonial_form_submit') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- CSS Animations -->
 <style>
 @keyframes float-slow {
