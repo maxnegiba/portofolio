@@ -1,5 +1,8 @@
 @extends('layouts.app')
 @section('content')
+<!-- Scroll Progress Bar -->
+<div class="fixed top-0 left-0 h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 z-[60] transition-all duration-100 ease-out" id="scroll-progress" style="width: 0%"></div>
+
 <section class="hero min-h-screen flex items-center relative overflow-hidden bg-black">
   <div class="absolute inset-0 z-0">
     <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/30 rounded-full blur-[100px] animate-pulse"></div>
@@ -200,7 +203,15 @@
         </div>
         <div class="p-6">
           <h3 class="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{{ $project->title }}</h3>
-          <p class="text-gray-400 text-sm line-clamp-2">{{ Str::limit(strip_tags($project->description), 100) }}</p>
+          <p class="text-gray-400 text-sm line-clamp-2 mb-4">{{ Str::limit(strip_tags($project->description), 100) }}</p>
+          <div class="flex flex-wrap gap-2">
+            @foreach(array_slice($project->tech ?? [], 0, 3) as $tech)
+               <span class="px-2 py-1 bg-white/10 rounded text-xs text-gray-300 border border-white/5">{{ $tech }}</span>
+            @endforeach
+             @if(count($project->tech ?? []) > 3)
+               <span class="px-2 py-1 bg-white/10 rounded text-xs text-gray-300 border border-white/5">+{{ count($project->tech) - 3 }}</span>
+            @endif
+          </div>
         </div>
       </a>
       @endforeach
@@ -237,9 +248,13 @@
             <i class="fas fa-newspaper text-4xl text-gray-600"></i>
           </div>
           @endif
-          <div class="absolute top-4 left-4">
+          <div class="absolute top-4 left-4 flex space-x-2">
             <span class="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs text-white border border-white/10">
               {{ $post->published_at->format('M d, Y') }}
+            </span>
+            <span class="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs text-white border border-white/10 flex items-center space-x-1">
+               <i class="far fa-clock text-[10px]"></i>
+               <span>{{ $post->reading_time }}</span>
             </span>
           </div>
         </div>
@@ -785,6 +800,18 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('section').forEach(section => {
     observer.observe(section);
   });
+
+  // Scroll Progress Bar Logic
+  window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    const progressBar = document.getElementById('scroll-progress');
+    if (progressBar) {
+        progressBar.style.width = scrolled + "%";
+    }
+  });
+
   // Animate progress bars
   function animateProgressBars() {
     const progressBars = document.querySelectorAll('[data-width]');
@@ -842,7 +869,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   // Create particles periodically
-  setInterval(createParticle, 300);
+  // Optimize for mobile: reduce particle frequency
+  const particleInterval = window.innerWidth < 768 ? 1000 : 300;
+  setInterval(createParticle, particleInterval);
+
   // Add hover tilt effect to cards
   const cards = document.querySelectorAll('.group');
   cards.forEach(card => {
