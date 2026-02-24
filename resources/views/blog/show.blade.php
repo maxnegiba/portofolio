@@ -73,9 +73,7 @@
                     <!-- Image Frame cu 3D tilt -->
                     <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-6 shadow-2xl border border-white/10">
                         <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <img src="{{ $post->image_url }}"
-                             alt="{{ $post->getLocalizedTitle() }}"
-                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000">
+                        <x-responsive-image :path="$post->featured_image" :alt="$post->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000" />
                     </div>
                 </div>
             @endif
@@ -248,9 +246,7 @@
                                 <!-- Featured Image -->
                                 @if($recentPost->featured_image)
                                     <div class="aspect-video overflow-hidden">
-                                        <img src="{{ $recentPost->image_url }}"
-                                             alt="{{ $recentPost->getLocalizedTitle() }}"
-                                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                                        <x-responsive-image :path="$recentPost->featured_image" :alt="$recentPost->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     </div>
                                 @endif

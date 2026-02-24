@@ -105,9 +105,11 @@
           <!-- Image Frame with 3D tilt -->
           <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-12 shadow-2xl border border-white/10">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
-            <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}" 
-                 alt="{{ $project->getLocalizedTitle() }}" 
-                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+            @if($project->thumbnail)
+                <x-responsive-image :path="$project->thumbnail" :alt="$project->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+            @else
+                <img src="{{ asset('img/default-thumbnail.jpg') }}" alt="{{ $project->getLocalizedTitle() }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+            @endif
           </div>
         </div>
       </div>

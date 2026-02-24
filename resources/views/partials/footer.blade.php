@@ -85,12 +85,12 @@
         <a href="{{ route('contact', app()->getLocale()) }}" 
            class="group relative inline-flex items-center space-x-2 w-full justify-center mb-4">
           <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-70 blur group-hover:opacity-100 transition duration-300"></div>
-          <button class="relative px-6 py-3 bg-black rounded-xl text-white font-medium w-full">
+          <div class="relative px-6 py-3 bg-black rounded-xl text-white font-medium w-full flex items-center justify-center">
             <span class="flex items-center justify-center space-x-2">
               <i class="fas fa-envelope"></i>
               <span>{{ __('pages.footer_get_in_touch') }}</span>
             </span>
-          </button>
+          </div>
         </a>
         <p class="text-sm text-gray-400 text-center">
           {{ __('pages.footer_email') }}
