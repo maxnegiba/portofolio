@@ -26,10 +26,7 @@
                     <article class="group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] transform hover:-translate-y-2">
                         @if($post->featured_image)
                             <div class="aspect-video overflow-hidden">
-                                <img src="{{ $post->image_url }}"
-                                     alt="{{ $post->getLocalizedTitle() }}"
-                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                     loading="lazy">
+                                <x-responsive-image :path="$post->featured_image" :alt="$post->getLocalizedTitle()" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                             </div>
                         @endif
                         <div class="p-6">

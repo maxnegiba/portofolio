@@ -79,9 +79,11 @@
                 @endforeach
               </div>
               <!-- Image -->
-              <img src="{{ $project->thumbnail_url ?? asset('img/default-thumbnail.jpg') }}"
-                alt="{{ $project->getLocalizedTitle() }}"
-                class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+              @if($project->thumbnail)
+                  <x-responsive-image :path="$project->thumbnail" :alt="$project->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+              @else
+                  <img src="{{ asset('img/default-thumbnail.jpg') }}" alt="{{ $project->getLocalizedTitle() }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+              @endif
             </div>
             <!-- Content -->
             <div class="p-6 flex-1 flex flex-col">

@@ -4,7 +4,13 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ImageController;
 use Livewire\Volt\Volt;
+
+// Optimized Images
+Route::get('/img/cache/{width}/{path}', [ImageController::class, 'show'])
+    ->where('path', '.*')
+    ->name('image.cache');
 
 // Redirect pentru rădăcină
 Route::redirect('/', '/en');
