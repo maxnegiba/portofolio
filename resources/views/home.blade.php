@@ -24,7 +24,7 @@
           <div class="relative w-40 h-40 md:w-48 md:h-48">
             <div class="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full animate-spin-slow"></div>
             <div class="absolute inset-1 bg-black rounded-full"></div>
-            <x-responsive-image path="img/avatar.webp" alt="avatar" fetchpriority="high" width="400" height="400" class="absolute inset-2 w-full h-full object-cover rounded-full border-2 border-black transform group-hover:scale-105 transition-transform duration-500" />
+            <x-responsive-image path="img/avatar.webp" alt="avatar" fetchpriority="high" width="400" height="400" sizes="(max-width: 768px) 160px, 192px" class="absolute inset-2 w-full h-full object-cover rounded-full border-2 border-black transform group-hover:scale-105 transition-transform duration-500" />
             <div class="absolute bottom-2 right-2 flex items-center space-x-1 bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.5)]">
               <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
               <span class="text-xs text-green-400 font-medium">{{ __('pages.available_status') }}</span>
@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <a href="#about" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors duration-300 group">
+        <a href="#about" aria-label="{{ __('pages.scroll_text') ?: 'Scroll down' }}" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors duration-300 group">
           <span class="text-xs uppercase tracking-wider mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ __('pages.scroll_text') }}</span>
           <div class="w-6 h-10 border-2 border-gray-600 rounded-full p-1 group-hover:border-white transition-colors duration-300 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]">
             <div class="w-1 h-2 bg-gray-600 rounded-full mx-auto animate-scroll group-hover:bg-white transition-colors duration-300"></div>
@@ -104,7 +104,7 @@
           <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl animate-pulse delay-500"></div>
           <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-12">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
-            <x-responsive-image path="img/avatar.webp" alt="About" width="800" height="800" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700" />
+            <x-responsive-image path="img/avatar.webp" alt="About" width="800" height="800" sizes="(max-width: 1024px) 100vw, 50vw" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700" />
           </div>
           <div class="absolute -bottom-8 -right-8 bg-black/60 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
             <div class="flex items-center space-x-4">
@@ -189,7 +189,7 @@
       <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500">
         <div class="aspect-video relative overflow-hidden">
           @if($project->thumbnail)
-          <x-responsive-image :path="$project->thumbnail" :alt="$project->title" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+          <x-responsive-image :path="$project->thumbnail" :alt="$project->title" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
           @else
           <div class="w-full h-full bg-gray-800 flex items-center justify-center">
             <i class="fas fa-code text-4xl text-gray-600"></i>
@@ -217,7 +217,7 @@
       @endforeach
     </div>
     <div class="text-center mt-12">
-      <a href="{{ route('projects', app()->getLocale()) }}" class="inline-flex items-center space-x-2 text-purple-400 hover:text-white transition-colors">
+      <a href="{{ route('projects', app()->getLocale()) }}" aria-label="{{ __('pages.see_work') }} - {{ __('pages.latest_projects_title') }}" class="inline-flex items-center space-x-2 text-purple-400 hover:text-white transition-colors">
         <span>{{ __('pages.see_work') }}</span>
         <i class="fas fa-arrow-right"></i>
       </a>
@@ -242,7 +242,7 @@
       <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->slug]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-500">
         <div class="aspect-video relative overflow-hidden">
           @if($post->featured_image)
-          <x-responsive-image :path="$post->featured_image" :alt="$post->title" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+          <x-responsive-image :path="$post->featured_image" :alt="$post->title" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
           @else
           <div class="w-full h-full bg-gray-800 flex items-center justify-center">
             <i class="fas fa-newspaper text-4xl text-gray-600"></i>
@@ -266,7 +266,7 @@
       @endforeach
     </div>
     <div class="text-center mt-12">
-      <a href="{{ route('blog.index', app()->getLocale()) }}" class="inline-flex items-center space-x-2 text-blue-400 hover:text-white transition-colors">
+      <a href="{{ route('blog.index', app()->getLocale()) }}" aria-label="{{ __('pages.blog.read_more') }} {{ __('pages.recent_articles_title') }}" class="inline-flex items-center space-x-2 text-blue-400 hover:text-white transition-colors">
         <span>{{ __('pages.blog.read_more') }}</span>
         <i class="fas fa-arrow-right"></i>
       </a>
@@ -355,7 +355,8 @@
               @foreach([5, 4, 3, 2, 1] as $rating)
               <label class="cursor-pointer flex items-center space-x-2">
                 <input type="radio" name="rating" value="{{ $rating }}" {{ $loop->first ? 'checked' : '' }} class="form-radio text-green-500 bg-transparent border-white/20 focus:ring-0">
-                <span class="text-yellow-400 flex">
+                <span class="sr-only">{{ $rating }} Stars</span>
+                <span class="text-yellow-400 flex" aria-hidden="true">
                   @for($i = 0; $i < $rating; $i++) <i class="fas fa-star text-xs"></i> @endfor
                 </span>
               </label>
