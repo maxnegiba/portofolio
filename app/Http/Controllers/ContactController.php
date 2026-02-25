@@ -26,7 +26,7 @@ class ContactController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'subject' => $validated['subject'],
-                'contactMessage' => $validated['message']
+                'userMessage' => $validated['message']
             ], function ($mail) use ($validated) {
                 $mail->from('contact@negibamaxim.eu', 'Doctor IT')
                      ->to('negibamaxim@gmail.com')  // Înlocuiește cu adresa unde vrei să primești email-uri
