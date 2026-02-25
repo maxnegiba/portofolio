@@ -1,4 +1,3 @@
-cat > resources/views/emails/contact.blade.php << 'EOF'
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -26,7 +25,7 @@ cat > resources/views/emails/contact.blade.php << 'EOF'
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
             
             <p><span class="label">Mesaj:</span></p>
-            <p style="white-space: pre-wrap;">{{ $message }}</p>
+            <p style="white-space: pre-wrap;">{{ $userMessage }}</p>
         </div>
         <div class="footer">
             <p>Acest mesaj a fost trimis prin formularul de contact de pe portofoliul tău.</p>
@@ -34,4 +33,3 @@ cat > resources/views/emails/contact.blade.php << 'EOF'
     </div>
 </body>
 </html>
-EOF
