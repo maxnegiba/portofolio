@@ -1,3 +1,4 @@
+import './floating-contacts.js';
 
 // Parallax effect
 document.addEventListener('DOMContentLoaded', () => {
