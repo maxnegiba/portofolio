@@ -44,5 +44,6 @@
     <!-- Footer inclus aici -->
     @include('partials.footer')
     
+    @include('partials.floating-contacts')
 </body>
 </html>
