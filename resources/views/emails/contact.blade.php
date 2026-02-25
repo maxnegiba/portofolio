@@ -25,7 +25,8 @@
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
             
             <p><span class="label">Mesaj:</span></p>
-            <p style="white-space: pre-wrap;">{{ $userMessage }}</p>
+            <!-- Use $contactMessage instead of $message to avoid conflict with Laravel's reserved $message variable -->
+            <p style="white-space: pre-wrap;">{{ $contactMessage }}</p>
         </div>
         <div class="footer">
             <p>Acest mesaj a fost trimis prin formularul de contact de pe portofoliul tău.</p>
