@@ -16,14 +16,16 @@
         // We use url() instead of route() to prevent slash encoding in the path parameter
         // Route is /img/cache/{width}/{path}
 
-        $widths = [400, 800, 1200];
+        $widths = [300, 400, 600, 800, 1000, 1200];
         $srcsetParts = [];
         foreach ($widths as $w) {
             $url = url("/img/cache/{$w}/{$cleanPath}");
             $srcsetParts[] = "{$url} {$w}w";
         }
         $srcsetString = implode(', ', $srcsetParts);
-        $src = url("/img/cache/800/{$cleanPath}");
+
+        $defaultWidth = $width ? (int)$width : 800;
+        $src = url("/img/cache/{$defaultWidth}/{$cleanPath}");
     @endphp
 
     <img src="{{ $src }}"
