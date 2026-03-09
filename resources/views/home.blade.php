@@ -19,19 +19,23 @@
         <div class="relative group">
           <div class="absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full opacity-75 blur-lg group-hover:opacity-100 animate-spin-slow"></div>
           <div class="absolute -inset-6 bg-gradient-to-r from-cyan-600 via-purple-600 to-blue-600 rounded-full opacity-50 blur-xl animate-spin-reverse"></div>
-          <div class="relative w-40 h-40 md:w-48 md:h-48">
-            <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full animate-spin-slow"></div>
-            <div class="hidden md:block absolute inset-1 bg-black rounded-full"></div>
-            
-            <picture>
-                <source media="(max-width: 768px)" srcset="{{ url('/img/cache/270/img/avatar.webp') }}">
-                <img src="{{ url('/img/cache/400/img/avatar.webp') }}" alt="Max - Full Stack Developer" width="270" height="270" loading="eager" fetchpriority="high" class="absolute inset-0 md:inset-2 w-full h-full object-cover rounded-full border-2 border-black md:transform md:group-hover:scale-105 md:transition-transform md:duration-500">
-            </picture>
+          <div class="relative w-[270px] h-[270px] md:w-48 md:h-48 mx-auto">
+    <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full animate-spin-slow"></div>
+    <div class="hidden md:block absolute inset-1 bg-black rounded-full"></div>
+    
+    <img src="{{ asset('img/avatar.webp') }}" 
+         alt="Max - Full Stack Developer" 
+         class="absolute inset-0 md:inset-2 w-full h-full object-cover rounded-full border-2 border-black md:transform md:group-hover:scale-105 md:transition-transform md:duration-500"
+         width="270" 
+         height="270" 
+         loading="eager" 
+         fetchpriority="high" 
+         decoding="sync">
 
-            <div class="absolute bottom-0 right-0 md:bottom-2 md:right-2 flex items-center space-x-1 bg-black/80 backdrop-blur-sm px-2 py-1 rounded-full border border-green-500/50">
-              <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-            </div>
-          </div>
+    <div class="absolute bottom-4 right-4 md:bottom-2 md:right-2 flex items-center space-x-1 bg-black/80 backdrop-blur-sm px-2 py-1 rounded-full border border-green-500/50">
+      <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+    </div>
+</div>
         </div>
       </div>
       <div class="text-center space-y-8">
