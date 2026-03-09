@@ -29,7 +29,7 @@
 
     @yield('meta')
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+   @vite(['resources/css/app.css'])
 <link rel="preload" as="image" href="{{ asset('img/avatar-400.jpg') }}" fetchpriority="high">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
@@ -57,5 +57,6 @@
     @include('partials.footer')
     
     @include('partials.floating-contacts')
+    @vite(['resources/js/app.js'])
 </body>
 </html>
