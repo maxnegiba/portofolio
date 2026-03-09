@@ -1,20 +1,18 @@
 @extends('layouts.app')
 @section('content')
-<!-- Scroll Progress Bar -->
 <div class="fixed top-0 left-0 h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 z-[60] transition-all duration-100 ease-out" id="scroll-progress" style="width: 0%"></div>
 
 <section class="hero min-h-screen flex items-center relative overflow-hidden bg-black">
-  <div class="absolute inset-0 z-0">
-    <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/30 rounded-full blur-[100px] animate-pulse"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/30 rounded-full blur-[120px] animate-pulse delay-700"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/20 rounded-full blur-[150px] animate-pulse delay-1000"></div>
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-50"></div>
+<div class="absolute inset-0 z-0">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/30 rounded-full blur-[100px] animate-pulse transform-gpu"></div>
+    <div class="absolute top-[80%] left-[60%] w-96 h-96 bg-blue-600/30 rounded-full blur-[120px] animate-pulse delay-700 transform-gpu -translate-y-full"></div>
+    <div class="absolute inset-0 m-auto w-[600px] h-[600px] bg-cyan-600/20 rounded-full blur-[150px] animate-pulse delay-1000 transform-gpu"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cdefs%3E%3Cpattern id=\"grid\" width=\"60\" height=\"60\" patternUnits=\"userSpaceOnUse\"%3E%3Cpath d=\"M 60 0 L 0 0 0 60\" fill=\"none\" stroke=\"rgba(255,255,255,0.03)\" stroke-width=\"1\"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\"100%25\" height=\"100%25\" fill=\"url(%23grid)\"/%3E%3C/svg%3E')] opacity-50"></div>
     <div class="particles absolute inset-0"></div>
-    <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
-    <div class="absolute top-3/4 right-1/3 w-3 h-3 bg-blue-400 rounded-full animate-ping delay-500"></div>
-    <div class="absolute bottom-1/4 left-1/3 w-2 h-2 bg-cyan-400 rounded-full animate-ping delay-1000"></div>
+    <div class="absolute top-[25%] left-[25%] w-2 h-2 bg-purple-400 rounded-full animate-ping transform-gpu"></div>
+    <div class="absolute top-[75%] left-[66%] w-3 h-3 bg-blue-400 rounded-full animate-ping delay-500 transform-gpu"></div>
+    <div class="absolute top-[75%] left-[33%] w-2 h-2 bg-cyan-400 rounded-full animate-ping delay-1000 transform-gpu"></div>
   </div>
-  
   <div class="container mx-auto px-4 relative z-10">
     <div class="max-w-5xl mx-auto">
       <div class="flex justify-center mb-10">
@@ -24,7 +22,7 @@
           <div class="relative w-40 h-40 md:w-48 md:h-48">
             <div class="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full animate-spin-slow"></div>
             <div class="absolute inset-1 bg-black rounded-full"></div>
-            <x-responsive-image path="img/avatar.webp" alt="avatar" fetchpriority="high" width="400" height="400" sizes="(max-width: 768px) 160px, 192px" class="absolute inset-2 w-full h-full object-cover rounded-full border-2 border-black transform group-hover:scale-105 transition-transform duration-500" />
+             <img src="{{ asset('img/avatar-400.jpg') }}" alt="Max - Full Stack Developer" width="400" height="400" loading="eager" fetchpriority="high" decoding="async" class="absolute inset-2 w-full h-full object-cover rounded-full border-2 border-black transform group-hover:scale-105 transition-transform duration-500">
             <div class="absolute bottom-2 right-2 flex items-center space-x-1 bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.5)]">
               <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
               <span class="text-xs text-green-400 font-medium">{{ __('pages.available_status') }}</span>
@@ -95,7 +93,7 @@
     <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] animate-float-slow delay-1000"></div>
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/10 via-transparent to-transparent"></div>
   </div>
-  
+
   <div class="container mx-auto px-4 relative z-10">
     <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
       <div class="relative order-2 lg:order-1">
@@ -104,8 +102,7 @@
           <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl animate-pulse delay-500"></div>
           <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-12">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
-            <x-responsive-image path="img/avatar.webp" alt="About" width="800" height="800" sizes="(max-width: 1024px) 100vw, 50vw" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700" />
-          </div>
+<img src="{{ url('/img/cache/400/img/avatar.webp') }}" alt="About Max" width="400" height="400" loading="eager" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">          </div>
           <div class="absolute -bottom-8 -right-8 bg-black/60 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
             <div class="flex items-center space-x-4">
               <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.5)]">
@@ -185,37 +182,43 @@
       </h2>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      @foreach($projects as $project)
-      <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500">
-        <div class="aspect-video relative overflow-hidden">
-          @if($project->thumbnail)
-          <x-responsive-image :path="$project->thumbnail" :alt="$project->title" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
-          @else
-          <div class="w-full h-full bg-gray-800 flex items-center justify-center">
-            <i class="fas fa-code text-4xl text-gray-600"></i>
-          </div>
-          @endif
-          <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span class="px-6 py-2 bg-purple-600 rounded-full text-white text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-              {{ __('pages.projects_view_details') }}
-            </span>
-          </div>
-        </div>
-        <div class="p-6">
-          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{{ $project->title }}</h3>
-          <p class="text-gray-400 text-sm line-clamp-2 mb-4">{{ Str::limit(strip_tags($project->description), 100) }}</p>
-          <div class="flex flex-wrap gap-2">
-            @foreach(array_slice($project->tech ?? [], 0, 3) as $tech)
-               <span class="px-2 py-1 bg-white/10 rounded text-xs text-gray-300 border border-white/5">{{ $tech }}</span>
-            @endforeach
-             @if(count($project->tech ?? []) > 3)
-               <span class="px-2 py-1 bg-white/10 rounded text-xs text-gray-300 border border-white/5">+{{ count($project->tech) - 3 }}</span>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @foreach($projects as $project)
+        <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500">
+          <div class="aspect-video relative overflow-hidden">
+            @if($project->thumbnail)
+@if($loop->iteration <= 2)
+    <x-responsive-image :path="$project->thumbnail" :alt="$project->title" loading="eager" fetchpriority="high" sizes="(max-width: 768px) 400px, (max-width: 1024px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+@else
+    <x-responsive-image :path="$project->thumbnail" :alt="$project->title" loading="lazy" sizes="(max-width: 768px) 400px, (max-width: 1024px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+@endif            @else
+            <div class="w-full h-full bg-gray-800 flex items-center justify-center">
+              <i class="fas fa-code text-4xl text-gray-600"></i>
+            </div>
             @endif
+            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <span class="px-6 py-2 bg-purple-600 rounded-full text-white text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                {{ __('pages.projects_view_details') }}
+              </span>
+            </div>
           </div>
-        </div>
-      </a>
-      @endforeach
-    </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{{ $project->title }}</h3>
+            <p class="text-gray-400 text-sm line-clamp-2 mb-4">{{ Str::limit(strip_tags($project->description), 100) }}</p>
+            <div class="flex flex-wrap gap-2">
+              @if(is_array($project->tech) || is_object($project->tech))
+                @foreach(array_slice((array) $project->tech, 0, 3) as $tech)
+                   <span class="px-2 py-1 bg-white/10 rounded text-xs text-gray-300 border border-white/5">{{ $tech }}</span>
+                @endforeach
+                 @if(count((array) $project->tech) > 3)
+                   <span class="px-2 py-1 bg-white/10 rounded text-xs text-gray-300 border border-white/5">+{{ count((array) $project->tech) - 3 }}</span>
+                @endif
+              @endif
+            </div>
+          </div>
+        </a>
+        @endforeach
+          </div>
     <div class="text-center mt-12">
       <a href="{{ route('projects', app()->getLocale()) }}" aria-label="{{ __('pages.see_work') }} - {{ __('pages.latest_projects_title') }}" class="inline-flex items-center space-x-2 text-purple-400 hover:text-white transition-colors">
         <span>{{ __('pages.see_work') }}</span>
@@ -386,7 +389,7 @@
     <div class="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-purple-500/20 to-transparent"></div>
     <div class="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
   </div>
-  
+
   <div class="container mx-auto px-4 relative z-10">
     <div class="text-center mb-20">
       <span class="text-purple-400 tracking-wider uppercase text-sm inline-flex items-center gap-2">
@@ -870,9 +873,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   // Create particles periodically
-  // Optimize for mobile: reduce particle frequency
+  // Optimize for mobile: reduce particle frequency and delay start
   const particleInterval = window.innerWidth < 768 ? 1000 : 300;
-  setInterval(createParticle, particleInterval);
+  
+  setTimeout(() => {
+    setInterval(createParticle, particleInterval);
+  }, 2500);
 
   // Add hover tilt effect to cards
   const cards = document.querySelectorAll('.group');
@@ -915,3 +921,4 @@ style.textContent = `
 document.head.appendChild(style);
 </script>
 @endsection
+
