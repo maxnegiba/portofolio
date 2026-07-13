@@ -117,6 +117,7 @@ return [
         'title' => 'Blog',
         'subtitle' => 'Insights, tutorials, and thoughts on web development and technology.',
         'read_more' => 'Read More',
+        'minute_read' => 'min read',
         'no_posts' => 'No Posts Found',
         'no_posts_message' => 'Check back later for new posts.',
     ],
@@ -128,6 +129,7 @@ return [
    'contact_email' => 'negibamaxim@gmail.com', // Înlocuiește cu emailul tău real
     'contact_phone_label' => 'Phone',
     'contact_phone' => '+40793537712', // Înlocuiește cu numărul tău real
+    'contact_location_label' => 'Location',
     'contact_location' => 'Romania',
     'contact_social_title' => 'Find me on',
 

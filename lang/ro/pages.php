@@ -118,6 +118,7 @@ return [
         'title' => 'Blog',
         'subtitle' => 'Idei, tutoriale și gânduri despre dezvoltare web și tehnologie.',
         'read_more' => 'Citește mai mult',
+        'minute_read' => 'min de citit',
         'no_posts' => 'Nu s-au găsit articole',
         'no_posts_message' => 'Revino mai târziu pentru articole noi.',
     ],
