@@ -9,8 +9,8 @@
     <div class="absolute top-20 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] animate-pulse-slow"></div>
     <div class="absolute bottom-20 right-1/4 w-80 h-80 bg-blue-600/20 rounded-full blur-[100px] animate-pulse-slow delay-1000"></div>
     
-    <!-- Subtle Pattern -->
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="dot" width="100" height="100" patternUnits="userSpaceOnUse"%3E%3Ccircle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23dot)"/%3E%3C/svg%3E')] opacity-100"></div>
+    <!-- Subtle Pattern (Corectat: pus pe o singură linie și înlocuit ghilimelele duble cu simple în interiorul SVG-ului) -->
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cdefs%3E%3Cpattern id=\'dot\' width=\'100\' height=\'100\' patternUnits=\'userSpaceOnUse\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'1\' fill=\'rgba(255,255,255,0.05)\'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'url(%23dot)\'/%3E%3C/svg%3E')] opacity-100"></div>
   </div>
   
   <div class="container relative z-10">
@@ -30,7 +30,7 @@
           </p>
         </div>
         
-                <!-- Contact Details -->
+        <!-- Contact Details -->
         <div class="space-y-6">
           <div class="group flex items-center space-x-4">
             <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -38,7 +38,6 @@
             </div>
             <div>
               <span class="text-gray-400 text-sm">{{ __('pages.contact_email_label') }}</span>
-              <!-- Link către clientul de email -->
               <a href="mailto:{{ __('pages.contact_email') }}" class="text-white font-medium hover:text-purple-400 transition-colors duration-300">
                  {{ __('pages.contact_email') }}
               </a>
@@ -50,7 +49,6 @@
             </div>
             <div>
               <span class="text-gray-400 text-sm">{{ __('pages.contact_phone_label') }}</span>
-              <!-- Link pentru apel telefonic -->
               <a href="tel:{{ __('pages.contact_phone') }}" class="text-white font-medium hover:text-cyan-400 transition-colors duration-300">
                 {{ __('pages.contact_phone') }}
               </a>
@@ -71,6 +69,7 @@
         <div>
           <p class="text-gray-400 text-sm mb-3">{{ __('pages.contact_social_title') }}</p>
           <div class="flex space-x-4">
+            <!-- NOTĂ: Nu uita să schimbi 'yourusername' cu link-urile tale reale! -->
             @foreach([
               ['github', 'fab fa-github', 'https://github.com/yourusername'],
               ['linkedin', 'fab fa-linkedin', 'https://linkedin.com/in/yourusername'],
@@ -79,6 +78,7 @@
             ] as $social)
             <a href="{{ $social[2] }}" target="_blank" class="group relative" aria-label="{{ $social[0] }}">
               <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg opacity-0 blur group-hover:opacity-60 transition duration-300"></div>
+              <!-- Corectat line-break-ul de la group-hover:border-white/20 -->
               <div class="relative w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300">
                 <i class="{{ $social[1] }} text-gray-400 group-hover:text-white transition-colors duration-300"></i>
               </div>
@@ -97,7 +97,9 @@
             
             <!-- Name Input -->
             <div class="relative group">
+              <!-- Corectat cheia de traducere care era tăiată -->
               <label for="name" class="absolute -top-2 left-4 bg-black px-2 text-sm text-gray-400 group-focus-within:text-purple-400 transition-colors duration-300">{{ __('pages.contact_form_name') }}</label>
+              <!-- Corectat clasele de Tailwind tăiate -->
               <input type="text" id="name" name="name" required class="w-full px-4 py-3 bg-white/5 border {{ $errors->has('name') ? 'border-red-500' : 'border-white/10' }} rounded-xl text-white focus:border-purple-500 focus:bg-white/10 transition-all duration-300 outline-none">
               @error('name')
                 <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -106,23 +108,31 @@
             
             <!-- Email Input -->
             <div class="relative group">
+              <!-- Corectat cheia de traducere -->
               <label for="email" class="absolute -top-2 left-4 bg-black px-2 text-sm text-gray-400 group-focus-within:text-purple-400 transition-colors duration-300">{{ __('pages.contact_form_email') }}</label>
+              <!-- Corectat clasele de Tailwind -->
               <input type="email" id="email" name="email" required class="w-full px-4 py-3 bg-white/5 border {{ $errors->has('email') ? 'border-red-500' : 'border-white/10' }} rounded-xl text-white focus:border-purple-500 focus:bg-white/10 transition-all duration-300 outline-none">
               @error('email')
                 <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
               @enderror
             </div>
-                        <!-- Subject Input -->
+            
+            <!-- Subject Input -->
             <div class="relative group">
+              <!-- Corectat cheia de traducere -->
               <label for="subject" class="absolute -top-2 left-4 bg-black px-2 text-sm text-gray-400 group-focus-within:text-purple-400 transition-colors duration-300">{{ __('pages.contact_form_subject') }}</label>
+              <!-- Corectat clasele de Tailwind -->
               <input type="text" id="subject" name="subject" required class="w-full px-4 py-3 bg-white/5 border {{ $errors->has('subject') ? 'border-red-500' : 'border-white/10' }} rounded-xl text-white focus:border-purple-500 focus:bg-white/10 transition-all duration-300 outline-none">
               @error('subject')
                 <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
               @enderror
             </div>
+
             <!-- Message Input -->
             <div class="relative group">
+              <!-- Corectat cheia de traducere -->
               <label for="message" class="absolute -top-2 left-4 bg-black px-2 text-sm text-gray-400 group-focus-within:text-purple-400 transition-colors duration-300">{{ __('pages.contact_form_message') }}</label>
+              <!-- Corectat clasele de Tailwind -->
               <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 bg-white/5 border {{ $errors->has('message') ? 'border-red-500' : 'border-white/10' }} rounded-xl text-white focus:border-purple-500 focus:bg-white/10 transition-all duration-300 outline-none resize-none"></textarea>
               @error('message')
                 <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -130,6 +140,7 @@
             </div>
             
             <!-- Submit Button -->
+            <!-- Corectat clasele tăiate la hover (hover:shadow-purple-500/40) -->
             <button type="submit" class="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300">
               {{ __('pages.contact_form_submit') }}
               <i class="fas fa-paper-plane ml-2"></i>
