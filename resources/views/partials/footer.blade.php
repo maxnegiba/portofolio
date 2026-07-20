@@ -33,7 +33,7 @@
       </div>
 
       <div>
-        <h4 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_quick_links') }}</h4>
+        <h2 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_quick_links') }}</h2>
         <ul class="space-y-3">
           <li>
             <a href="{{ route('home', app()->getLocale()) }}#about"  
@@ -60,7 +60,7 @@
       </div>
 
       <div>
-        <h4 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_technologies') }}</h4>
+        <h2 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_technologies') }}</h2>
         <ul class="space-y-3 text-gray-400">
           <li class="flex items-center space-x-2"><i class="fab fa-laravel text-red-500"></i><span>Laravel</span></li>
           <li class="flex items-center space-x-2"><i class="fab fa-vuejs text-green-500"></i><span>Vue.js</span></li>
@@ -71,7 +71,7 @@
       </div>
 
       <div>
-        <h4 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_connect') }}</h4>
+        <h2 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_connect') }}</h2>
         <p class="text-gray-400 mb-4">{{ __('pages.footer_connect_text') }}</p>
         <a href="{{ route('contact', app()->getLocale()) }}"  
            class="group relative inline-flex items-center space-x-2 w-full justify-center mb-4">

@@ -26,7 +26,7 @@
                     <article class="group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] transform hover:-translate-y-2">
                         @if($post->featured_image)
                             <div class="aspect-video overflow-hidden">
-                                <x-responsive-image :path="$post->featured_image" :alt="$post->getLocalizedTitle()" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                                <x-responsive-image :path="$post->featured_image" :alt="$post->getLocalizedTitle()" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                             </div>
                         @endif
                         <div class="p-6">
@@ -72,6 +72,7 @@
                                class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium text-sm group-hover:translate-x-1 transition-transform duration-300">
                                 {{-- Folosim cheia corectă din fișierul de limbă --}}
                                 {{ __('pages.blog.read_more') }}
+                                <span class="sr-only"> about {{ $post->getLocalizedTitle() }}</span>
                                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>

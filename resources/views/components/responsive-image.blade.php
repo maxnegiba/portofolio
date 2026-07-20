@@ -1,4 +1,4 @@
-@props(['path', 'alt' => '', 'class' => '', 'sizes' => '(max-width: 768px) 100vw, 50vw', 'width' => null, 'height' => null, 'loading' => 'lazy', 'fetchpriority' => 'auto'])
+@props(['path', 'alt' => '', 'class' => '', 'sizes' => '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', 'width' => null, 'height' => null, 'loading' => 'lazy', 'fetchpriority' => 'auto'])
 
 @if($path)
     @php
@@ -36,5 +36,6 @@
          @if($width) width="{{ $width }}" @endif
          @if($height) height="{{ $height }}" @endif
          loading="{{ $loading }}"
-         fetchpriority="{{ $fetchpriority }}">
+         fetchpriority="{{ $fetchpriority }}"
+         decoding="async">
 @endif
