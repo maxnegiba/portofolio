@@ -9,13 +9,12 @@ class BlogController extends Controller
     /**
      * Display a listing of the blog posts.
      *
-     * @param string $locale The current locale.
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index($locale, Request $request)
+    public function index(Request $request)
     {
-        app()->setLocale($locale);
+        $locale = app()->getLocale();
         
         $posts = BlogPost::published()
             ->with('user')
@@ -35,13 +34,12 @@ class BlogController extends Controller
     /**
      * Display the specified blog post.
      *
-     * @param string $locale The current locale.
      * @param string $slug The slug of the post.
      * @return \Illuminate\View\View
      */
-    public function show($locale, string $slug)
+    public function show(string $slug)
     {
-        app()->setLocale($locale);
+        $locale = app()->getLocale();
         
         // Căutare folosind slug-ul tradus
         $post = BlogPost::published()
@@ -62,12 +60,11 @@ class BlogController extends Controller
     /**
      * Display the blog feed (e.g., RSS).
      *
-     * @param string $locale The current locale.
      * @return \Illuminate\Http\Response
      */
-    public function feed($locale)
+    public function feed()
     {
-        app()->setLocale($locale);
+        $locale = app()->getLocale();
         
         $posts = BlogPost::published()
             ->latest('published_at')
@@ -81,12 +78,11 @@ class BlogController extends Controller
     /**
      * Display the blog sitemap.
      *
-     * @param string $locale The current locale.
      * @return \Illuminate\Http\Response
      */
-    public function sitemap($locale)
+    public function sitemap()
     {
-        app()->setLocale($locale);
+        $locale = app()->getLocale();
         
         $posts = BlogPost::published()
             ->latest('published_at')
