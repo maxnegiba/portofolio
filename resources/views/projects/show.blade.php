@@ -106,7 +106,7 @@
           <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-12 shadow-2xl border border-white/10">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10"></div>
             @if($project->thumbnail)
-                <x-responsive-image :path="$project->thumbnail" :alt="$project->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                <x-responsive-image :path="$project->thumbnail" :alt="$project->getLocalizedTitle()" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
             @else
                 <img src="{{ asset('img/default-thumbnail.jpg') }}" alt="{{ $project->getLocalizedTitle() }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
             @endif

@@ -26,7 +26,7 @@
             <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full animate-spin-slow"></div>
             <div class="hidden md:block absolute inset-1 bg-black rounded-full"></div>
             
-            <x-responsive-image path="img/avatar.webp" alt="avatar" fetchpriority="low" width="400" height="400" sizes="(max-width: 768px) 160px, 192px" class="absolute inset-0 md:inset-2 w-full h-full object-cover rounded-full border-2 border-black md:transform md:group-hover:scale-105 md:transition-transform md:duration-500" />
+            <x-responsive-image path="img/avatar.webp" alt="avatar" fetchpriority="high" loading="eager" width="400" height="400" sizes="(max-width: 768px) 160px, 192px" class="absolute inset-0 md:inset-2 w-full h-full object-cover rounded-full border-2 border-black md:transform md:group-hover:scale-105 md:transition-transform md:duration-500" />
             
             <div class="absolute bottom-0 right-0 md:bottom-2 md:right-2 flex items-center space-x-1 bg-black/80 backdrop-blur-sm px-2 md:px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.5)]">
               <div class="w-2 h-2 bg-green-500 rounded-full md:animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
@@ -197,7 +197,7 @@
       <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500">
         <div class="aspect-video relative overflow-hidden">
           @if($project->thumbnail)
-            <x-responsive-image :path="$project->thumbnail" :alt="$project->title" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" class="w-full h-full object-cover md:transform md:group-hover:scale-110 transition-transform duration-700" />
+            <x-responsive-image :path="$project->thumbnail" :alt="$project->title" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover md:transform md:group-hover:scale-110 transition-transform duration-700" />
           @else
           <div class="w-full h-full bg-gray-800 flex items-center justify-center">
             <i class="fas fa-code text-4xl text-gray-600"></i>
@@ -206,11 +206,16 @@
           <div class="absolute inset-0 bg-black/50 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
             <span class="px-6 py-2 bg-purple-600 rounded-full text-white text-sm font-medium transform md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300">
               {{ __('pages.projects_view_details') }}
+              <span class="sr-only"> about {{ $project->title }}</span>
             </span>
           </div>
         </div>
         <div class="p-6">
+          @if(!empty($project->title))
           <h3 class="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{{ $project->title }}</h3>
+          @else
+          <div class="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors"></div>
+          @endif
           <p class="text-gray-400 text-sm line-clamp-2 mb-4">{{ Str::limit(strip_tags($project->description), 100) }}</p>
           <div class="flex flex-wrap gap-2">
             @foreach(array_slice($project->tech ?? [], 0, 3) as $tech)
@@ -251,7 +256,7 @@
       <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->slug]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-500">
         <div class="aspect-video relative overflow-hidden">
           @if($post->featured_image)
-          <x-responsive-image :path="$post->featured_image" :alt="$post->title" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" class="w-full h-full object-cover md:transform md:group-hover:scale-110 transition-transform duration-700" />
+          <x-responsive-image :path="$post->featured_image" :alt="$post->title" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover md:transform md:group-hover:scale-110 transition-transform duration-700" />
           @else
           <div class="w-full h-full bg-gray-800 flex items-center justify-center">
             <i class="fas fa-newspaper text-4xl text-gray-600"></i>
@@ -268,7 +273,11 @@
           </div>
         </div>
         <div class="p-6">
+          @if(!empty($post->title))
           <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{{ $post->title }}</h3>
+          @else
+          <div class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors"></div>
+          @endif
           <p class="text-gray-400 text-sm line-clamp-3">{{ Str::limit(strip_tags($post->excerpt), 120) }}</p>
         </div>
       </a>
@@ -312,7 +321,7 @@
             {{ substr($testimonial->name, 0, 1) }}
           </div>
           <div class="ml-3">
-            <h4 class="text-white font-bold">{{ $testimonial->name }}</h4>
+            <h3 class="text-white font-bold">{{ $testimonial->name }}</h3>
             @if($testimonial->role)
             <p class="text-gray-400 text-sm">{{ $testimonial->role }}</p>
             @endif

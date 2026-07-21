@@ -73,7 +73,7 @@
                     <!-- Image Frame cu 3D tilt -->
                     <div class="relative rounded-3xl overflow-hidden transform-gpu transition-all duration-700 group-hover:rotate-y-6 shadow-2xl border border-white/10">
                         <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-transparent to-blue-600/20 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <x-responsive-image :path="$post->featured_image" :alt="$post->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000" />
+                        <x-responsive-image :path="$post->featured_image" :alt="$post->getLocalizedTitle()" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000" />
                     </div>
                 </div>
             @endif
@@ -246,7 +246,7 @@
                                 <!-- Featured Image -->
                                 @if($recentPost->featured_image)
                                     <div class="aspect-video overflow-hidden">
-                                        <x-responsive-image :path="$recentPost->featured_image" :alt="$recentPost->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                                        <x-responsive-image :path="$recentPost->featured_image" :alt="$recentPost->getLocalizedTitle()" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     </div>
                                 @endif
@@ -287,6 +287,7 @@
                                         <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $recentPost->getLocalizedSlug()]) }}"
                                            class="inline-flex items-center text-purple-400 hover:text-purple-300 text-sm font-medium group/btn">
                                             Read Article
+                                            <span class="sr-only"> about {{ $recentPost->getLocalizedTitle() }}</span>
                                             <svg class="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                             </svg>
