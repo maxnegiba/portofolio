@@ -33,7 +33,7 @@
   <div class="container relative z-10">
     <!-- Back Button -->
     <div class="mb-8">
-      <a href="{{ route('projects', app()->getLocale()) }}" class="group inline-flex items-center text-gray-400 hover:text-white transition-colors duration-300">
+      <a href="{{ route('projects') }}" class="group inline-flex items-center text-gray-400 hover:text-white transition-colors duration-300">
         <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform duration-300"></i>
         {{ __('pages.back') }}
       </a>

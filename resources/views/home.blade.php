@@ -62,14 +62,14 @@
         </p>
 
         <div class="flex flex-wrap justify-center gap-4 md:gap-6 md:animate-fade-in-up md:delay-600">
-          <a href="{{ route('projects', app()->getLocale()) }}" class="group relative">
+          <a href="{{ route('projects') }}" class="group relative">
             <div class="hidden md:block absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-70 blur group-hover:opacity-100 transition duration-300"></div>
             <button class="relative px-8 py-4 bg-gray-900 md:bg-black rounded-full text-white font-medium flex items-center space-x-3 md:group-hover:scale-105 transition-all duration-300 shadow-2xl">
               <span>{{ __('pages.see_work') }}</span>
               <i class="fas fa-arrow-right md:group-hover:translate-x-1 transition-transform duration-300"></i>
             </button>
           </a>
-          <a href="{{ route('contact', app()->getLocale()) }}" class="group px-8 py-4 rounded-full border-2 border-gray-700 text-gray-300 font-medium flex items-center space-x-3 hover:border-gray-500 hover:text-white hover:bg-white/5 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+          <a href="{{ route('contact') }}" class="group px-8 py-4 rounded-full border-2 border-gray-700 text-gray-300 font-medium flex items-center space-x-3 hover:border-gray-500 hover:text-white hover:bg-white/5 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]">
             <i class="far fa-envelope"></i>
             <span>{{ __('pages.hire_me') }}</span>
           </a>
@@ -164,7 +164,7 @@
           @endforeach
         </div>
         <div class="flex items-center space-x-6 pt-4">
-          <a href="{{ route('contact', app()->getLocale()) }}" class="group relative inline-flex items-center space-x-2">
+          <a href="{{ route('contact') }}" class="group relative inline-flex items-center space-x-2">
             <div class="hidden md:block absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-0 blur group-hover:opacity-60 transition duration-300"></div>
             <span class="relative px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full text-white font-medium md:group-hover:scale-105 transition-transform duration-300 shadow-[0_4px_20px_rgba(147,51,234,0.5)]">
               {{ __('pages.work_together') }}
@@ -194,7 +194,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       @foreach($projects as $project)
-      <a href="{{ route('project', ['locale' => app()->getLocale(), 'project' => $project]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500">
+      <a href="{{ route('project', $project) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500">
         <div class="aspect-video relative overflow-hidden">
           @if($project->thumbnail)
             <x-responsive-image :path="$project->thumbnail" :alt="$project->title" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover md:transform md:group-hover:scale-110 transition-transform duration-700" />
@@ -230,7 +230,7 @@
       @endforeach
     </div>
     <div class="text-center mt-12">
-      <a href="{{ route('projects', app()->getLocale()) }}" aria-label="{{ __('pages.see_work') }} - {{ __('pages.latest_projects_title') }}" class="inline-flex items-center space-x-2 text-purple-400 hover:text-white transition-colors">
+      <a href="{{ route('projects') }}" aria-label="{{ __('pages.see_work') }} - {{ __('pages.latest_projects_title') }}" class="inline-flex items-center space-x-2 text-purple-400 hover:text-white transition-colors">
         <span>{{ __('pages.see_work') }}</span>
         <i class="fas fa-arrow-right"></i>
       </a>
@@ -253,7 +253,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       @if(isset($blogPosts))
       @foreach($blogPosts as $post)
-      <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->slug]) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-500">
+      <a href="{{ route('blog.show', $post->slug) }}" class="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-500">
         <div class="aspect-video relative overflow-hidden">
           @if($post->featured_image)
           <x-responsive-image :path="$post->featured_image" :alt="$post->title" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover md:transform md:group-hover:scale-110 transition-transform duration-700" />
@@ -285,7 +285,7 @@
       @endif
     </div>
     <div class="text-center mt-12">
-      <a href="{{ route('blog.index', app()->getLocale()) }}" aria-label="{{ __('pages.blog.read_more') }} {{ __('pages.recent_articles_title') }}" class="inline-flex items-center space-x-2 text-blue-400 hover:text-white transition-colors">
+      <a href="{{ route('blog.index') }}" aria-label="{{ __('pages.blog.read_more') }} {{ __('pages.recent_articles_title') }}" class="inline-flex items-center space-x-2 text-blue-400 hover:text-white transition-colors">
         <span>{{ __('pages.blog.read_more') }}</span>
         <i class="fas fa-arrow-right"></i>
       </a>
@@ -358,7 +358,7 @@
         </div>
         @endif
 
-        <form action="{{ route('testimonials.store', app()->getLocale()) }}" method="POST" class="space-y-6">
+        <form action="{{ route('testimonials.store') }}" method="POST" class="space-y-6">
           @csrf
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>

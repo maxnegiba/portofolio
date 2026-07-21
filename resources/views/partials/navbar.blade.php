@@ -2,7 +2,7 @@
   <div class="container mx-auto px-4 flex justify-between items-center">
     <!-- Logo cu animație și gradient -->
     <!-- Logo cu imagine -->
-    <a href="{{ route('home', app()->getLocale()) }}" class="group flex items-center space-x-3 relative">
+    <a href="{{ route('home') }}" class="group flex items-center space-x-3 relative">
       <!-- Glow effect behind logo -->
       <div class="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       
@@ -25,7 +25,7 @@
     <!-- Desktop Navigation -->
     <div class="hidden md:flex items-center space-x-2 lg:space-x-6">
       <!-- Nav Links with modern hover effects -->
-      <a href="{{ route('home', app()->getLocale()) }}#about" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300"> <!-- CORECTAT: Link către #about pe homepage -->
+      <a href="{{ route('home') }}#about" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300"> <!-- CORECTAT: Link către #about pe homepage -->
         <span class="relative z-10 text-gray-300 group-hover:text-white transition-colors duration-300 font-medium">
           {{ __('pages.about_h1') }}
         </span>
@@ -34,7 +34,7 @@
         <!-- Bottom line indicator -->
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 group-hover:w-3/4 transition-all duration-300"></div>
       </a>
-      <a href="{{ route('projects', app()->getLocale()) }}" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
+      <a href="{{ route('projects') }}" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
         <span class="relative z-10 text-gray-300 group-hover:text-white transition-colors duration-300 font-medium">
           {{ __('pages.projects_h1') }}
         </span>
@@ -42,14 +42,14 @@
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 group-hover:w-3/4 transition-all duration-300"></div>
       </a>
       <!-- Link către blog -->
-      <a href="{{ route('blog.index', ['locale' => app()->getLocale()]) }}" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
+      <a href="{{ route('blog.index') }}" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
         <span class="relative z-10 text-gray-300 group-hover:text-white transition-colors duration-300 font-medium">
           Blog
         </span>
         <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 group-hover:w-3/4 transition-all duration-300"></div>
       </a>
-      <a href="{{ route('contact', app()->getLocale()) }}" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
+      <a href="{{ route('contact') }}" class="nav-link group relative px-4 py-2 overflow-hidden rounded-xl transition-all duration-300">
         <span class="relative z-10 text-gray-300 group-hover:text-white transition-colors duration-300 font-medium">
           {{ __('pages.contact_h1') }}
         </span>
@@ -67,18 +67,18 @@
         </button>
         <!-- Dropdown cu animație smooth -->
         <div class="absolute top-full right-0 mt-2 w-32 bg-black/90 backdrop-blur-xl rounded-xl shadow-2xl shadow-black/50 border border-white/10 py-1 opacity-0 invisible scale-95 transform origin-top-right transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:scale-100">
-          <a href="{{ route('home', 'en') }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ app()->getLocale() === 'en' ? 'text-white bg-white/5' : 'text-gray-400' }}">
+          <a href="{{ LaravelLocalization::getLocalizedURL('en', null, [], true) }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ app()->getLocale() === 'en' ? 'text-white bg-white/5' : 'text-gray-400' }}">
             <i class="fas fa-globe-americas text-lg"></i> <!-- CORECTAT: Iconiță Font Awesome -->
             <span class="font-medium">EN</span> <!-- CORECTAT: Cod limbă corect -->
           </a>
-          <a href="{{ route('home', 'ro') }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ app()->getLocale() === 'ro' ? 'text-white bg-white/5' : 'text-gray-400' }}">
+          <a href="{{ LaravelLocalization::getLocalizedURL('ro', null, [], true) }}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 transition-all duration-200 {{ app()->getLocale() === 'ro' ? 'text-white bg-white/5' : 'text-gray-400' }}">
             <i class="fas fa-globe-europe text-lg"></i> <!-- CORECTAT: Iconiță Font Awesome -->
             <span class="font-medium">RO</span> <!-- CORECTAT: Cod limbă corect -->
           </a>
         </div>
       </div>
       <!-- CTA Button (opțional) -->
-      <a href="{{ route('contact', app()->getLocale()) }}" class="ml-4 px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300">
+      <a href="{{ route('contact') }}" class="ml-4 px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300">
         Hire Me
       </a>
     </div>
@@ -95,20 +95,20 @@
   <!-- Mobile Menu cu design modern -->
   <div class="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10 opacity-0 invisible transform -translate-y-4 transition-all duration-300" id="mobile-menu">
     <div class="container mx-auto px-4 py-6 space-y-2">
-      <a href="{{ route('home', app()->getLocale()) }}#about" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group"> <!-- CORECTAT: Link către #about pe homepage -->
+      <a href="{{ route('home') }}#about" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group"> <!-- CORECTAT: Link către #about pe homepage -->
         <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span class="font-medium">{{ __('pages.about_h1') }}</span>
       </a>
-      <a href="{{ route('projects', app()->getLocale()) }}" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
+      <a href="{{ route('projects') }}" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
         <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span class="font-medium">{{ __('pages.projects_h1') }}</span>
       </a>
       <!-- Link către blog în meniul mobil -->
-      <a href="{{ route('blog.index', ['locale' => app()->getLocale()]) }}" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
+      <a href="{{ route('blog.index') }}" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
         <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span class="font-medium">Blog</span>
       </a>
-      <a href="{{ route('contact', app()->getLocale()) }}" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
+      <a href="{{ route('contact') }}" class="mobile-link flex items-center space-x-3 py-3 px-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300 group">
         <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span class="font-medium">{{ __('pages.contact_h1') }}</span>
       </a>
@@ -116,11 +116,11 @@
       <div class="pt-4 mt-4 border-t border-white/10">
         <p class="text-xs text-gray-500 uppercase tracking-wider mb-3 px-4">Language</p>
         <div class="grid grid-cols-2 gap-2">
-          <a href="{{ route('home', 'en') }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ app()->getLocale() === 'en' ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
+          <a href="{{ LaravelLocalization::getLocalizedURL('en', null, [], true) }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ app()->getLocale() === 'en' ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
             <i class="fas fa-globe-americas"></i> <!-- CORECTAT: Iconiță Font Awesome -->
             <span class="font-medium">EN</span> <!-- CORECTAT: Cod limbă corect -->
           </a>
-          <a href="{{ route('home', 'ro') }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ app()->getLocale() === 'ro' ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
+          <a href="{{ LaravelLocalization::getLocalizedURL('ro', null, [], true) }}" class="flex items-center justify-center space-x-2 py-3 rounded-xl bg-white/5 border {{ app()->getLocale() === 'ro' ? 'border-purple-500/50 text-white bg-purple-500/10' : 'border-white/10 text-gray-400' }} transition-all duration-300">
             <i class="fas fa-globe-europe"></i> <!-- CORECTAT: Iconiță Font Awesome -->
             <span class="font-medium">RO</span> <!-- CORECTAT: Cod limbă corect -->
           </a>
@@ -128,7 +128,7 @@
       </div>
       <!-- Mobile CTA -->
       <div class="pt-4">
-        <a href="{{ route('contact', app()->getLocale()) }}" class="block w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center font-medium shadow-lg shadow-purple-500/25">
+        <a href="{{ route('contact') }}" class="block w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center font-medium shadow-lg shadow-purple-500/25">
           Hire Me
         </a>
       </div>

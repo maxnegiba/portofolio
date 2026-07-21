@@ -46,13 +46,13 @@
             <nav class="mb-8 text-sm">
                 <ol class="flex items-center space-x-2 text-gray-400">
                     <li>
-                        <a href="{{ route('home', app()->getLocale()) }}" class="hover:text-white transition-colors">
+                        <a href="{{ route('home') }}" class="hover:text-white transition-colors">
                             <i class="fas fa-home mr-1"></i> Home
                         </a>
                     </li>
                     <li class="flex items-center">
                         <i class="fas fa-chevron-right mx-2 text-xs"></i>
-                        <a href="{{ route('blog.index', app()->getLocale()) }}" class="hover:text-white transition-colors">
+                        <a href="{{ route('blog.index') }}" class="hover:text-white transition-colors">
                             Blog
                         </a>
                     </li>
@@ -225,7 +225,7 @@
                             </span>
                         </h2>
                     </div>
-                    <a href="{{ route('blog.index', app()->getLocale()) }}" class="group relative inline-flex items-center space-x-2">
+                    <a href="{{ route('blog.index') }}" class="group relative inline-flex items-center space-x-2">
                         <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-0 blur group-hover:opacity-60 transition duration-300"></div>
                         <span class="relative px-6 py-2 bg-black border border-white/10 rounded-full text-gray-300 group-hover:text-white group-hover:border-white/20 font-medium transition-all duration-300">
                             {{ __('blog.view_all') }}
@@ -270,7 +270,7 @@
                                     
                                     <!-- Title -->
                                     <h3 class="text-lg font-bold text-white mb-3 group-hover:text-purple-400 transition-colors duration-300 line-clamp-2">
-                                        <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $recentPost->getLocalizedSlug()]) }}">
+                                        <a href="{{ route('blog.show', $recentPost->slug) }}">
                                             {{ $recentPost->getLocalizedTitle() }}
                                         </a>
                                     </h3>
@@ -284,7 +284,7 @@
                                     
                                     <!-- Read More Button -->
                                     <div class="mt-auto">
-                                        <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $recentPost->getLocalizedSlug()]) }}"
+                                        <a href="{{ route('blog.show', $recentPost->slug) }}"
                                            class="inline-flex items-center text-purple-400 hover:text-purple-300 text-sm font-medium group/btn">
                                             Read Article
                                             <span class="sr-only"> about {{ $recentPost->getLocalizedTitle() }}</span>

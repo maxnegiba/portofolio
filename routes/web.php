@@ -6,34 +6,33 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ImageController;
 use Livewire\Volt\Volt;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 // Optimized Images
 Route::get('/img/cache/{width}/{path}', [ImageController::class, 'show'])
     ->where('path', '.*')
     ->name('image.cache');
 
-// Redirect pentru rădăcină
-Route::redirect('/', '/en');
-
 // Grupul principal de rute localizate
-Route::prefix('{locale}')
-    ->where(['locale' => 'en|ro'])
-    ->group(function () {
-        // Pagini existente
-        Route::get('/', [HomeController::class, 'index'])->name('home');
-        Route::post('/testimonials', [HomeController::class, 'storeTestimonial'])->name('testimonials.store');
+Route::group([
+    'prefix' => LaravelLocalization::setLocale(),
+    'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+], function () {
+    // Pagini existente
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::post('/testimonials', [HomeController::class, 'storeTestimonial'])->name('testimonials.store');
 
-        Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
-        Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('project');
-        Route::get('/contact', fn () => view('contact'))->name('contact');
-        Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
-        
-        // Rute pentru blog - MODIFICATE
-        Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-        Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
-        Route::get('/blog/feed', [BlogController::class, 'feed'])->name('blog.feed');
-        Route::get('/blog/sitemap', [BlogController::class, 'sitemap'])->name('blog.sitemap');
-    });
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
+    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('project');
+    Route::get('/contact', fn () => view('contact'))->name('contact');
+    Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+    // Rute pentru blog
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+    Route::get('/blog/feed', [BlogController::class, 'feed'])->name('blog.feed');
+    Route::get('/blog/sitemap', [BlogController::class, 'sitemap'])->name('blog.sitemap');
+});
 
 // Dashboard & Settings (Outside locale prefix to match tests/legacy behavior)
 Route::middleware(['auth', 'verified'])->group(function () {

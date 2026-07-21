@@ -45,7 +45,7 @@
                                 @endif
                             </div>
                             <h2 class="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors duration-300 line-clamp-2">
-                                <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getLocalizedSlug()]) }}">
+                                <a href="{{ route('blog.show', $post->slug) }}">
                                     {{ $post->getLocalizedTitle() }}
                                 </a>
                             </h2>
@@ -68,7 +68,7 @@
                                     @endif
                                 </div>
                             @endif
-                            <a href="{{ route('blog.show', ['locale' => app()->getLocale(), 'slug' => $post->getLocalizedSlug()]) }}"
+                            <a href="{{ route('blog.show', $post->slug) }}"
                                class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium text-sm group-hover:translate-x-1 transition-transform duration-300">
                                 {{-- Folosim cheia corectă din fișierul de limbă --}}
                                 {{ __('pages.blog.read_more') }}

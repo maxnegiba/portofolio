@@ -1,7 +1,7 @@
 <?php
 
 test('returns a successful response', function () {
-    $response = $this->get('/en');
+    $response = $this->get('/');
 
     $response->assertStatus(200);
 });
