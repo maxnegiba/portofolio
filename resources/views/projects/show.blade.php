@@ -215,7 +215,7 @@
   </div>
 </div>
 
-<style>
+<style nonce="{{ app('csp-nonce') }}">
 @keyframes float-slow {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
@@ -286,7 +286,7 @@
 }
 </style>
 
-<script>
+<script nonce="{{ app('csp-nonce') }}">
 // Gallery Modal JavaScript
 let galleryImages = [];
 let galleryIndex = 0;

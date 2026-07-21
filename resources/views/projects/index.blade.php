@@ -238,7 +238,7 @@
     </div>
   </div>
 </div>
-<style>
+<style nonce="{{ app('csp-nonce') }}">
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -300,7 +300,7 @@
   background: linear-gradient(to bottom, #a855f7, #60a5fa);
 }
 </style>
-<script>
+<script nonce="{{ app('csp-nonce') }}">
 // JavaScript for Image Modal
 let currentImages = [];
 let currentIndex = 0;

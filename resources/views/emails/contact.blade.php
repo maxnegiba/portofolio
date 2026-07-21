@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mesaj de contact</title>
-    <style>
+    <style nonce="{{ app('csp-nonce') }}">
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background-color: #f8f9fa; padding: 20px; border-radius: 5px 5px 0 0; }

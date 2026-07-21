@@ -305,7 +305,7 @@
 
 
 <!-- CSS Suplimentar -->
-<style>
+<style nonce="{{ app('csp-nonce') }}">
 @keyframes gradient-x {
   0%, 100% {
     background-position: 0% 50%;
@@ -333,7 +333,7 @@
 .rotate-y-6 {
   transform: rotateY(6deg);
 }
-<style>
+<style nonce="{{ app('csp-nonce') }}">
 /* ... regulile tale existente ... */
 
 /* Stiluri pentru text luminos în conținutul articolului */

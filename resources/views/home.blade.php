@@ -565,7 +565,7 @@
   </div>
 </section>
 
-<style>
+<style nonce="{{ app('csp-nonce') }}">
 @keyframes float-slow {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
@@ -658,7 +658,7 @@
 ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #a78bfa, #60a5fa); }
 </style>
 
-<script>
+<script nonce="{{ app('csp-nonce') }}">
 document.addEventListener('DOMContentLoaded', function() {
   const isDesktop = window.innerWidth >= 768;
 
@@ -751,6 +751,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Particle Float Style
 const style = document.createElement('style');
+style.setAttribute('nonce', '{{ app('csp-nonce') }}');
 style.textContent = `@keyframes particle-float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }`;
 document.head.appendChild(style);
 </script>
