@@ -4,16 +4,14 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 class ProjectController extends Controller
 {
-    public function index($locale)
+    public function index()
     {
-        app()->setLocale($locale);
         $projects = Project::paginate(9);
         return view('projects.index', compact('projects'));
     }
     
-    public function show($locale, $slug)
+    public function show($slug)
     {
-        app()->setLocale($locale);
         $project = Project::where('slug', $slug)->firstOrFail();
         
         // Ensure tech is an array
