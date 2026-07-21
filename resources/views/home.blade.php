@@ -287,6 +287,7 @@
     <div class="text-center mt-12">
       <a href="{{ route('blog.index', app()->getLocale()) }}" aria-label="{{ __('pages.blog.read_more') }} {{ __('pages.recent_articles_title') }}" class="inline-flex items-center space-x-2 text-blue-400 hover:text-white transition-colors">
         <span>{{ __('pages.blog.read_more') }}</span>
+        <span class="sr-only"> about my latest web development articles</span>
         <i class="fas fa-arrow-right"></i>
       </a>
     </div>
