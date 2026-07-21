@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-16">
       
       <div class="flex flex-col space-y-6">
-        <a href="{{ route('home', app()->getLocale()) }}" class="flex items-center space-x-3">
+        <a href="{{ route('home') }}" class="flex items-center space-x-3">
           <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 p-[2px]">
             <div class="w-full h-full rounded-2xl bg-black flex items-center justify-center">
               <span class="text-white font-bold text-xl bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">N</span>
@@ -36,21 +36,21 @@
         <h2 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_quick_links') }}</h2>
         <ul class="space-y-3">
           <li>
-            <a href="{{ route('home', app()->getLocale()) }}#about"  
+            <a href="{{ route('home') }}#about"
                class="group flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-300">
               <i class="fas fa-chevron-right text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
               <span>{{ __('pages.about_h1') }}</span>
             </a>
           </li>
           <li>
-            <a href="{{ route('projects', app()->getLocale()) }}"  
+            <a href="{{ route('projects') }}"
                class="group flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-300">
               <i class="fas fa-chevron-right text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
               <span>{{ __('pages.projects_h1') }}</span>
             </a>
           </li>
           <li>
-            <a href="{{ route('contact', app()->getLocale()) }}"  
+            <a href="{{ route('contact') }}"
                class="group flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-300">
               <i class="fas fa-chevron-right text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
               <span>{{ __('pages.contact_h1') }}</span>
@@ -73,7 +73,7 @@
       <div>
         <h2 class="text-white font-semibold mb-6 text-lg">{{ __('pages.footer_connect') }}</h2>
         <p class="text-gray-400 mb-4">{{ __('pages.footer_connect_text') }}</p>
-        <a href="{{ route('contact', app()->getLocale()) }}"  
+        <a href="{{ route('contact') }}"
            class="group relative inline-flex items-center space-x-2 w-full justify-center mb-4">
           <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-70 blur group-hover:opacity-100 transition duration-300"></div>
           <div class="relative px-6 py-3 bg-black rounded-xl text-white font-medium w-full flex items-center justify-center">

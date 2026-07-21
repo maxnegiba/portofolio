@@ -14,7 +14,7 @@ class HomepageTest extends TestCase
 
     public function test_homepage_loads()
     {
-        $response = $this->get('/en');
+        $response = $this->get('/');
 
         $response->assertStatus(200);
         $response->assertViewIs('home');
@@ -24,7 +24,7 @@ class HomepageTest extends TestCase
     {
         Project::factory()->count(3)->create();
 
-        $response = $this->get('/en');
+        $response = $this->get('/');
 
         $response->assertStatus(200);
         $response->assertViewHas('projects');
@@ -34,7 +34,7 @@ class HomepageTest extends TestCase
     {
         BlogPost::factory()->count(3)->create(['is_published' => true, 'published_at' => now()]);
 
-        $response = $this->get('/en');
+        $response = $this->get('/');
 
         $response->assertStatus(200);
         $response->assertViewHas('blogPosts');
@@ -44,7 +44,7 @@ class HomepageTest extends TestCase
     {
         Testimonial::factory()->count(3)->create(['is_active' => true]);
 
-        $response = $this->get('/en');
+        $response = $this->get('/');
 
         $response->assertStatus(200);
         $response->assertViewHas('testimonials');
@@ -52,7 +52,7 @@ class HomepageTest extends TestCase
 
     public function test_store_testimonial()
     {
-        $response = $this->post('/en/testimonials', [
+        $response = $this->post('/testimonials', [
             'name' => 'John Doe',
             'role' => 'Developer',
             'content' => 'Great work!',

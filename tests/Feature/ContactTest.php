@@ -17,7 +17,7 @@ class ContactTest extends TestCase
         // Ensure mail driver is log so we don't actually send emails but still render the view
         Config::set('mail.default', 'log');
 
-        $response = $this->post('/ro/contact', [
+        $response = $this->post('/contact', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'subject' => 'Test Subject',

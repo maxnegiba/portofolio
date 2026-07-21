@@ -124,10 +124,7 @@
               <div class="flex items-center gap-3 mt-auto">
                 <!-- View Details -->
                 @if($canGenerateProjectUrl)
-                <a href="{{ route('project', [
-                      'locale'  => app()->getLocale(),
-                      'project' => $projectSlug,
-                ]) }}"
+                <a href="{{ route('project', $project) }}"
                   class="group/btn relative flex-1">
                   <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover/btn:opacity-70 blur transition-opacity duration-300">
                   </div>
@@ -199,7 +196,7 @@
     <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
       {{ __('pages.projects_cta_subtitle') }}
     </p>
-    <a href="{{ route('contact', app()->getLocale()) }}" class="group relative inline-block">
+    <a href="{{ route('contact') }}" class="group relative inline-block">
       <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-70 blur group-hover:opacity-100 transition duration-300"></div>
       <button class="relative px-8 py-4 bg-black rounded-full text-white font-medium flex items-center space-x-3 group-hover:scale-105 transition-transform duration-300">
         <span>{{ __('pages.projects_cta_button') }}</span>

@@ -92,7 +92,7 @@
       <div class="relative animate-fade-in-right delay-200">
         <!-- Form Card -->
         <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-lg shadow-purple-500/10">
-          <form action="{{ route('contact.submit', app()->getLocale()) }}" method="POST" class="space-y-6">
+          <form action="{{ route('contact.submit') }}" method="POST" class="space-y-6">
             @csrf
             
             <!-- Name Input -->
