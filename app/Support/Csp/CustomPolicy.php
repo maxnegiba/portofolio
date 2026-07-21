@@ -13,15 +13,14 @@ class CustomPolicy implements Preset
     {
         $policy
             ->add(Directive::BASE, Keyword::SELF)
-            ->add(Directive::CONNECT, Keyword::SELF)
+            ->add(Directive::CONNECT, [Keyword::SELF, 'https://stats.posesoart.ro'])
             ->add(Directive::FORM_ACTION, Keyword::SELF)
             ->add(Directive::IMG, [Keyword::SELF, 'data:', 'https:'])
             ->add(Directive::MEDIA, Keyword::SELF)
             ->add(Directive::OBJECT, Keyword::NONE)
-            ->add(Directive::FONT, [Keyword::SELF, 'data:', 'https://cdnjs.cloudflare.com'])
-            ->add(Directive::STYLE, [Keyword::SELF, 'https://cdnjs.cloudflare.com'])
+            ->add(Directive::FONT, [Keyword::SELF, 'data:', 'https://cdnjs.cloudflare.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'])
+            ->add(Directive::STYLE, [Keyword::SELF, 'https://cdnjs.cloudflare.com', Keyword::UNSAFE_INLINE])
             ->add(Directive::SCRIPT, [Keyword::SELF, Keyword::UNSAFE_EVAL, 'https://stats.posesoart.ro'])
-            ->addNonce(Directive::SCRIPT)
-            ->addNonce(Directive::STYLE);
+            ->addNonce(Directive::SCRIPT);
     }
 }
