@@ -7,7 +7,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
 <link rel="preload" href="{{ asset('fonts/instrument-sans-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
-<style>
+<style nonce="{{ app('csp-nonce') }}">
   @font-face {
     font-family: 'Instrument Sans';
     font-style: normal;
@@ -40,12 +40,13 @@
 
     @yield('meta')
 
+    @livewireStyles(['nonce' => app('csp-nonce')])
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preload" as="image" href="{{ asset('img/avatar-400.jpg') }}" fetchpriority="high">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
-<script>
+<script nonce="{{ app('csp-nonce') }}">
     // Amânăm încărcarea scriptului de analytics pentru a proteja scorul PageSpeed
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
@@ -68,5 +69,6 @@
     @include('partials.footer')
     
     @include('partials.floating-contacts')
+    @livewireScripts(['nonce' => app('csp-nonce')])
 </body>
 </html>

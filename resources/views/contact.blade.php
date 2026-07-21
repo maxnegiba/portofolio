@@ -166,7 +166,7 @@
 @endsection
 
 <!-- Adaugă stiluri custom pentru animații -->
-<style>
+<style nonce="{{ app('csp-nonce') }}">
 @keyframes pulse-slow {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }

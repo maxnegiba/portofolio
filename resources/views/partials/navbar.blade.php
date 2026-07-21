@@ -136,7 +136,7 @@
   </div>
 </nav>
 <!-- Script complet pentru funcționalitate -->
-<script>
+<script nonce="{{ app('csp-nonce') }}">
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');

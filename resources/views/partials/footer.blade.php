@@ -104,7 +104,7 @@
   </div>
 </footer>
 
-<style>
+<style nonce="{{ app('csp-nonce') }}">
 @keyframes float-slow {
   0%, 100% { transform: translateY(0px) scale(1); }
   50% { transform: translateY(-20px) scale(1.05); }
