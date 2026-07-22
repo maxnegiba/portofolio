@@ -42,7 +42,7 @@
 
     @livewireStyles(['nonce' => app('csp-nonce')])
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="preload" as="image" href="{{ asset('img/avatar-400.jpg') }}" fetchpriority="high">
+    <link rel="preload" as="image" type="image/webp" href="{{ asset('img/avatar.webp') }}" fetchpriority="high">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
