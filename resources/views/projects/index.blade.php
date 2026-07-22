@@ -231,7 +231,7 @@
       <!-- Carousel Container -->
       <<div class="relative w-full h-full">
          <template x-if="images.length > 0">
-             <img :src="images[currentIndex].includes('/') ? images[currentIndex] : '/storage/' + images[currentIndex]" :alt="`Image ${currentIndex + 1} for project`" class="w-full h-full object-contain">
+             <img :src="images[currentIndex].includes('/') ? images[currentIndex] : '/storage/projects/thumbnails/' + images[currentIndex]" :alt="`Image ${currentIndex + 1} for project`" class="w-full h-full object-contain">
          </template>
       </div>
       <!-- Navigation Arrows -->
