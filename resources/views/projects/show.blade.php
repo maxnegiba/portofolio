@@ -13,6 +13,7 @@
 @section('og:image', $thumbnail)
 
 @section('content')
+<div x-data="projectGallery()" class="contents">
 <!-- Project Detail Hero Section -->
 <section class="relative py-20 bg-black overflow-hidden">
   <!-- Animated Background -->
@@ -147,7 +148,7 @@
     <!-- Gallery Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @foreach($project->image_urls as $index => $imageUrl)
-        <div class="group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer" onclick="openGalleryModal({{ json_encode($project->image_urls) }}, {{ $index }}, '{{ addslashes($project->getLocalizedTitle()) }}')">
+        <div class="group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer" @click="openGallery({{ json_encode($project->image_urls) }}, '{{ addslashes($project->getLocalizedTitle()) }}', {{ $index }})">
           <!-- Glow Effect on Hover -->
           <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.3)] transition-all duration-500"></div>
           
@@ -182,37 +183,50 @@
 @endif
 
 <!-- Gallery Modal -->
-<div id="galleryModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+<div x-show="isOpen"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     @click.self="closeGallery()"
+     @keydown.escape.window="closeGallery()"
+     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+     style="display: none;">
   <div class="relative w-full max-w-6xl h-[90vh] flex flex-col">
     <!-- Modal Header -->
     <div class="flex justify-between items-center mb-4 px-2">
-      <h3 id="modalProjectTitle" class="text-2xl font-bold text-white truncate"></h3>
-      <button onclick="closeGalleryModal()" class="text-gray-400 hover:text-white text-2xl p-2 rounded-full hover:bg-white/10 transition-colors">
+      <h3 x-text="title" class="text-2xl font-bold text-white truncate"></h3>
+      <button @click="closeGallery()" class="text-gray-400 hover:text-white text-2xl p-2 rounded-full hover:bg-white/10 transition-colors">
         <i class="fas fa-times"></i>
       </button>
     </div>
     
     <!-- Modal Body - Image Carousel -->
-    <div class="relative flex-1 overflow-hidden rounded-2xl border border-white/10">
+    <div class="relative flex-1 overflow-hidden rounded-2xl border border-white/10 group">
       <!-- Carousel Container -->
-      <div id="galleryCarousel" class="relative w-full h-full">
-         <!-- Images will be injected here by JS -->
+      <div class="relative w-full h-full">
+         <template x-if="images.length > 0">
+             <img :src="images[currentIndex]" :alt="`Image ${currentIndex + 1}`" class="w-full h-full object-contain">
+         </template>
       </div>
       
       <!-- Navigation Arrows -->
-      <button id="prevGalleryBtn" onclick="changeGalleryImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-opacity">
+      <button @click="changeImage(-1)" x-show="images.length > 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
         <i class="fas fa-chevron-left"></i>
       </button>
-      <button id="nextGalleryBtn" onclick="changeGalleryImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-opacity">
+      <button @click="changeImage(1)" x-show="images.length > 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
         <i class="fas fa-chevron-right"></i>
       </button>
     </div>
     
     <!-- Modal Footer - Image Counter -->
     <div class="flex justify-center items-center mt-4 text-gray-400">
-      <span id="galleryImageCounter">1 / 1</span>
+      <span x-text="`${currentIndex + 1} / ${images.length}`"></span>
     </div>
   </div>
+</div>
 </div>
 
 <style nonce="{{ app('csp-nonce') }}">
@@ -248,25 +262,6 @@
   transform: rotateY(12deg);
 }
 
-/* Modal Styles */
-#galleryModal {
-    display: none; /* Hidden by default */
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#galleryModal.active {
-    display: flex;
-    opacity: 1;
-}
-
-/* Ensure image fills container while maintaining aspect ratio */
-#galleryCarousel img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
@@ -287,71 +282,36 @@
 </style>
 
 <script nonce="{{ app('csp-nonce') }}">
-// Gallery Modal JavaScript
-let galleryImages = [];
-let galleryIndex = 0;
-let galleryModal = document.getElementById('galleryModal');
-let galleryCarousel = document.getElementById('galleryCarousel');
-let galleryCounter = document.getElementById('galleryImageCounter');
-let galleryTitle = document.getElementById('modalProjectTitle');
-let prevBtn = document.getElementById('prevGalleryBtn');
-let nextBtn = document.getElementById('nextGalleryBtn');
+document.addEventListener('alpine:init', () => {
+    Alpine.data('projectGallery', () => ({
+        isOpen: false,
+        images: [],
+        currentIndex: 0,
+        title: '',
 
-function openGalleryModal(imageUrls, startIndex, projectTitle) {
-    if (!imageUrls || imageUrls.length === 0) return;
-    galleryImages = imageUrls;
-    galleryIndex = startIndex;
-    galleryTitle.textContent = projectTitle;
-    updateGalleryCarousel();
-    galleryModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
+        openGallery(imageUrls, projectTitle, startIndex = 0) {
+            if (!imageUrls || imageUrls.length === 0) return;
+            this.images = imageUrls;
+            this.currentIndex = startIndex;
+            this.title = projectTitle;
+            this.isOpen = true;
+            document.body.style.overflow = 'hidden';
+        },
 
-function closeGalleryModal() {
-    galleryModal.classList.remove('active');
-    galleryCarousel.innerHTML = '';
-    document.body.style.overflow = '';
-}
+        closeGallery() {
+            this.isOpen = false;
+            document.body.style.overflow = '';
+        },
 
-function changeGalleryImage(direction) {
-    galleryIndex += direction;
-    if (galleryIndex < 0) {
-        galleryIndex = galleryImages.length - 1;
-    } else if (galleryIndex >= galleryImages.length) {
-        galleryIndex = 0;
-    }
-    updateGalleryCarousel();
-}
-
-function updateGalleryCarousel() {
-    if (galleryImages.length === 0) return;
-    galleryCounter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
-    
-    let imgElement = galleryCarousel.querySelector('img');
-    if (!imgElement) {
-        imgElement = document.createElement('img');
-        imgElement.className = 'w-full h-full object-contain';
-        galleryCarousel.appendChild(imgElement);
-    }
-    imgElement.src = galleryImages[galleryIndex];
-    imgElement.alt = `Image ${galleryIndex + 1}`;
-    
-    prevBtn.style.display = galleryImages.length > 1 ? 'block' : 'none';
-    nextBtn.style.display = galleryImages.length > 1 ? 'block' : 'none';
-}
-
-// Close modal if clicked outside
-galleryModal?.addEventListener('click', function(event) {
-    if (event.target === galleryModal) {
-        closeGalleryModal();
-    }
-});
-
-// Close modal with Escape key
-document.addEventListener('keydown', function(event) {
-    if (event.key === "Escape" && galleryModal?.classList.contains('active')) {
-        closeGalleryModal();
-    }
+        changeImage(direction) {
+            this.currentIndex += direction;
+            if (this.currentIndex < 0) {
+                this.currentIndex = this.images.length - 1;
+            } else if (this.currentIndex >= this.images.length) {
+                this.currentIndex = 0;
+            }
+        }
+    }));
 });
 </script>
 @endsection

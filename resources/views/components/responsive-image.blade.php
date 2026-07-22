@@ -28,7 +28,9 @@
         $src = url("/img/cache/{$defaultWidth}/{$cleanPath}");
     @endphp
 
-    <img src="{{ $src }}"
+    <img x-data
+         x-on:error="$el.srcset = ''; $el.src = '{{ asset($cleanPath) }}'"
+         src="{{ $src }}"
          srcset="{{ $srcsetString }}"
          sizes="{{ $sizes }}"
          alt="{{ $alt }}"
