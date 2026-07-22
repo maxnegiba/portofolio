@@ -29,7 +29,7 @@
     @endphp
 
     <img x-data
-         x-on:error="$el.srcset = ''; $el.src = '{{ asset($cleanPath) }}'"
+         x-on:error.once="$el.srcset = ''; $el.src = '{{ asset($cleanPath) }}'"
          src="{{ $src }}"
          srcset="{{ $srcsetString }}"
          sizes="{{ $sizes }}"

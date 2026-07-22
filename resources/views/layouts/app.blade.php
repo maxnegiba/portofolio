@@ -44,8 +44,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preload" as="image" type="image/webp" href="{{ asset('img/avatar.webp') }}" fetchpriority="high">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script nonce="{{ app('csp-nonce') }}">
     // Amânăm încărcarea scriptului de analytics pentru a proteja scorul PageSpeed
     document.addEventListener('DOMContentLoaded', function() {

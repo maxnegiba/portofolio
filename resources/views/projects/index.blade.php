@@ -229,9 +229,9 @@
     <!-- Modal Body - Image Carousel -->
     <div class="relative flex-1 overflow-hidden rounded-2xl border border-white/10 group">
       <!-- Carousel Container -->
-      <div class="relative w-full h-full">
+      <<div class="relative w-full h-full">
          <template x-if="images.length > 0">
-             <img :src="images[currentIndex]" :alt="`Image ${currentIndex + 1} for project`" class="w-full h-full object-contain">
+             <img :src="images[currentIndex].includes('/') ? images[currentIndex] : '/storage/' + images[currentIndex]" :alt="`Image ${currentIndex + 1} for project`" class="w-full h-full object-contain">
          </template>
       </div>
       <!-- Navigation Arrows -->
