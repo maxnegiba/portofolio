@@ -20,6 +20,10 @@ class Project extends Model
         'github_url',
         'thumbnail',
         'images',
+        'category',
+        'problem',
+        'solution',
+        'business_result',
     ];
 
     protected $casts = [
@@ -337,6 +341,68 @@ class Project extends Model
         }
 
         // Fallback final
+        return '';
+    }
+
+    /**
+     * Get the localized problem with fallback
+     */
+    public function getLocalizedProblem()
+    {
+        return $this->getLocalizedNarrativeField('problem');
+    }
+
+    /**
+     * Get the localized solution with fallback
+     */
+    public function getLocalizedSolution()
+    {
+        return $this->getLocalizedNarrativeField('solution');
+    }
+
+    /**
+     * Get the localized business result with fallback
+     */
+    public function getLocalizedBusinessResult()
+    {
+        return $this->getLocalizedNarrativeField('business_result');
+    }
+
+    /**
+     * Helper to parse narrative JSON fields correctly.
+     */
+    protected function getLocalizedNarrativeField($field)
+    {
+        $rawValue = $this->getRawOriginal($field);
+        $locale = app()->getLocale();
+        $fallbackLocale = config('app.fallback_locale', 'en');
+
+        $dataArray = null;
+        if (is_string($rawValue)) {
+            $dataArray = json_decode($rawValue, true);
+        } elseif (is_array($rawValue)) {
+            $dataArray = $rawValue;
+        }
+
+        if (is_array($dataArray)) {
+            if (isset($dataArray[0]) && is_array($dataArray[0]) && isset($dataArray[0]['locale'])) {
+                foreach ($dataArray as $item) {
+                    if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
+                        return $item['value'];
+                    }
+                }
+                foreach ($dataArray as $item) {
+                    if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
+                        return $item['value'];
+                    }
+                }
+                if (isset($dataArray[0]['value'])) {
+                    return $dataArray[0]['value'];
+                }
+            } else {
+                return $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '';
+            }
+        }
         return '';
     }
 }
