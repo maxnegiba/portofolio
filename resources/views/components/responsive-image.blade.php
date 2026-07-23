@@ -1,8 +1,23 @@
-@props(['path', 'alt' => '', 'class' => '', 'sizes' => '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', 'width' => null, 'height' => null, 'loading' => 'lazy', 'fetchpriority' => 'auto'])
+@props([
+    'path' => null,
+    'src' => null,
+    'alt' => '',
+    'class' => '',
+    'sizes' => '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
+    'width' => null,
+    'height' => null,
+    'loading' => 'lazy',
+    'fetchpriority' => 'auto'
+])
 
-@if($path)
+@php
+    $imagePath = $path ?? $src;
+@endphp
+
+@if($imagePath)
     @php
-        $cleanPath = $path;
+        $cleanPath = $imagePath;
+        
         // Remove /storage/ prefix if present
         if (str_starts_with($cleanPath, '/storage/')) {
             $cleanPath = substr($cleanPath, 9);
@@ -13,9 +28,7 @@
         // Remove leading slash if any (for clean URL construction)
         $cleanPath = ltrim($cleanPath, '/');
 
-        // We use url() instead of route() to prevent slash encoding in the path parameter
-        // Route is /img/cache/{width}/{path}
-
+        // Build srcset using cache routes
         $widths = [300, 400, 600, 800, 1000, 1200];
         $srcsetParts = [];
         foreach ($widths as $w) {
@@ -25,12 +38,12 @@
         $srcsetString = implode(', ', $srcsetParts);
 
         $defaultWidth = $width ? (int)$width : 800;
-        $src = url("/img/cache/{$defaultWidth}/{$cleanPath}");
+        $srcUrl = url("/img/cache/{$defaultWidth}/{$cleanPath}");
     @endphp
 
     <img x-data
          x-on:error.once="$el.srcset = ''; $el.src = '{{ asset(str_starts_with($cleanPath, 'img/') ? $cleanPath : 'img/' . $cleanPath) }}'"
-         src="{{ $src }}"
+         src="{{ $srcUrl }}"
          srcset="{{ $srcsetString }}"
          sizes="{{ $sizes }}"
          alt="{{ $alt }}"
