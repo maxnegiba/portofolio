@@ -39,6 +39,13 @@ class ProjectResource extends Resource
                                     ->required()
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(255),
+                                Select::make('category')
+                                    ->options([
+                                        'web_platform' => 'Enterprise Web Apps',
+                                        'automation' => 'Workflow Automations'
+                                    ])
+                                    ->required()
+                                    ->default('web_platform'),
                                 TextInput::make('live_url')
                                     ->label('Live Demo URL')
                                     ->url(),
@@ -116,6 +123,67 @@ class ProjectResource extends Resource
                             ),
                     ]),
 
+                Section::make('Case Study Narrative')
+                    ->schema([
+                        Repeater::make('problem')
+                            ->label('Problem Translations')
+                            ->schema([
+                                TextInput::make('locale')
+                                    ->label('Language Code')
+                                    ->required()
+                                    ->maxLength(10),
+                                RichEditor::make('value')
+                                    ->label('Translated Problem')
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->default(
+                                array_map(
+                                    fn($loc) => ['locale' => $loc, 'value' => ''],
+                                    config('app.available_locales', ['en'])
+                                )
+                            ),
+                        Repeater::make('solution')
+                            ->label('Solution Translations')
+                            ->schema([
+                                TextInput::make('locale')
+                                    ->label('Language Code')
+                                    ->required()
+                                    ->maxLength(10),
+                                RichEditor::make('value')
+                                    ->label('Translated Solution')
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->default(
+                                array_map(
+                                    fn($loc) => ['locale' => $loc, 'value' => ''],
+                                    config('app.available_locales', ['en'])
+                                )
+                            ),
+                        Repeater::make('business_result')
+                            ->label('Business Result Translations')
+                            ->schema([
+                                TextInput::make('locale')
+                                    ->label('Language Code')
+                                    ->required()
+                                    ->maxLength(10),
+                                RichEditor::make('value')
+                                    ->label('Translated Business Result')
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->default(
+                                array_map(
+                                    fn($loc) => ['locale' => $loc, 'value' => ''],
+                                    config('app.available_locales', ['en'])
+                                )
+                            ),
+                    ]),
+
                 Section::make('Tech Stack')
                     ->schema([
                         TagsInput::make('tech')
@@ -156,6 +224,20 @@ class ProjectResource extends Resource
         // Modelul se va ocupa de encodarea în JSON pentru BD
         if (!isset($data['tech']) || !is_array($data['tech'])) {
             $data['tech'] = [];
+        }
+
+                // Transform narrative repeaters
+        $narrativeFields = ['problem', 'solution', 'business_result'];
+        foreach ($narrativeFields as $field) {
+            if (isset($data[$field]) && is_array($data[$field])) {
+                $translations = [];
+                foreach ($data[$field] as $item) {
+                    if (isset($item['locale']) && isset($item['value'])) {
+                        $translations[$item['locale']] = $item['value'];
+                    }
+                }
+                $data[$field] = $translations;
+            }
         }
 
         return $data;
@@ -207,6 +289,45 @@ class ProjectResource extends Resource
                 }
             }
             $data['description'] = $descArray;
+        }
+
+                // Transform narrative repeaters
+        $narrativeFields = ['problem', 'solution', 'business_result'];
+        foreach ($narrativeFields as $field) {
+            if (isset($data[$field]) && is_array($data[$field])) {
+                $translations = [];
+                foreach ($data[$field] as $item) {
+                    if (isset($item['locale']) && isset($item['value'])) {
+                        $translations[$item['locale']] = $item['value'];
+                    }
+                }
+                $data[$field] = $translations;
+            }
+        }
+
+                // Transform narrative repeaters
+        $narrativeFields = ['problem', 'solution', 'business_result'];
+        foreach ($narrativeFields as $field) {
+            if (isset($data[$field])) {
+                $rawVal = $data[$field];
+                $arr = [];
+
+                if (is_array($rawVal)) {
+                    foreach($rawVal as $locale => $value) {
+                        $arr[] = ['locale' => $locale, 'value' => $value];
+                    }
+                } elseif (is_string($rawVal)) {
+                    $decoded = json_decode($rawVal, true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                        foreach($decoded as $locale => $value) {
+                            $arr[] = ['locale' => $locale, 'value' => $value];
+                        }
+                    } else {
+                        $arr[] = ['locale' => app()->getLocale(), 'value' => $rawVal];
+                    }
+                }
+                $data[$field] = $arr;
+            }
         }
 
         return $data;
