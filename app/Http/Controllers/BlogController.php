@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
+use Artesaos\SEOTools\Facades\SEOTools as SEO;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -28,6 +30,8 @@ class BlogController extends Controller
             ->latest('published_at')
             ->paginate(6);
             
+        SEO::setTitle('Blog');
+        SEO::setDescription(__('pages.hero_subtitle'));
         return view('blog.index', compact('posts'));
     }
 
@@ -54,6 +58,13 @@ class BlogController extends Controller
             ->limit(3)
             ->get();
             
+        SEO::setTitle($post->getLocalizedTitle());
+        SEO::setDescription(Str::limit(strip_tags($post->getTranslation('excerpt', app()->getLocale())), 160));
+        SEO::opengraph()->setType('article');
+
+        $imageUrl = $post->image ? (str_starts_with($post->image, 'http') ? $post->image : asset('storage/' . $post->image)) : asset('img/avatar.jpg');
+        SEO::addImages([$imageUrl]);
+
         return view('blog.show', compact('post', 'recentPosts'));
     }
 

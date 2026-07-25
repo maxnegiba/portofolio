@@ -2,17 +2,13 @@
 
 @php
     $imageUrl = $post->image_url;
-    if ($imageUrl && !Str::startsWith($imageUrl, ['http://', 'https://'])) {
+    if ($imageUrl && !\Illuminate\Support\Str::startsWith($imageUrl, ['http://', 'https://'])) {
         $imageUrl = asset($imageUrl);
     }
     // Fallback if no image is available
     $imageUrl = $imageUrl ?? asset('img/avatar.jpg');
 @endphp
 
-@section('og:title', $post->getLocalizedTitle())
-@section('og:description', Str::limit(strip_tags($post->getTranslation('excerpt', app()->getLocale())), 160))
-@section('og:image', $imageUrl)
-@section('og:type', 'article')
 
 @section('meta')
     <meta property="article:published_time" content="{{ $post->published_at->toIso8601String() }}">
