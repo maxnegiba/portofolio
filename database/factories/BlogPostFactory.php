@@ -25,8 +25,6 @@ class BlogPostFactory extends Factory
             'featured_image' => fake()->imageUrl(),
             'is_published' => fake()->boolean(),
             'published_at' => fake()->dateTime(),
-            'meta_keywords' => fake()->words(3),
-            'meta_description' => fake()->paragraph(),
             'user_id' => User::factory(),
         ];
     }

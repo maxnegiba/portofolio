@@ -20,20 +20,16 @@ class BlogPost extends Model
         'featured_image',
         'is_published',
         'published_at',
-        'meta_keywords',
-        'meta_description',
         'user_id',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
-        'meta_keywords' => 'array',
         'title' => 'array',
         'slug' => 'array',
         'excerpt' => 'array',
         'content' => 'array',
-        'meta_description' => 'array',
     ];
 
     public $translatable = [
@@ -41,7 +37,6 @@ class BlogPost extends Model
         'slug',
         'excerpt',
         'content',
-        'meta_description',
     ];
 
     public function user()

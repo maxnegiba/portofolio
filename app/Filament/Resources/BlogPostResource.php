@@ -92,34 +92,6 @@ class BlogPostResource extends Resource
                                 // ========================
                             ]),
                         // =====================================================
-                        // === Secțiunea SEO/Meta cu Tabs pentru traduceri ===
-                        Forms\Components\Section::make(__('blog.seo_meta_section'))
-                            ->schema([
-                                Tabs::make('Meta Translations')
-                                    ->tabs(
-                                        array_map(function (string $locale) {
-                                            return Tab::make(Str::upper($locale) . ' Meta')
-                                                ->schema([
-                                                    Forms\Components\Textarea::make("meta_description.{$locale}")
-                                                        ->label(__('blog.meta_description_label') . " ({$locale})")
-                                                        ->maxLength(160)
-                                                        ->helperText(__('blog.meta_description_helper')),
-                                                    // Dacă vrei meta_keywords tradus, aplică același principiu cu Tabs aici
-                                                    // Forms\Components\TagsInput::make("meta_keywords.{$locale}")
-                                                    //     ->label(__('blog.meta_keywords_label') . " ({$locale})")
-                                                    //     ->placeholder(__('blog.meta_keywords_placeholder'))
-                                                    //     ->helperText(__('blog.meta_keywords_helper')),
-                                                ]);
-                                        }, config('app.available_locales', ['en']))
-                                    )
-                                    ->columnSpanFull(),
-                                // Dacă meta_keywords NU e tradus, îl pui aici:
-                                Forms\Components\TagsInput::make('meta_keywords')
-                                    ->label(__('blog.meta_keywords_label'))
-                                    ->placeholder(__('blog.meta_keywords_placeholder'))
-                                    ->helperText(__('blog.meta_keywords_helper')),
-                            ]),
-                        // ====================================================
                     ])
                     ->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
