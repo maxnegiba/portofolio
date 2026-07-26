@@ -15,11 +15,12 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\RichEditor; // <--- Importul lipsă adăugat aici
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Columns\BadgeColumn;
-use Filament\Forms\Components\Select;
 
 class ProjectResource extends Resource
 {
@@ -227,7 +228,7 @@ class ProjectResource extends Resource
             $data['tech'] = [];
         }
 
-                // Transform narrative repeaters
+        // Transform narrative repeaters
         $narrativeFields = ['problem', 'solution', 'business_result'];
         foreach ($narrativeFields as $field) {
             if (isset($data[$field]) && is_array($data[$field])) {
@@ -292,21 +293,7 @@ class ProjectResource extends Resource
             $data['description'] = $descArray;
         }
 
-                // Transform narrative repeaters
-        $narrativeFields = ['problem', 'solution', 'business_result'];
-        foreach ($narrativeFields as $field) {
-            if (isset($data[$field]) && is_array($data[$field])) {
-                $translations = [];
-                foreach ($data[$field] as $item) {
-                    if (isset($item['locale']) && isset($item['value'])) {
-                        $translations[$item['locale']] = $item['value'];
-                    }
-                }
-                $data[$field] = $translations;
-            }
-        }
-
-                // Transform narrative repeaters
+        // Transform narrative repeaters (eliminat codul duplicat pentru curățenie)
         $narrativeFields = ['problem', 'solution', 'business_result'];
         foreach ($narrativeFields as $field) {
             if (isset($data[$field])) {
