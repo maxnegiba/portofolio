@@ -11,6 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // 1. Acceptăm headerele de la Cloudflare
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             \Spatie\Csp\AddCspHeaders::class,
         ]);
