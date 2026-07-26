@@ -26,11 +26,15 @@ class Project extends Model
         'business_result',
     ];
 
+    // Aici lipseau câmpurile narative noi! Acum Filament știe să le decodeze.
     protected $casts = [
         'title' => 'array',
         'description' => 'array',
         'images' => 'array',
         'tech' => 'array',
+        'problem' => 'array',
+        'solution' => 'array',
+        'business_result' => 'array',
     ];
 
     /**
