@@ -8,8 +8,8 @@
     <div class="absolute bottom-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
   </div>
 
-  <div class="container relative z-10">
-    <div class="max-w-4xl mx-auto text-center">
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
       <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-white animate-fade-in-up">
         B2B <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Case Studies</span>
       </h1>
@@ -22,7 +22,7 @@
 
 <!-- Portfolio Grid Section -->
 <section class="py-16 lg:py-24 bg-black relative" id="portfolio">
-  <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ activeTab: 'web_platform' }">
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ activeTab: 'web_platform' }">
     <!-- Category Navigation -->
     <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-20 animate-fade-in-up delay-400">
         <button @click="activeTab = 'web_platform'"

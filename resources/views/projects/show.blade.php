@@ -12,8 +12,8 @@
     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/50"></div>
   </div>
   
-  <div class="container relative z-10">
-    <div class="max-w-4xl mx-auto text-center">
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
       <!-- Category Badge -->
       <span class="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-sm font-medium text-purple-400 mb-8 animate-fade-in-up">
         {{ $project->category === 'automation' ? 'Workflow Automation' : 'Enterprise Web App' }}
@@ -39,8 +39,8 @@
 
 <!-- Content Section -->
 <section class="py-16 lg:py-24 bg-black text-gray-300">
-  <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6">
       
       <!-- Actions -->
       <div class="flex flex-wrap items-center gap-4 mb-16 pb-8 border-b border-white/10">
