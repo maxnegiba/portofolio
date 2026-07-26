@@ -21,8 +21,8 @@
 </section>
 
 <!-- Portfolio Grid Section -->
-<section class="py-24 bg-black relative" id="portfolio">
-  <div class="container" x-data="{ activeTab: 'web_platform' }">
+<section class="py-16 lg:py-24 bg-black relative" id="portfolio">
+  <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ activeTab: 'web_platform' }">
     <!-- Category Navigation -->
     <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-20 animate-fade-in-up delay-400">
         <button @click="activeTab = 'web_platform'"
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Web Platforms Grid -->
-    <div x-show="activeTab === 'web_platform'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div x-show="activeTab === 'web_platform'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
         @forelse($projects->get('web_platform', []) as $project)
             @include('components.project-card', ['project' => $project])
         @empty
@@ -52,7 +52,7 @@
     </div>
 
     <!-- Automations Grid -->
-    <div x-show="activeTab === 'automation'" style="display: none;" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div x-show="activeTab === 'automation'" style="display: none;" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
         @forelse($projects->get('automation', []) as $project)
             @include('components.project-card', ['project' => $project])
         @empty

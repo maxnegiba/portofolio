@@ -38,8 +38,8 @@
 </section>
 
 <!-- Content Section -->
-<section class="py-20 bg-black text-gray-300">
-  <div class="container">
+<section class="py-16 lg:py-24 bg-black text-gray-300">
+  <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto">
       
       <!-- Actions -->
@@ -111,21 +111,21 @@
 
       </div>
 
-      <!-- Gallery -->
-      @if($project->image_urls && count($project->image_urls) > 0)
-        <div class="mt-24 pt-16 border-t border-white/10">
-          <h3 class="text-2xl font-bold text-white mb-8">Project Gallery</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @foreach($project->image_urls as $imgUrl)
-              <a href="{{ $imgUrl }}" target="_blank" class="block rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-colors bg-white/5">
-                <img src="{{ $imgUrl }}" alt="Gallery Image" class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-500">
-              </a>
-            @endforeach
-          </div>
-        </div>
-      @endif
-
     </div>
+
+    <!-- Gallery outside max-w-4xl but inside max-w-7xl -->
+    @if($project->image_urls && count($project->image_urls) > 0)
+      <div class="mt-24 pt-16 border-t border-white/10">
+        <h3 class="text-2xl font-bold text-white mb-8 text-center">Project Gallery</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @foreach($project->image_urls as $imgUrl)
+            <a href="{{ $imgUrl }}" target="_blank" class="block rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-colors shadow-2xl bg-white/5 group">
+              <img src="{{ $imgUrl }}" alt="Gallery Image" class="w-full aspect-video object-cover transform group-hover:scale-105 transition-transform duration-500">
+            </a>
+          @endforeach
+        </div>
+      </div>
+    @endif
   </div>
 </section>
 

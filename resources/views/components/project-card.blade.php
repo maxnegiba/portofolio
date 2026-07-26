@@ -11,7 +11,7 @@
 @endphp
 
 <div class="bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-500 group flex flex-col h-full hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] animate-fade-in-up">
-    <div class="relative h-64 overflow-hidden bg-black/50">
+    <div class="relative aspect-video overflow-hidden bg-black/50">
         <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/20 to-transparent z-10"></div>
         @if($project->thumbnail_url)
             <x-responsive-image :path="$project->thumbnail_url" :alt="$project->getLocalizedTitle()" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out" />

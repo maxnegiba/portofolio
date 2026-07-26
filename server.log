@@ -3,10 +3,91 @@
 
   Press Ctrl+C to stop the server
 
-  2026-07-26 08:22:55 /admin ..................................... ~ 500.46ms
-  2026-07-26 08:23:09 /admin/login ............................... ~ 500.36ms
-  2026-07-26 08:23:16 /admin/login ............................... ~ 500.41ms
-  2026-07-26 08:23:37 /admin/login ................................. ~ 0.12ms
-  2026-07-26 08:23:43 /admin/login ................................. ~ 0.11ms
-  2026-07-26 08:23:50 / ............................................ ~ 0.11ms
-  2026-07-26 08:24:02 /admin/login ............................... ~ 500.38ms
+  2026-07-26 10:10:05 /en/projects ..................................... ~ 1s
+  2026-07-26 10:10:06 /projects .................................... ~ 0.04ms
+  2026-07-26 10:10:06 /livewire/livewire.js ........................ ~ 0.13ms
+  2026-07-26 10:10:06 /fonts/instrument-sans-normal.woff2 .......... ~ 0.42ms
+  2026-07-26 10:10:06 /build/assets/app-mZnyUO5z.js ................ ~ 0.55ms
+  2026-07-26 10:10:06 /build/assets/app-CxQKvR2O.css ............... ~ 0.74ms
+  2026-07-26 10:10:06 /img/logo.webp ............................... ~ 0.03ms
+  2026-07-26 10:10:06 /img/cache/600/img/projects/ecommerce.jpg .... ~ 0.11ms
+  2026-07-26 10:10:06 /img/cache/600/img/projects/tasks.jpg ........ ~ 0.27ms
+  2026-07-26 10:10:07 /img/projects/ecommerce.jpg .................. ~ 0.14ms
+  2026-07-26 10:10:07 /img/projects/tasks.jpg ...................... ~ 0.03ms
+  2026-07-26 10:10:10 /en/blog ..................................... ~ 0.11ms
+  2026-07-26 10:10:10 /blog ........................................ ~ 0.08ms
+  2026-07-26 10:10:10 /fonts/instrument-sans-normal.woff2 .......... ~ 0.07ms
+  2026-07-26 10:10:10 /build/assets/app-CxQKvR2O.css ............... ~ 0.33ms
+  2026-07-26 10:10:10 /build/assets/app-mZnyUO5z.js ................ ~ 0.52ms
+  2026-07-26 10:10:10 /img/logo.webp ............................... ~ 0.04ms
+  2026-07-26 10:11:07 /en/projects ................................. ~ 0.11ms
+  2026-07-26 10:11:07 /projects .................................... ~ 0.03ms
+  2026-07-26 10:11:07 /livewire/livewire.js ........................ ~ 0.05ms
+  2026-07-26 10:11:07 /build/assets/app-CxQKvR2O.css ............... ~ 0.28ms
+  2026-07-26 10:11:07 /fonts/instrument-sans-normal.woff2 .......... ~ 0.43ms
+  2026-07-26 10:11:07 /build/assets/app-mZnyUO5z.js ................ ~ 0.54ms
+  2026-07-26 10:11:07 /img/logo.webp ............................... ~ 0.03ms
+  2026-07-26 10:11:07 /img/cache/600/img/projects/ecommerce.jpg .... ~ 0.11ms
+  2026-07-26 10:11:07 /img/cache/600/img/projects/tasks.jpg ........ ~ 0.23ms
+  2026-07-26 10:11:07 /img/projects/ecommerce.jpg .................. ~ 0.04ms
+  2026-07-26 10:11:07 /img/projects/tasks.jpg ...................... ~ 0.26ms
+  2026-07-26 10:11:10 /en/blog ..................................... ~ 0.10ms
+  2026-07-26 10:11:10 /blog ........................................ ~ 0.06ms
+  2026-07-26 10:11:10 /fonts/instrument-sans-normal.woff2 .......... ~ 0.07ms
+  2026-07-26 10:11:10 /build/assets/app-mZnyUO5z.js ................ ~ 0.19ms
+  2026-07-26 10:11:10 /build/assets/app-CxQKvR2O.css ............... ~ 0.35ms
+  2026-07-26 10:11:10 /img/logo.webp ............................... ~ 0.03ms
+  2026-07-26 10:11:13 /en/projects/digital-transformation-suite .... ~ 0.26ms
+  2026-07-26 10:11:13 /projects/digital-transformation-suite ....... ~ 0.10ms
+  2026-07-26 10:11:15 /en/blog/scaling-your-business-with-workflow-automation  ~ 0.10ms
+  2026-07-26 10:11:15 /blog/scaling-your-business-with-workflow-automation  ~ 0.03ms
+  2026-07-26 10:12:05 /en/projects ................................. ~ 0.14ms
+  2026-07-26 10:12:05 /projects .................................... ~ 0.03ms
+  2026-07-26 10:12:05 /livewire/livewire.js ........................ ~ 0.03ms
+  2026-07-26 10:12:05 /fonts/instrument-sans-normal.woff2 .......... ~ 0.25ms
+  2026-07-26 10:12:05 /build/assets/app-mZnyUO5z.js ................ ~ 0.41ms
+  2026-07-26 10:12:05 /build/assets/app-CxQKvR2O.css ............... ~ 0.58ms
+  2026-07-26 10:12:05 /img/logo.webp ............................... ~ 0.11ms
+  2026-07-26 10:12:05 /img/cache/600/img/projects/ecommerce.jpg .... ~ 0.04ms
+  2026-07-26 10:12:05 /img/cache/600/img/projects/tasks.jpg ........ ~ 0.12ms
+  2026-07-26 10:12:06 /img/projects/ecommerce.jpg .................. ~ 0.03ms
+  2026-07-26 10:12:06 /img/projects/tasks.jpg ...................... ~ 0.20ms
+  2026-07-26 10:12:08 /en/blog ..................................... ~ 0.10ms
+  2026-07-26 10:12:08 /blog ........................................ ~ 0.03ms
+  2026-07-26 10:12:08 /fonts/instrument-sans-normal.woff2 .......... ~ 0.09ms
+  2026-07-26 10:12:08 /build/assets/app-mZnyUO5z.js ................ ~ 0.21ms
+  2026-07-26 10:12:08 /build/assets/app-CxQKvR2O.css ............... ~ 0.37ms
+  2026-07-26 10:12:08 /img/logo.webp ............................... ~ 0.03ms
+  2026-07-26 10:12:08 /img/cache/600/https://via.placeholder.com/640x480.png/00ddee  ~ 500.46ms
+  2026-07-26 10:12:08 /img/cache/600/https://via.placeholder.com/640x480.png/006633  ~ 500.65ms
+  2026-07-26 10:12:08 /img/cache/600/https://via.placeholder.com/640x480.png/001100  ~ 0.10ms
+  2026-07-26 10:12:08 /img/https://via.placeholder.com/640x480.png/00ddee  ~ 0.03ms
+  2026-07-26 10:12:08 /img/https://via.placeholder.com/640x480.png/006633  ~ 0.09ms
+  2026-07-26 10:12:08 /img/https://via.placeholder.com/640x480.png/001100  ~ 0.08ms
+  2026-07-26 10:12:11 /en/projects/digital-transformation-suite .... ~ 0.10ms
+  2026-07-26 10:12:11 /projects/digital-transformation-suite ....... ~ 0.03ms
+  2026-07-26 10:12:13 /en/blog/scaling-your-business-with-workflow-automation  ~ 500.48ms
+  2026-07-26 10:12:13 /blog/scaling-your-business-with-workflow-automation  ~ 0.03ms
+  2026-07-26 10:13:51 /en/projects/ecommerce-platform .............. ~ 0.17ms
+  2026-07-26 10:13:51 /projects/ecommerce-platform ................. ~ 0.07ms
+  2026-07-26 10:13:51 /fonts/instrument-sans-normal.woff2 .......... ~ 0.09ms
+  2026-07-26 10:13:51 /build/assets/app-CxQKvR2O.css ............... ~ 0.34ms
+  2026-07-26 10:13:51 /livewire/livewire.js ...................... ~ 501.34ms
+  2026-07-26 10:13:51 /build/assets/app-mZnyUO5z.js .............. ~ 501.66ms
+  2026-07-26 10:13:51 /img/logo.webp ............................... ~ 0.03ms
+  2026-07-26 10:13:51 /storage/img/projects/ecommerce.jpg .......... ~ 0.03ms
+  2026-07-26 10:13:54 /en/blog/1 ................................... ~ 0.10ms
+  2026-07-26 10:13:54 /blog/1 ...................................... ~ 0.03ms
+  2026-07-26 10:14:43 /en/blog/et-deleniti-omnis-modi .............. ~ 0.14ms
+  2026-07-26 10:14:43 /blog/et-deleniti-omnis-modi ................. ~ 0.03ms
+  2026-07-26 10:14:43 /livewire/livewire.js ........................ ~ 0.04ms
+  2026-07-26 10:14:43 /fonts/instrument-sans-normal.woff2 .......... ~ 0.25ms
+  2026-07-26 10:14:43 /build/assets/app-CxQKvR2O.css ............... ~ 0.39ms
+  2026-07-26 10:14:43 /build/assets/app-mZnyUO5z.js ................ ~ 0.56ms
+  2026-07-26 10:14:43 /img/logo.webp ............................... ~ 0.03ms
+  2026-07-26 10:14:43 /img/cache/600/https://via.placeholder.com/640x480.png/001100  ~ 0.04ms
+  2026-07-26 10:14:43 /img/cache/600/https://via.placeholder.com/640x480.png/00ddee  ~ 0.09ms
+  2026-07-26 10:14:43 /img/cache/600/https://via.placeholder.com/640x480.png/006633  ~ 500.72ms
+  2026-07-26 10:14:44 /img/https://via.placeholder.com/640x480.png/001100  ~ 0.03ms
+  2026-07-26 10:14:44 /img/https://via.placeholder.com/640x480.png/00ddee  ~ 0.04ms
+  2026-07-26 10:14:44 /img/https://via.placeholder.com/640x480.png/006633  ~ 0.08ms
