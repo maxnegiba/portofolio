@@ -19,6 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Forms\Components\Select;
 
 class ProjectResource extends Resource
 {
