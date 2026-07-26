@@ -56,21 +56,7 @@
           </a>
         </div>
         
-        <div class="flex justify-center space-x-6 md:animate-fade-in md:delay-800 pt-4">
-          <a href="https://linkedin.com/in/YOUR_LINKEDIN_PROFILE" target="_blank" aria-label="LinkedIn" class="group relative md:transform md:hover:-translate-y-2 transition-all duration-300">
-            <div class="hidden md:block absolute -inset-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg opacity-0 blur group-hover:opacity-60 transition duration-300"></div>
-            <div class="relative w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg flex items-center justify-center md:group-hover:bg-white/10 md:group-hover:border-white/20 transition-all duration-300 md:group-hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
-              <i class="fab fa-linkedin-in text-gray-400 group-hover:text-white transition-colors duration-300 text-lg"></i>
-            </div>
-          </a>
-          <a href="https://github.com/YOUR_GITHUB_PROFILE" target="_blank" aria-label="GitHub" class="group relative md:transform md:hover:-translate-y-2 transition-all duration-300">
-            <div class="hidden md:block absolute -inset-2 bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg opacity-0 blur group-hover:opacity-60 transition duration-300"></div>
-            <div class="relative w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg flex items-center justify-center md:group-hover:bg-white/10 md:group-hover:border-white/20 transition-all duration-300 md:group-hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
-              <i class="fab fa-github text-gray-400 group-hover:text-white transition-colors duration-300 text-lg"></i>
-            </div>
-          </a>
-        </div>
-      </div>
+       
       
       <div class="absolute bottom-8 left-1/2 -translate-x-1/2 md:animate-bounce hidden sm:block">
         <a href="#about" aria-label="{{ __('pages.scroll_text') ?: 'Scroll down' }}" class="flex flex-col items-center text-gray-500 hover:text-white transition-colors duration-300 group">
