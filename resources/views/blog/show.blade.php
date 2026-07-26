@@ -36,9 +36,9 @@
         <div class="absolute bottom-1/4 left-1/3 w-2 h-2 bg-cyan-400 rounded-full animate-ping delay-1000"></div>
     </div>
     
-    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <article>
-            <div class="max-w-4xl mx-auto">
+            <div class="w-full max-w-4xl mx-auto px-4 sm:px-6">
                 <!-- Breadcrumb Navigation -->
                 <nav class="mb-8 text-sm">
                 <ol class="flex items-center space-x-2 text-gray-400">
@@ -76,7 +76,7 @@
                 </div>
             @endif
             
-            <div class="max-w-4xl mx-auto">
+            <div class="w-full max-w-4xl mx-auto px-4 sm:px-6">
                 <!-- Header Articol cu efecte vizuale -->
                 <header class="mb-12 relative">
                     <!-- Meta Informații cu card design -->
