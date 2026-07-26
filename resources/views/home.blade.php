@@ -216,7 +216,7 @@
           @else
           <div class="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors"></div>
           @endif
-          <p class="text-gray-400 text-sm line-clamp-2 mb-4">{{ Str::limit(strip_tags($project->description), 100) }}</p>
+          <p class="text-gray-400 text-sm line-clamp-2 mb-4">{{ \Illuminate\Support\Str::limit(strip_tags($project->description), 100) }}</p>
           <div class="flex flex-wrap gap-2">
             @foreach(array_slice($project->tech ?? [], 0, 3) as $tech)
                <span class="px-2 py-1 bg-white/10 rounded text-xs text-gray-300 border border-white/5">{{ $tech }}</span>
@@ -278,7 +278,7 @@
           @else
           <div class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors"></div>
           @endif
-          <p class="text-gray-400 text-sm line-clamp-3">{{ Str::limit(strip_tags($post->excerpt), 120) }}</p>
+          <p class="text-gray-400 text-sm line-clamp-3">{{ \Illuminate\Support\Str::limit(strip_tags($post->excerpt), 120) }}</p>
         </div>
       </a>
       @endforeach

@@ -1,12 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $project->getLocalizedTitle() . ' - ' . config('app.name'))
-@section('meta_description', Str::limit(strip_tags($project->getLocalizedDescription()), 160))
 
-@section('og:title', $project->getLocalizedTitle())
-@section('og:description', Str::limit(strip_tags($project->getLocalizedDescription()), 160))
-@section('og:type', 'article')
-@section('og:image', $project->thumbnail_url ? (str_starts_with($project->thumbnail_url, 'http') ? $project->thumbnail_url : asset($project->thumbnail_url)) : asset('img/avatar.jpg'))
 
 @section('content')
 <!-- Hero Section -->

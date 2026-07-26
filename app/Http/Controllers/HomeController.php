@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Artesaos\SEOTools\Facades\SEOTools as SEO;
 use App\Models\Project;
 use App\Models\BlogPost;
 use App\Models\Testimonial;
@@ -15,6 +16,8 @@ class HomeController extends Controller
         $blogPosts = BlogPost::published()->latest('published_at')->take(3)->get();
         $testimonials = Testimonial::where('is_active', true)->latest()->get();
 
+        SEO::setTitle(config('app.name', 'Doctor IT'));
+        SEO::setDescription(__('pages.hero_subtitle'));
         return view('home', compact('projects', 'blogPosts', 'testimonials'));
     }
 
