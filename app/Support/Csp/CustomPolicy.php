@@ -11,6 +11,18 @@ class CustomPolicy implements Preset
 {
     public function configure(Policy $policy): void
     {
+        // Bypass strict CSP for Filament Admin and Livewire internal updates
+        if (request()->is('admin*') || request()->is('livewire*')) {
+            $policy
+                ->add(Directive::DEFAULT, Keyword::SELF)
+                ->add(Directive::SCRIPT, [Keyword::SELF, Keyword::UNSAFE_INLINE, Keyword::UNSAFE_EVAL])
+                ->add(Directive::STYLE, [Keyword::SELF, Keyword::UNSAFE_INLINE])
+                ->add(Directive::IMG, [Keyword::SELF, 'data:', 'https:'])
+                ->add(Directive::FONT, [Keyword::SELF, 'data:', 'https:'])
+                ->add(Directive::CONNECT, [Keyword::SELF]);
+            return;
+        }
+
         $policy
             ->add(Directive::BASE, Keyword::SELF)
             ->add(Directive::CONNECT, [Keyword::SELF, 'https://stats.posesoart.ro'])
