@@ -1,13 +1,13 @@
 <!-- resources\views\blog\index.blade.php -->
 @extends('layouts.app')
 @section('content')
-<section class="py-20 bg-black relative overflow-hidden">
+<section class="py-16 lg:py-24 bg-black relative overflow-hidden">
     <div class="absolute inset-0 z-0">
         <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/10 rounded-full blur-[100px] animate-pulse"></div>
         <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] animate-pulse delay-700"></div>
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23grid)"/%3E%3C/svg%3E')] opacity-50"></div>
     </div>
-    <div class="container relative z-10">
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <header class="mb-16 text-center">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
                 <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient-x bg-[length:200%_auto]">
@@ -21,15 +21,15 @@
             </p>
         </header>
         @if($posts->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch">
                 @foreach($posts as $post)
-                    <article class="group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] transform hover:-translate-y-2">
+                    <article class="group relative flex flex-col h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] transform hover:-translate-y-2">
                         @if($post->featured_image)
                             <div class="aspect-video overflow-hidden">
                                 <x-responsive-image :path="$post->featured_image" :alt="$post->getLocalizedTitle()" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                             </div>
                         @endif
-                        <div class="p-6">
+                        <div class="p-6 flex flex-col flex-1">
                             <div class="flex flex-wrap items-center text-gray-400 text-xs mb-4 gap-2">
                                 <span class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded-full">
                                     {{ $post->user->name }}
@@ -55,7 +55,7 @@
                                 </p>
                             @endif
                             @if($post->meta_keywords && is_array($post->meta_keywords))
-                                <div class="flex flex-wrap gap-1 mb-4">
+                                <div class="flex flex-wrap gap-1 mb-4 mt-auto pt-4">
                                     @foreach(array_slice($post->meta_keywords, 0, 3) as $keyword)
                                         <span class="px-2 py-1 bg-white/10 text-gray-400 rounded-full text-xs">
                                             {{ $keyword }}
@@ -67,9 +67,11 @@
                                         </span>
                                     @endif
                                 </div>
+                            @else
+                                <div class="mt-auto pt-4"></div>
                             @endif
                             <a href="{{ route('blog.show', $post->slug) }}"
-                               class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium text-sm group-hover:translate-x-1 transition-transform duration-300">
+                               class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium text-sm group-hover:translate-x-1 transition-transform duration-300 mt-4 border-t border-white/5 pt-4">
                                 {{-- Folosim cheia corectă din fișierul de limbă --}}
                                 {{ __('pages.blog.read_more') }}
                                 <span class="sr-only"> about {{ $post->getLocalizedTitle() }}</span>

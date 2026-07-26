@@ -20,7 +20,7 @@
 
 @section('content')
 <!-- Hero Section pentru articol cu design premium -->
-<section class="relative py-20 md:py-32 bg-black overflow-hidden">
+<section class="relative py-16 lg:py-24 bg-black overflow-hidden">
     <!-- Background Elements cu efecte animate -->
     <div class="absolute inset-0 z-0">
         <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/10 rounded-full blur-[100px] animate-pulse"></div>
@@ -36,10 +36,11 @@
         <div class="absolute bottom-1/4 left-1/3 w-2 h-2 bg-cyan-400 rounded-full animate-ping delay-1000"></div>
     </div>
     
-    <div class="container relative z-10 max-w-4xl">
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <article>
-            <!-- Breadcrumb Navigation -->
-            <nav class="mb-8 text-sm">
+            <div class="max-w-4xl mx-auto">
+                <!-- Breadcrumb Navigation -->
+                <nav class="mb-8 text-sm">
                 <ol class="flex items-center space-x-2 text-gray-400">
                     <li>
                         <a href="{{ route('home') }}" class="hover:text-white transition-colors">
@@ -57,9 +58,10 @@
                         <span class="text-gray-300 truncate max-w-xs">{{ $post->getLocalizedTitle() }}</span>
                     </li>
                 </ol>
-            </nav>
+                </nav>
+            </div>
             
-            <!-- Imagine Featured cu efecte 3D -->
+            <!-- Imagine Featured cu efecte 3D (Extinsă) -->
             @if($post->featured_image)
                 <div class="relative group perspective-1000 mb-12">
                     <!-- Decorative Elements -->
@@ -74,9 +76,10 @@
                 </div>
             @endif
             
-            <!-- Header Articol cu efecte vizuale -->
-            <header class="mb-12 relative">
-                <!-- Meta Informații cu card design -->
+            <div class="max-w-4xl mx-auto">
+                <!-- Header Articol cu efecte vizuale -->
+                <header class="mb-12 relative">
+                    <!-- Meta Informații cu card design -->
                 <div class="inline-flex flex-wrap items-center bg-black/40 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3 mb-8">
                     <!-- Autor cu avatar -->
                     <div class="flex items-center space-x-3 mr-6 pr-6 border-r border-white/10">
@@ -203,6 +206,7 @@
         </a>
     </div>
 </div>
+            </div>
         </article>
         
         <!-- Articole Recente cu design îmbunătățit -->
@@ -231,14 +235,14 @@
                 </div>
                 
                 <!-- Recent Posts Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
                     @foreach($recentPosts as $recentPost)
-                        <article class="group relative transform hover:-translate-y-2 transition-all duration-500">
+                        <article class="group relative flex flex-col h-full transform hover:-translate-y-2 transition-all duration-500">
                             <!-- Glow Effect on Hover -->
                             <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.3)] transition-all duration-500"></div>
                             
                             <!-- Card Content -->
-                            <div class="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] h-full flex flex-col">
+                            <div class="relative flex flex-col flex-1 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] h-full">
                                 <!-- Featured Image -->
                                 @if($recentPost->featured_image)
                                     <div class="aspect-video overflow-hidden">
@@ -276,10 +280,12 @@
                                         <p class="text-gray-400 text-sm mb-4 line-clamp-2 flex-grow">
                                             {{ $recentPost->getTranslation('excerpt', app()->getLocale()) }}
                                         </p>
+                                    @else
+                                        <div class="flex-grow"></div>
                                     @endif
                                     
                                     <!-- Read More Button -->
-                                    <div class="mt-auto">
+                                    <div class="mt-auto pt-4 border-t border-white/5">
                                         <a href="{{ route('blog.show', $recentPost->slug) }}"
                                            class="inline-flex items-center text-purple-400 hover:text-purple-300 text-sm font-medium group/btn">
                                             Read Article
