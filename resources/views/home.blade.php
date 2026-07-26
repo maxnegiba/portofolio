@@ -3,7 +3,7 @@
 @section('content')
 <div class="fixed top-0 left-0 h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 z-[60] transition-all duration-150 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]" id="scroll-progress" style="width: 0%"></div>
 
-<section class="hero min-h-screen flex items-center relative overflow-hidden bg-black">
+<section class="hero py-24 md:py-32 lg:py-40 flex items-center relative overflow-hidden bg-black">
   <div class="absolute inset-0 z-0 pointer-events-none">
     <div class="hidden md:block absolute top-20 left-10 w-72 h-72 bg-purple-600/30 rounded-full blur-[100px] animate-pulse"></div>
     <div class="hidden md:block absolute bottom-20 right-10 w-96 h-96 bg-blue-600/30 rounded-full blur-[120px] animate-pulse delay-700"></div>
@@ -16,26 +16,7 @@
   </div>
   
   <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <div class="max-w-4xl mx-auto mt-12 md:mt-0">
-      <div class="flex justify-center mb-10">
-        <div class="relative group cursor-pointer">
-          <div class="hidden md:block absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full opacity-75 blur-lg group-hover:opacity-100 animate-spin-slow transition-opacity duration-500"></div>
-          <div class="hidden md:block absolute -inset-6 bg-gradient-to-r from-cyan-600 via-purple-600 to-blue-600 rounded-full opacity-50 blur-xl animate-spin-reverse transition-opacity duration-500"></div>
-          
-          <div class="relative w-40 h-40 md:w-48 md:h-48">
-            <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-full animate-spin-slow"></div>
-            <div class="hidden md:block absolute inset-1 bg-black rounded-full"></div>
-            
-            <x-responsive-image path="img/avatar.webp" alt="Doctor IT Avatar" fetchpriority="high" loading="eager" width="400" height="400" sizes="(max-width: 768px) 160px, 192px" class="absolute inset-0 md:inset-2 w-full h-full object-cover rounded-full border-2 border-black md:transform md:group-hover:scale-105 md:transition-transform md:duration-500" />
-            
-            <div class="absolute bottom-0 right-0 md:bottom-2 md:right-2 flex items-center space-x-2 bg-black/90 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.4)]">
-              <div class="w-2.5 h-2.5 bg-green-500 rounded-full md:animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
-              <span class="text-xs text-green-400 font-semibold tracking-wide hidden md:inline-block uppercase">{{ __('pages.available_status') }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div class="max-w-4xl mx-auto">
       <div class="text-center space-y-8">
         <div class="space-y-4">
           <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold max-md:font-sans">
