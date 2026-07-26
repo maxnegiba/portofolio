@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Support\Facades\Storage; // Asigură-te că acesta este importat
-
+use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class BlogPost extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory, HasTranslations, HasSEO;
 
     protected $fillable = [
         'title',

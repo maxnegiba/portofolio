@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Forms\Set;
 use Filament\Forms\Get; // <--- Add Get for accessing other fields in afterStateUpdated
+use RalphJSmit\Filament\SEO\SEO;
 
 class BlogPostResource extends Resource
 {
@@ -33,9 +34,11 @@ class BlogPostResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Group::make()
+                Forms\Components\Grid::make(3)
                     ->schema([
-                        // === Secțiunea de Conținut cu Tabs pentru traduceri ===
+                        Forms\Components\Group::make()
+                            ->schema([
+                                // === Secțiunea de Conținut cu Tabs pentru traduceri ===
                         Forms\Components\Section::make(__('blog.form_content_section'))
                             ->schema([
                                 // Tabs pentru traduceri
@@ -152,8 +155,14 @@ class BlogPostResource extends Resource
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),
-            ])
-            ->columns(3);
+                    ]), // End of Grid schema
+                Forms\Components\Section::make('SEO')
+                    ->schema([
+                        SEO::make(),
+                    ])
+                    ->collapsible()
+                    ->columnSpanFull(),
+            ]);
     }
 
     public static function table(Table $table): Table

@@ -21,6 +21,7 @@ use Filament\Forms\Components\RichEditor; // <--- Importul lipsă adăugat aici
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\BadgeColumn;
+use RalphJSmit\Filament\SEO\SEO;
 
 class ProjectResource extends Resource
 {
@@ -193,6 +194,12 @@ class ProjectResource extends Resource
                             ->placeholder('Add a technology')
                             ->helperText('List the main technologies used in this project.')
                             ->columnSpanFull(),
+                    ])
+                    ->collapsible(),
+
+                Section::make('SEO')
+                    ->schema([
+                        SEO::make(),
                     ])
                     ->collapsible(),
             ]);
