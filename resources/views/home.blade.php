@@ -45,10 +45,10 @@
         <div class="flex flex-col sm:flex-row justify-center gap-4 md:gap-6 md:animate-fade-in-up md:delay-600 pt-4">
           <a href="{{ route('projects') }}" class="group relative w-full sm:w-auto">
             <div class="hidden md:block absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-70 blur group-hover:opacity-100 transition duration-300"></div>
-            <button class="relative w-full px-8 py-4 bg-white md:bg-black rounded-full text-black md:text-white font-bold flex items-center justify-center space-x-3 md:group-hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+            <span class="relative w-full px-8 py-4 bg-white md:bg-black rounded-full text-black md:text-white font-bold flex items-center justify-center space-x-3 md:group-hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]">
               <span>Read Case Studies</span>
               <i class="fas fa-arrow-right md:group-hover:translate-x-1 transition-transform duration-300"></i>
-            </button>
+            </span>
           </a>
           <a href="{{ route('contact') }}" class="group w-full sm:w-auto px-8 py-4 rounded-full border-2 border-gray-700 text-gray-300 font-medium flex items-center justify-center space-x-3 hover:border-blue-500 hover:text-white hover:bg-white/5 transition-all duration-300">
             <i class="far fa-envelope text-blue-400 group-hover:text-white transition-colors duration-300"></i>

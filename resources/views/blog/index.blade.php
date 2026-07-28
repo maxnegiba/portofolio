@@ -40,8 +40,7 @@
                                 </time>
                                 @if($post->reading_time)
                                     <span>•</span>
-                                    {{-- Putem adăuga o cheie pentru "min" dacă vrem traducere completă --}}
-                                    <span>{{ $post->reading_time }} {{ __('pages.blog.minute_read', ['minutes' => $post->reading_time]) }}</span>
+                                    <span>{{ $post->reading_time_label }}</span>
                                 @endif
                             </div>
                             <h2 class="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors duration-300 line-clamp-2">
