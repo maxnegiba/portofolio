@@ -74,15 +74,21 @@ class BlogPost extends Model
         return null; // Sau '' dacă preferi un string gol
     }
 
-    public function getReadingTimeAttribute()
+    public function getReadingTimeAttribute(): int
     {
         $content = $this->getTranslation('content', app()->getLocale());
         $wordCount = str_word_count(strip_tags($content));
         $minutes = ceil($wordCount / 200);
 
-        // Ensure at least 1 minute
-        $minutes = max(1, $minutes);
+        return max(1, $minutes);
+    }
 
-        return $minutes . ' min read';
+    public function getReadingTimeLabelAttribute(): string
+    {
+        return trans_choice(
+            'pages.blog.minute_read',
+            $this->reading_time,
+            ['minutes' => $this->reading_time],
+        );
     }
 }

@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400">Author</p>
+                            <p class="text-xs text-gray-400">{{ __('pages.blog.author') }}</p>
                             <p class="text-white font-medium">{{ $post->user->name }}</p>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                             <i class="far fa-calendar-alt text-purple-400 text-sm"></i>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400">Published</p>
+                            <p class="text-xs text-gray-400">{{ __('pages.blog.published') }}</p>
                             <time datetime="{{ $post->published_at->toDateString() }}" class="text-white">
                                 {{ $post->published_at->format('M d, Y') }}
                             </time>
@@ -115,8 +115,8 @@
                                 <i class="far fa-clock text-blue-400 text-sm"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-400">Reading Time</p>
-                                <p class="text-white">{{ $post->reading_time }} min</p>
+                                <p class="text-xs text-gray-400">{{ __('pages.blog.reading_time') }}</p>
+                                <p class="text-white">{{ $post->reading_time_label }}</p>
                             </div>
                         </div>
                     @endif
@@ -169,9 +169,8 @@
             </div>
             
             <!-- Share Buttons -->
-            <!-- Share Buttons -->
 <div class="mt-12 pt-8 border-t border-white/10">
-    <h3 class="text-lg font-semibold text-white mb-4">Share this article</h3>
+    <h3 class="text-lg font-semibold text-white mb-4">{{ __('pages.blog.share_article') }}</h3>
     <div class="flex space-x-4">
         <!-- Twitter -->
         <a href="https://twitter.com/intent/tweet?url={{ urlencode(url()->current()) }}&text={{ urlencode($post->getLocalizedTitle()) }}"
@@ -217,18 +216,18 @@
                     <div>
                         <span class="text-purple-400 tracking-wider uppercase text-sm flex items-center gap-2">
                             <span class="w-8 h-[2px] bg-purple-400"></span>
-                            {{ __('blog.recent_posts') }}
+                            {{ __('pages.blog.recent_posts') }}
                         </span>
                         <h2 class="text-2xl md:text-3xl font-bold text-white mt-2">
                             <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                                You might also like
+                                {{ __('pages.blog.you_might_also_like') }}
                             </span>
                         </h2>
                     </div>
                     <a href="{{ route('blog.index') }}" class="group relative inline-flex items-center space-x-2">
                         <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-0 blur group-hover:opacity-60 transition duration-300"></div>
                         <span class="relative px-6 py-2 bg-black border border-white/10 rounded-full text-gray-300 group-hover:text-white group-hover:border-white/20 font-medium transition-all duration-300">
-                            {{ __('blog.view_all') }}
+                            {{ __('pages.blog.view_all') }}
                             <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
                         </span>
                     </a>
@@ -263,7 +262,7 @@
                                             <span class="mx-2">•</span>
                                             <span class="flex items-center">
                                                 <i class="far fa-clock mr-1.5"></i>
-                                                {{ $recentPost->reading_time }} min
+                                                {{ $recentPost->reading_time_label }}
                                             </span>
                                         @endif
                                     </div>
@@ -288,7 +287,7 @@
                                     <div class="mt-auto pt-4 border-t border-white/5">
                                         <a href="{{ route('blog.show', $recentPost->slug) }}"
                                            class="inline-flex items-center text-purple-400 hover:text-purple-300 text-sm font-medium group/btn">
-                                            Read Article
+                                            {{ __('pages.blog.read_article') }}
                                             <span class="sr-only"> about {{ $recentPost->getLocalizedTitle() }}</span>
                                             <svg class="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -356,6 +355,5 @@
 .article-content-bright a:hover {
     color: #d8b4fe; /* Ex: purple-300 */
 }
-</style>
 </style>
 @endsection

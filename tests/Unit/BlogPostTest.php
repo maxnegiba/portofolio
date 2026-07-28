@@ -18,17 +18,17 @@ class BlogPostTest extends TestCase
         $post->setTranslation('content', 'en', $content);
         App::setLocale('en');
 
-        $this->assertEquals('1 min read', $post->reading_time);
+        $this->assertSame(1, $post->reading_time);
 
         // 401 words -> 3 min (ceil(401/200) = 3)
         $content = str_repeat('word ', 401);
         $post->setTranslation('content', 'en', $content);
-        $this->assertEquals('3 min read', $post->reading_time);
+        $this->assertSame(3, $post->reading_time);
 
         // 50 words -> 1 min (min)
         $content = str_repeat('word ', 50);
         $post->setTranslation('content', 'en', $content);
-        $this->assertEquals('1 min read', $post->reading_time);
+        $this->assertSame(1, $post->reading_time);
     }
 
     /** @test */
@@ -43,9 +43,11 @@ class BlogPostTest extends TestCase
         $post->setTranslation('content', 'ro', str_repeat('cuvant ', 600));
 
         App::setLocale('en');
-        $this->assertEquals('1 min read', $post->reading_time);
+        $this->assertSame(1, $post->reading_time);
+        $this->assertSame('1 min read', $post->reading_time_label);
 
         App::setLocale('ro');
-        $this->assertEquals('3 min read', $post->reading_time);
+        $this->assertSame(3, $post->reading_time);
+        $this->assertSame('3 min de citit', $post->reading_time_label);
     }
 }

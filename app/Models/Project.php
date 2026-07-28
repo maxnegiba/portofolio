@@ -46,7 +46,9 @@ class Project extends Model
         // If it's already an array, return the appropriate locale
         if (is_array($value)) {
             $locale = app()->getLocale();
-            return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? '';
+            return $this->removeExactDuplicate(
+                $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? '',
+            );
         }
         
         // If it's a string, try to decode it as JSON
@@ -54,12 +56,14 @@ class Project extends Model
             $decoded = json_decode($value, true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
                 $locale = app()->getLocale();
-                return $decoded[$locale] ?? $decoded[config('app.fallback_locale', 'en')] ?? '';
+                return $this->removeExactDuplicate(
+                    $decoded[$locale] ?? $decoded[config('app.fallback_locale', 'en')] ?? '',
+                );
             }
         }
         
         // Default to empty string
-        return $value ?? '';
+        return $this->removeExactDuplicate($value ?? '');
     }
 
     /**
@@ -278,27 +282,48 @@ class Project extends Model
                 // Caută valoarea pentru locale-ul curent
                 foreach ($dataArray as $item) {
                     if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
-                        return $item['value'];
+                        return $this->removeExactDuplicate($item['value']);
                     }
                 }
                 // Caută valoarea pentru locale-ul de rezervă
                 foreach ($dataArray as $item) {
                     if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
-                        return $item['value'];
+                        return $this->removeExactDuplicate($item['value']);
                     }
                 }
                 // Dacă nici locale-ul curent, nici cel de rezervă nu sunt găsite, returnează prima valoare disponibilă
                 if (isset($dataArray[0]['value'])) {
-                    return $dataArray[0]['value'];
+                    return $this->removeExactDuplicate($dataArray[0]['value']);
                 }
             } else {
                 // Dacă este un obiect JSON standard { "en": "...", "ro": "..." }
-                return $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '';
+                return $this->removeExactDuplicate(
+                    $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '',
+                );
             }
         }
 
         // Fallback final
         return '';
+    }
+
+    /**
+     * Remove an accidental exact double-paste without changing the stored content.
+     */
+    private function removeExactDuplicate(string $value): string
+    {
+        $value = trim($value);
+        $length = strlen($value);
+
+        if ($length === 0 || $length % 2 !== 0) {
+            return $value;
+        }
+
+        $halfLength = intdiv($length, 2);
+        $firstHalf = substr($value, 0, $halfLength);
+        $secondHalf = substr($value, $halfLength);
+
+        return $firstHalf === $secondHalf ? rtrim($firstHalf) : $value;
     }
     
     /**

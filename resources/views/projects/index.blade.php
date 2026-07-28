@@ -11,10 +11,10 @@
   <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
       <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-white animate-fade-in-up">
-        B2B <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Case Studies</span>
+        B2B <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">{{ __('pages.projects_case_studies') }}</span>
       </h1>
       <p class="text-xl md:text-2xl text-gray-400 font-light leading-relaxed animate-fade-in-up delay-200">
-        Explore how we transform complex business challenges into scalable digital solutions and automated workflows.
+        {{ __('pages.projects_intro') }}
       </p>
     </div>
   </div>
@@ -29,13 +29,13 @@
                 :class="activeTab === 'web_platform' ? 'bg-white/10 border-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.2)]' : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/30'"
                 class="px-8 py-4 rounded-xl font-medium border transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center gap-3">
             <i class="fas fa-layer-group"></i>
-            Enterprise Web Apps
+            {{ __('pages.projects_web_apps') }}
         </button>
         <button @click="activeTab = 'automation'"
                 :class="activeTab === 'automation' ? 'bg-white/10 border-cyan-500 text-white shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/30'"
                 class="px-8 py-4 rounded-xl font-medium border transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center gap-3">
             <i class="fas fa-robot"></i>
-            Workflow Automations
+            {{ __('pages.projects_automations') }}
         </button>
     </div>
 
@@ -46,7 +46,7 @@
         @empty
             <div class="col-span-full text-center py-20 border border-dashed border-white/10 rounded-2xl">
                 <i class="fas fa-folder-open text-4xl text-gray-600 mb-4"></i>
-                <h3 class="text-xl text-gray-400">No Enterprise Web Apps found.</h3>
+                <h3 class="text-xl text-gray-400">{{ __('pages.projects_no_web_apps') }}</h3>
             </div>
         @endforelse
     </div>
@@ -58,7 +58,7 @@
         @empty
             <div class="col-span-full text-center py-20 border border-dashed border-white/10 rounded-2xl">
                 <i class="fas fa-folder-open text-4xl text-gray-600 mb-4"></i>
-                <h3 class="text-xl text-gray-400">No Workflow Automations found.</h3>
+                <h3 class="text-xl text-gray-400">{{ __('pages.projects_no_automations') }}</h3>
             </div>
         @endforelse
     </div>
