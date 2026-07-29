@@ -4,366 +4,152 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Project;
-use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\RichEditor; // <--- Importul lipsă adăugat aici
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use RalphJSmit\Filament\SEO\SEO;
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
+
     protected static ?string $navigationGroup = 'Portfolio';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Section::make('General')
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('slug')
-                                    ->required()
-                                    ->unique(ignoreRecord: true)
-                                    ->maxLength(255),
-                                Select::make('category')
-                                    ->options([
-                                        'web_platform' => 'Enterprise Web Apps',
-                                        'automation' => 'Workflow Automations'
-                                    ])
-                                    ->required()
-                                    ->default('web_platform'),
-                                TextInput::make('live_url')
-                                    ->label('Live Demo URL')
-                                    ->url(),
-                                TextInput::make('github_url')
-                                    ->label('GitHub URL')
-                                    ->url(),
-                            ]),
-                        FileUpload::make('thumbnail')
-                            ->image()
-                            ->directory('projects/thumbnails')
-                            ->maxSize(2048)
-                            ->imageResizeMode('cover')
-                            ->imageCropAspectRatio('16:9')
-                            ->imageResizeTargetWidth('800')
-                            ->imageResizeTargetHeight('450')
-                            ->label('Thumbnail Image'),
-                        FileUpload::make('images')
-                            ->image()
-                            ->multiple()
-                            ->directory('projects/images')
-                            ->maxSize(2048)
-                            ->imageResizeMode('contain')
-                            ->imageResizeTargetWidth('1200')
-                            ->imageResizeTargetHeight('900')
-                            ->reorderable()
-                            ->label('Additional Images')
-                            ->helperText('Upload additional screenshots or images for this project.')
-                            ->columnSpanFull(),
-                    ]),
-
-                Section::make('Translations')
-                    ->schema([
-                        Repeater::make('title')
-                            ->label('Title Translations')
-                            ->schema([
-                                TextInput::make('locale')
-                                    ->label('Language Code')
-                                    ->required()
-                                    ->maxLength(10),
-                                TextInput::make('value')
-                                    ->label('Translated Title')
-                                    ->required()
-                                    ->maxLength(255),
-                            ])
-                            ->columns(2)
-                            ->columnSpanFull()
+        return $form->schema([
+            Section::make('General')
+                ->schema([
+                    Grid::make(2)->schema([
+                        TextInput::make('slug')
                             ->required()
-                            ->default(
-                                array_map(
-                                    fn($loc) => ['locale' => $loc, 'value' => ''],
-                                    config('app.available_locales', ['en'])
-                                )
-                            ),
-
-                        Repeater::make('description')
-                            ->label('Description Translations')
-                            ->schema([
-                                TextInput::make('locale')
-                                    ->label('Language Code')
-                                    ->required()
-                                    ->maxLength(10),
-                                Textarea::make('value')
-                                    ->label('Translated Description')
-                                    ->required()
-                                    ->rows(3),
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(255),
+                        Select::make('category')
+                            ->options([
+                                'web_platform' => 'Enterprise Web Apps',
+                                'automation' => 'Workflow Automations',
                             ])
-                            ->columns(2)
-                            ->columnSpanFull()
                             ->required()
-                            ->default(
-                                array_map(
-                                    fn($loc) => ['locale' => $loc, 'value' => ''],
-                                    config('app.available_locales', ['en'])
-                                )
-                            ),
+                            ->default('web_platform'),
+                        TextInput::make('live_url')
+                            ->label('Live Demo URL')
+                            ->url(),
+                        TextInput::make('github_url')
+                            ->label('GitHub URL')
+                            ->url(),
                     ]),
+                    FileUpload::make('thumbnail')
+                        ->image()
+                        ->disk('public')
+                        ->visibility('public')
+                        ->directory('projects/thumbnails')
+                        ->maxSize(2048)
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('16:9')
+                        ->imageResizeTargetWidth('800')
+                        ->imageResizeTargetHeight('450')
+                        ->label('Thumbnail Image')
+                        ->helperText('Existing public images are preserved unless you remove them. Legacy or external paths require the explicit removal switch below.'),
+                    Toggle::make('remove_existing_thumbnail')
+                        ->label('Intentionally remove the existing thumbnail')
+                        ->helperText('Use this switch when removing a thumbnail. It prevents an empty upload state from deleting an image accidentally.')
+                        ->default(false)
+                        ->dehydrated(),
+                    FileUpload::make('images')
+                        ->image()
+                        ->multiple()
+                        ->disk('public')
+                        ->visibility('public')
+                        ->directory('projects/images')
+                        ->maxSize(2048)
+                        ->imageResizeMode('contain')
+                        ->imageResizeTargetWidth('1200')
+                        ->imageResizeTargetHeight('900')
+                        ->reorderable()
+                        ->appendFiles()
+                        ->label('Additional Images')
+                        ->helperText('Reorder or remove previewed files. Unpreviewable legacy paths remain untouched unless “Remove all gallery images” is enabled.')
+                        ->columnSpanFull(),
+                    Toggle::make('apply_gallery_changes')
+                        ->label('Apply gallery removals and reordering')
+                        ->helperText('Enable after intentionally removing or reordering individual gallery files. New uploads are appended safely even when this is disabled.')
+                        ->default(false)
+                        ->dehydrated()
+                        ->columnSpanFull(),
+                    Toggle::make('remove_all_images')
+                        ->label('Remove all gallery images, including unpreviewable legacy paths')
+                        ->default(false)
+                        ->dehydrated()
+                        ->columnSpanFull(),
+                ]),
 
-                Section::make('Case Study Narrative')
-                    ->schema([
-                        Repeater::make('problem')
-                            ->label('Problem Translations')
-                            ->schema([
-                                TextInput::make('locale')
-                                    ->label('Language Code')
-                                    ->required()
-                                    ->maxLength(10),
-                                RichEditor::make('value')
-                                    ->label('Translated Problem')
-                                    ->required(),
-                            ])
-                            ->columns(2)
-                            ->columnSpanFull()
-                            ->default(
-                                array_map(
-                                    fn($loc) => ['locale' => $loc, 'value' => ''],
-                                    config('app.available_locales', ['en'])
-                                )
-                            ),
-                        Repeater::make('solution')
-                            ->label('Solution Translations')
-                            ->schema([
-                                TextInput::make('locale')
-                                    ->label('Language Code')
-                                    ->required()
-                                    ->maxLength(10),
-                                RichEditor::make('value')
-                                    ->label('Translated Solution')
-                                    ->required(),
-                            ])
-                            ->columns(2)
-                            ->columnSpanFull()
-                            ->default(
-                                array_map(
-                                    fn($loc) => ['locale' => $loc, 'value' => ''],
-                                    config('app.available_locales', ['en'])
-                                )
-                            ),
-                        Repeater::make('business_result')
-                            ->label('Business Result Translations')
-                            ->schema([
-                                TextInput::make('locale')
-                                    ->label('Language Code')
-                                    ->required()
-                                    ->maxLength(10),
-                                RichEditor::make('value')
-                                    ->label('Translated Business Result')
-                                    ->required(),
-                            ])
-                            ->columns(2)
-                            ->columnSpanFull()
-                            ->default(
-                                array_map(
-                                    fn($loc) => ['locale' => $loc, 'value' => ''],
-                                    config('app.available_locales', ['en'])
-                                )
-                            ),
-                    ]),
+            Tabs::make('Project translations')
+                ->tabs(collect(config('app.available_locales', ['en', 'ro']))
+                    ->map(fn (string $locale): Tab => self::translationTab($locale))
+                    ->all())
+                ->columnSpanFull(),
 
-                Section::make('Tech Stack')
-                    ->schema([
-                        TagsInput::make('tech')
-                            ->label('Technologies Used')
-                            ->placeholder('Add a technology')
-                            ->helperText('List the main technologies used in this project.')
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible(),
+            Section::make('Tech Stack')
+                ->schema([
+                    TagsInput::make('tech')
+                        ->label('Technologies Used')
+                        ->placeholder('Add a technology')
+                        ->helperText('List the main technologies used in this project.')
+                        ->columnSpanFull(),
+                ])
+                ->collapsible(),
 
-                Section::make('SEO')
-                    ->schema([
-                        SEO::make(),
-                    ])
-                    ->collapsible(),
-            ]);
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        // Transformă repeaterul 'title' într-un array asociativ JSON
-        if (isset($data['title']) && is_array($data['title'])) {
-            $titleTranslations = [];
-            foreach ($data['title'] as $item) {
-                if (isset($item['locale']) && isset($item['value'])) {
-                    $titleTranslations[$item['locale']] = $item['value'];
-                }
-            }
-            $data['title'] = $titleTranslations;
-        }
-
-        // Transformă repeaterul 'description' într-un array asociativ JSON
-        if (isset($data['description']) && is_array($data['description'])) {
-            $descTranslations = [];
-            foreach ($data['description'] as $item) {
-                if (isset($item['locale']) && isset($item['value'])) {
-                    $descTranslations[$item['locale']] = $item['value'];
-                }
-            }
-            $data['description'] = $descTranslations;
-        }
-
-        // Asigură-te că tech este un array înainte de salvare
-        // Modelul se va ocupa de encodarea în JSON pentru BD
-        if (!isset($data['tech']) || !is_array($data['tech'])) {
-            $data['tech'] = [];
-        }
-
-        // Transform narrative repeaters
-        $narrativeFields = ['problem', 'solution', 'business_result'];
-        foreach ($narrativeFields as $field) {
-            if (isset($data[$field]) && is_array($data[$field])) {
-                $translations = [];
-                foreach ($data[$field] as $item) {
-                    if (isset($item['locale']) && isset($item['value'])) {
-                        $translations[$item['locale']] = $item['value'];
-                    }
-                }
-                $data[$field] = $translations;
-            }
-        }
-
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        // Transformă datele pentru repeaterul 'title'
-        if (isset($data['title'])) {
-            $rawTitle = $data['title'];
-            $titleArray = [];
-            
-            if (is_array($rawTitle)) {
-                foreach($rawTitle as $locale => $value) {
-                    $titleArray[] = ['locale' => $locale, 'value' => $value];
-                }
-            } elseif (is_string($rawTitle)) {
-                $decoded = json_decode($rawTitle, true);
-                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                    foreach($decoded as $locale => $value) {
-                        $titleArray[] = ['locale' => $locale, 'value' => $value];
-                    }
-                } else {
-                    // Fallback dacă nu e JSON valid
-                    $titleArray[] = ['locale' => app()->getLocale(), 'value' => $rawTitle];
-                }
-            }
-            $data['title'] = $titleArray;
-        }
-
-        // Transformă datele pentru repeaterul 'description'
-        if (isset($data['description'])) {
-            $rawDesc = $data['description'];
-            $descArray = [];
-            
-            if (is_array($rawDesc)) {
-                foreach($rawDesc as $locale => $value) {
-                    $descArray[] = ['locale' => $locale, 'value' => $value];
-                }
-            } elseif (is_string($rawDesc)) {
-                $decoded = json_decode($rawDesc, true);
-                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                    foreach($decoded as $locale => $value) {
-                        $descArray[] = ['locale' => $locale, 'value' => $value];
-                    }
-                } else {
-                    // Fallback dacă nu e JSON valid
-                    $descArray[] = ['locale' => app()->getLocale(), 'value' => $rawDesc];
-                }
-            }
-            $data['description'] = $descArray;
-        }
-
-        // Transform narrative repeaters (eliminat codul duplicat pentru curățenie)
-        $narrativeFields = ['problem', 'solution', 'business_result'];
-        foreach ($narrativeFields as $field) {
-            if (isset($data[$field])) {
-                $rawVal = $data[$field];
-                $arr = [];
-
-                if (is_array($rawVal)) {
-                    foreach($rawVal as $locale => $value) {
-                        $arr[] = ['locale' => $locale, 'value' => $value];
-                    }
-                } elseif (is_string($rawVal)) {
-                    $decoded = json_decode($rawVal, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                        foreach($decoded as $locale => $value) {
-                            $arr[] = ['locale' => $locale, 'value' => $value];
-                        }
-                    } else {
-                        $arr[] = ['locale' => app()->getLocale(), 'value' => $rawVal];
-                    }
-                }
-                $data[$field] = $arr;
-            }
-        }
-
-        return $data;
+            Section::make('SEO')
+                ->schema([SEO::make()])
+                ->collapsible(),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail')
+                ImageColumn::make('thumbnail_url')
                     ->label('Thumbnail')
-                    ->size(50)
-                    ->circular(),
-
+                    ->size(50),
                 TextColumn::make('filament_title')
                     ->label('Title')
-                    ->searchable(query: fn ($query, $search) =>
-                        $query->whereJsonContains('title->' . app()->getLocale(), $search)
-                    )
                     ->limit(50)
                     ->tooltip(fn (Project $record): string => $record->filament_title),
-
+                TextColumn::make('slug')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 BadgeColumn::make('tech')
                     ->label('Technologies'),
-
                 TextColumn::make('images')
                     ->label('Additional Images')
-                    ->formatStateUsing(fn ($state): string => is_array($state) ? count($state) . ' image(s)' : '0 images')
-                    ->description(fn ($record): string => 'Click to view')
-                    ->url(fn ($record) => $record->image_urls[0] ?? null)
-                    ->openUrlInNewTab()
+                    ->formatStateUsing(fn (mixed $state): string => is_array($state) ? count($state).' image(s)' : '0 images')
                     ->toggleable(),
-
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -379,9 +165,7 @@ class ProjectResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -391,5 +175,29 @@ class ProjectResource extends Resource
             'create' => Pages\CreateProject::route('/create'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
         ];
+    }
+
+    private static function translationTab(string $locale): Tab
+    {
+        $locale = strtolower(trim($locale));
+        $label = config("laravellocalization.supportedLocales.{$locale}.name", strtoupper($locale));
+
+        return Tab::make((string) $label)
+            ->schema([
+                TextInput::make("translations.{$locale}.title")
+                    ->label('Title')
+                    ->required(fn (string $operation): bool => $operation === 'create'
+                        && $locale === config('app.fallback_locale', 'en'))
+                    ->maxLength(255),
+                Textarea::make("translations.{$locale}.description")
+                    ->label('Description')
+                    ->rows(4),
+                RichEditor::make("translations.{$locale}.problem")
+                    ->label('Problem / Challenge'),
+                RichEditor::make("translations.{$locale}.solution")
+                    ->label('Solution'),
+                RichEditor::make("translations.{$locale}.business_result")
+                    ->label('Business Result'),
+            ]);
     }
 }

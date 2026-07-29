@@ -31,7 +31,7 @@
         
         <div class="absolute top-4 left-4 z-20">
             <span class="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-xs font-medium text-white/80">
-                {{ $project->category === 'automation' ? __('pages.project_category_automation') : __('pages.project_category_web_app') }}
+                {{ $project->normalized_category === 'automation' ? __('pages.project_category_automation') : __('pages.project_category_web_app') }}
             </span>
         </div>
     </div>
@@ -41,7 +41,7 @@
             {{ $project->getLocalizedTitle() }}
         </h3>
         <p class="text-gray-400 mb-6 line-clamp-3 leading-relaxed">
-            {{ $project->getLocalizedDescription() }}
+            {{ \Illuminate\Support\Str::limit(strip_tags($project->getLocalizedDescription()), 220) }}
         </p>
         
         @if($project->tech && count($project->tech) > 0)

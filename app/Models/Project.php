@@ -2,15 +2,29 @@
 
 namespace App\Models;
 
+use App\Casts\ProjectTranslationCast;
+use App\Support\Projects\ProjectImagePath;
+use App\Support\Projects\ProjectTranslationNormalizer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class Project extends Model
 {
     use HasFactory, HasSEO;
+
+    public const TRANSLATABLE_FIELDS = [
+        'title',
+        'description',
+        'problem',
+        'solution',
+        'business_result',
+    ];
+
+    public const CATEGORIES = [
+        'web_platform',
+        'automation',
+    ];
 
     protected $fillable = [
         'slug',
@@ -27,412 +41,126 @@ class Project extends Model
         'business_result',
     ];
 
-    // Aici lipseau câmpurile narative noi! Acum Filament știe să le decodeze.
-    protected $casts = [
-        'title' => 'array',
-        'description' => 'array',
-        'images' => 'array',
-        'tech' => 'array',
-        'problem' => 'array',
-        'solution' => 'array',
-        'business_result' => 'array',
-    ];
-
-    /**
-     * Get the title in the current app locale.
-     */
-    public function getTitleAttribute($value)
+    protected function casts(): array
     {
-        // If it's already an array, return the appropriate locale
-        if (is_array($value)) {
-            $locale = app()->getLocale();
-            return $this->removeExactDuplicate(
-                $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? '',
-            );
-        }
-        
-        // If it's a string, try to decode it as JSON
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                $locale = app()->getLocale();
-                return $this->removeExactDuplicate(
-                    $decoded[$locale] ?? $decoded[config('app.fallback_locale', 'en')] ?? '',
-                );
-            }
-        }
-        
-        // Default to empty string
-        return $this->removeExactDuplicate($value ?? '');
+        return [
+            'title' => ProjectTranslationCast::class,
+            'description' => ProjectTranslationCast::class,
+            'problem' => ProjectTranslationCast::class,
+            'solution' => ProjectTranslationCast::class,
+            'business_result' => ProjectTranslationCast::class,
+            'images' => 'array',
+            'tech' => 'array',
+        ];
     }
 
     /**
-     * Get the description in the current app locale.
+     * Return the complete normalized map without applying a display locale.
+     *
+     * @return array<string, string>
      */
-    public function getDescriptionAttribute($value)
+    public function getTranslationMap(string $field): array
     {
-        // If it's already an array, return the appropriate locale
-        if (is_array($value)) {
-            $locale = app()->getLocale();
-            return $value[$locale] ?? $value[config('app.fallback_locale', 'en')] ?? '';
+        if (! in_array($field, self::TRANSLATABLE_FIELDS, true)) {
+            throw new \InvalidArgumentException("{$field} is not a translatable Project field.");
         }
-        
-        // If it's a string, try to decode it as JSON
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                $locale = app()->getLocale();
-                return $decoded[$locale] ?? $decoded[config('app.fallback_locale', 'en')] ?? '';
-            }
-        }
-        
-        // Default to empty string
-        return $value ?? '';
+
+        return app(ProjectTranslationNormalizer::class)->normalize($this->getAttributes()[$field] ?? null);
     }
 
-    /**
-     * Get the title for Filament admin panel.
-     */
+    public function getLocalizedProjectValue(string $field, ?string $locale = null): string
+    {
+        $translations = $this->getTranslationMap($field);
+        $locale ??= app()->getLocale();
+        $fallback = (string) config('app.fallback_locale', 'en');
+
+        return (string) ($translations[$locale] ?? $translations[$fallback] ?? collect($translations)->first() ?? '');
+    }
+
+    public function getLocalizedTitle(): string
+    {
+        return $this->getLocalizedProjectValue('title');
+    }
+
+    public function getLocalizedDescription(): string
+    {
+        return $this->getLocalizedProjectValue('description');
+    }
+
+    public function getLocalizedProblem(): string
+    {
+        return $this->getLocalizedProjectValue('problem');
+    }
+
+    public function getLocalizedSolution(): string
+    {
+        return $this->getLocalizedProjectValue('solution');
+    }
+
+    public function getLocalizedBusinessResult(): string
+    {
+        return $this->getLocalizedProjectValue('business_result');
+    }
+
     public function getFilamentTitleAttribute(): string
     {
-        try {
-            $rawValue = $this->getRawOriginal('title');
-            
-            // Handle array directly from DB
-            if (is_array($rawValue)) {
-                $firstValue = reset($rawValue);
-                return is_scalar($firstValue) ? (string) $firstValue : 'No Title (Array)';
-            }
-            
-            // Handle JSON string from DB
-            if (is_string($rawValue)) {
-                $decoded = json_decode($rawValue, true);
-                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                    // Check if it's the array of objects format
-                    if (isset($decoded[0]) && is_array($decoded[0]) && isset($decoded[0]['value'])) {
-                         // Return the first 'value'
-                         return $decoded[0]['value'];
-                    }
-                    $firstValue = reset($decoded);
-                    return is_scalar($firstValue) ? (string) $firstValue : 'No Title (JSON Array)';
-                }
-                // If it's a string but not valid JSON, return it
-                return $rawValue;
-            }
-            
-            // Handle any other type (null, etc.)
-            if (is_scalar($rawValue)) {
-                return (string) $rawValue;
-            }
-        } catch (\Exception $e) {
-            \Log::warning("Error in getFilamentTitleAttribute for project ID {$this->id}: " . $e->getMessage());
-        }
-        
-        // Ultimate fallback
-        return 'Title Error';
+        return $this->getLocalizedProjectValue('title', (string) config('app.fallback_locale', 'en'))
+            ?: 'Untitled project';
     }
 
-    /**
-     * Get the raw title array.
-     */
-    public function getRawTitleAttribute()
-    {
-        $value = $this->getRawOriginal('title');
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $decoded;
-            }
-        }
-        return is_array($value) ? $value : [];
-    }
-
-    /**
-     * Get the raw description array.
-     */
-    public function getRawDescriptionAttribute()
-    {
-        $value = $this->getRawOriginal('description');
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $decoded;
-            }
-        }
-        return is_array($value) ? $value : [];
-    }
-
-    /**
-     * Get the tech attribute as an array.
-     */
-    public function getTechAttribute($value)
-    {
-        // If it's already an array, return it
-        if (is_array($value)) {
-            return $value;
-        }
-        
-        // If it's a JSON string, decode it
-        if (is_string($value) && !empty($value)) {
-            $decoded = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $decoded;
-            }
-            // If it's a comma-separated string, split it
-            return array_map('trim', explode(',', $value));
-        }
-        
-        // Default to empty array
-        return [];
-    }
-
-    /**
-     * Set the tech attribute.
-     */
-    public function setTechAttribute($value)
-    {
-        // If it's an array, encode it to JSON
-        if (is_array($value)) {
-            $this->attributes['tech'] = json_encode($value);
-        } 
-        // If it's a string, try to decode it first to see if it's JSON
-        elseif (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $this->attributes['tech'] = $value; // It's already a JSON string
-            } else {
-                // If it's a comma-separated string, convert to array and then encode
-                $array = array_map('trim', explode(',', $value));
-                $this->attributes['tech'] = json_encode($array);
-            }
-        }
-        // Otherwise, set to empty array
-        else {
-            $this->attributes['tech'] = json_encode([]);
-        }
-    }
-
-    /**
-     * Get the URL of the thumbnail image.
-     */
     public function getThumbnailUrlAttribute(): ?string
     {
-        return $this->thumbnail ? Storage::url($this->thumbnail) : null;
+        return app(ProjectImagePath::class)->publicUrl($this->getAttributes()['thumbnail'] ?? null);
     }
 
     /**
-     * Get the URLs of the additional images.
+     * @return array<int, string>
      */
     public function getImageUrlsAttribute(): array
     {
-        $urls = [];
-        if (is_array($this->images)) {
-            foreach ($this->images as $imagePath) {
-                if ($imagePath) {
-                     $urls[] = Storage::url($imagePath);
-                }
-            }
+        $images = $this->images;
+
+        if (! is_array($images)) {
+            return [];
         }
-        return $urls;
+
+        return array_values(array_filter(array_map(
+            fn (mixed $image): ?string => is_string($image)
+                ? app(ProjectImagePath::class)->publicUrl($image)
+                : null,
+            $images,
+        )));
     }
 
-    public function getRouteKeyName()
+    public function getNormalizedCategoryAttribute(): string
+    {
+        return self::normalizeCategory($this->getAttributes()['category'] ?? null);
+    }
+
+    public static function normalizeCategory(mixed $category): string
+    {
+        return self::canonicalCategory($category) ?? 'web_platform';
+    }
+
+    public static function canonicalCategory(mixed $category): ?string
+    {
+        $value = strtolower(trim((string) $category));
+        $value = str_replace(['-', ' '], '_', $value);
+
+        return match ($value) {
+            'automation', 'automations', 'workflow_automation', 'workflow_automations' => 'automation',
+            'web_platform', 'web_app', 'web_application', 'webapp', 'website', '' => 'web_platform',
+            default => null,
+        };
+    }
+
+    public static function categoryNeedsNormalization(mixed $category): bool
+    {
+        return ! in_array((string) $category, self::CATEGORIES, true);
+    }
+
+    public function getRouteKeyName(): string
     {
         return 'slug';
-    }
-
-    /**
-     * Boot the model.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-        
-        // Asigură-te că tech este întotdeauna un array înainte de salvare
-        static::saving(function ($project) {
-            if (!is_array($project->tech)) {
-                $project->tech = [];
-            }
-        });
-    }
-    
-    /**
-     * Get the localized title with fallback
-     */
-    public function getLocalizedTitle()
-    {
-        $rawTitle = $this->getRawOriginal('title'); // Obține valoarea brută din DB (un string JSON)
-        $locale = app()->getLocale();
-        $fallbackLocale = config('app.fallback_locale', 'en');
-
-        // Pasul 1: Decodează stringul JSON într-un array PHP
-        $dataArray = null;
-        if (is_string($rawTitle)) {
-            $dataArray = json_decode($rawTitle, true);
-        } elseif (is_array($rawTitle)) {
-            // Poate fi deja un array dacă Laravel face casting
-            $dataArray = $rawTitle;
-        }
-
-        // Pasul 2: Verifică dacă este un array și are structura așteptată (array de obiecte)
-        if (is_array($dataArray)) {
-            // Verificăm dacă este un array de obiecte (formatul tău actual)
-            // Ex: [ ['locale' => 'en', 'value' => '...'], ['locale' => 'ro', 'value' => '...'] ]
-            if (isset($dataArray[0]) && is_array($dataArray[0]) && isset($dataArray[0]['locale'])) {
-                // Caută valoarea pentru locale-ul curent
-                foreach ($dataArray as $item) {
-                    if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
-                        return $this->removeExactDuplicate($item['value']);
-                    }
-                }
-                // Caută valoarea pentru locale-ul de rezervă
-                foreach ($dataArray as $item) {
-                    if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
-                        return $this->removeExactDuplicate($item['value']);
-                    }
-                }
-                // Dacă nici locale-ul curent, nici cel de rezervă nu sunt găsite, returnează prima valoare disponibilă
-                if (isset($dataArray[0]['value'])) {
-                    return $this->removeExactDuplicate($dataArray[0]['value']);
-                }
-            } else {
-                // Dacă este un obiect JSON standard { "en": "...", "ro": "..." }
-                return $this->removeExactDuplicate(
-                    $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '',
-                );
-            }
-        }
-
-        // Fallback final
-        return '';
-    }
-
-    /**
-     * Remove an accidental exact double-paste without changing the stored content.
-     */
-    private function removeExactDuplicate(string $value): string
-    {
-        $value = trim($value);
-        $length = strlen($value);
-
-        if ($length === 0 || $length % 2 !== 0) {
-            return $value;
-        }
-
-        $halfLength = intdiv($length, 2);
-        $firstHalf = substr($value, 0, $halfLength);
-        $secondHalf = substr($value, $halfLength);
-
-        return $firstHalf === $secondHalf ? rtrim($firstHalf) : $value;
-    }
-    
-    /**
-     * Get the localized description with fallback
-     */
-    public function getLocalizedDescription()
-    {
-        $rawDesc = $this->getRawOriginal('description');
-        $locale = app()->getLocale();
-        $fallbackLocale = config('app.fallback_locale', 'en');
-
-        // Pasul 1: Decodează stringul JSON într-un array PHP
-        $dataArray = null;
-        if (is_string($rawDesc)) {
-            $dataArray = json_decode($rawDesc, true);
-        } elseif (is_array($rawDesc)) {
-            // Poate fi deja un array dacă Laravel face casting
-            $dataArray = $rawDesc;
-        }
-
-        // Pasul 2: Verifică dacă este un array și are structura așteptată (array de obiecte)
-        if (is_array($dataArray)) {
-            // Verificăm dacă este un array de obiecte (formatul tău actual)
-            if (isset($dataArray[0]) && is_array($dataArray[0]) && isset($dataArray[0]['locale'])) {
-                // Caută valoarea pentru locale-ul curent
-                foreach ($dataArray as $item) {
-                    if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
-                        return $item['value'];
-                    }
-                }
-                // Caută valoarea pentru locale-ul de rezervă
-                foreach ($dataArray as $item) {
-                    if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
-                        return $item['value'];
-                    }
-                }
-                // Dacă nici locale-ul curent, nici cel de rezervă nu sunt găsite, returnează prima valoare disponibilă
-                if (isset($dataArray[0]['value'])) {
-                    return $dataArray[0]['value'];
-                }
-            } else {
-                // Dacă este un obiect JSON standard { "en": "...", "ro": "..." }
-                return $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '';
-            }
-        }
-
-        // Fallback final
-        return '';
-    }
-
-    /**
-     * Get the localized problem with fallback
-     */
-    public function getLocalizedProblem()
-    {
-        return $this->getLocalizedNarrativeField('problem');
-    }
-
-    /**
-     * Get the localized solution with fallback
-     */
-    public function getLocalizedSolution()
-    {
-        return $this->getLocalizedNarrativeField('solution');
-    }
-
-    /**
-     * Get the localized business result with fallback
-     */
-    public function getLocalizedBusinessResult()
-    {
-        return $this->getLocalizedNarrativeField('business_result');
-    }
-
-    /**
-     * Helper to parse narrative JSON fields correctly.
-     */
-    protected function getLocalizedNarrativeField($field)
-    {
-        $rawValue = $this->getRawOriginal($field);
-        $locale = app()->getLocale();
-        $fallbackLocale = config('app.fallback_locale', 'en');
-
-        $dataArray = null;
-        if (is_string($rawValue)) {
-            $dataArray = json_decode($rawValue, true);
-        } elseif (is_array($rawValue)) {
-            $dataArray = $rawValue;
-        }
-
-        if (is_array($dataArray)) {
-            if (isset($dataArray[0]) && is_array($dataArray[0]) && isset($dataArray[0]['locale'])) {
-                foreach ($dataArray as $item) {
-                    if (isset($item['locale']) && $item['locale'] === $locale && isset($item['value'])) {
-                        return $item['value'];
-                    }
-                }
-                foreach ($dataArray as $item) {
-                    if (isset($item['locale']) && $item['locale'] === $fallbackLocale && isset($item['value'])) {
-                        return $item['value'];
-                    }
-                }
-                if (isset($dataArray[0]['value'])) {
-                    return $dataArray[0]['value'];
-                }
-            } else {
-                return $dataArray[$locale] ?? $dataArray[$fallbackLocale] ?? '';
-            }
-        }
-        return '';
     }
 }

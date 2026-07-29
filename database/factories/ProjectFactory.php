@@ -18,13 +18,23 @@ class ProjectFactory extends Factory
     {
         return [
             'slug' => fake()->slug(),
-            'title' => fake()->sentence(),
-            'description' => fake()->paragraph(),
+            'title' => [
+                'en' => fake()->sentence(),
+                'ro' => fake()->sentence(),
+            ],
+            'description' => [
+                'en' => fake()->paragraph(),
+                'ro' => fake()->paragraph(),
+            ],
             'tech' => fake()->words(3),
             'live_url' => fake()->url(),
             'github_url' => fake()->url(),
             'thumbnail' => fake()->imageUrl(),
             'images' => [fake()->imageUrl()],
+            'category' => 'web_platform',
+            'problem' => [],
+            'solution' => [],
+            'business_result' => [],
         ];
     }
 }
