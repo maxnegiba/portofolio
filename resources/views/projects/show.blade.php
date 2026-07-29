@@ -16,7 +16,7 @@
     <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
       <!-- Category Badge -->
       <span class="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-sm font-medium text-purple-400 mb-8 animate-fade-in-up">
-        {{ $project->category === 'automation' ? __('pages.project_category_automation') : __('pages.project_category_web_app') }}
+        {{ $project->normalized_category === 'automation' ? __('pages.project_category_automation') : __('pages.project_category_web_app') }}
       </span>
 
       <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-white animate-fade-in-up delay-200">

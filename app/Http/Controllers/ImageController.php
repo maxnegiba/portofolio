@@ -2,77 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Intervention\Image\Laravel\Facades\Image;
-use Illuminate\Support\Facades\Storage;
+use App\Support\Projects\ProjectImagePath;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ImageController extends Controller
 {
-    public function show($width, $path)
+    public function show(ProjectImagePath $paths, int $width, string $path): Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        // Security check: validate width
-        $width = (int) $width;
         if ($width < 10 || $width > 2000) {
             abort(400, 'Invalid width');
         }
 
-        // Clean path to prevent directory traversal
-        $path = str_replace('..', '', $path);
+        $path = $paths->normalizeForStorage($path);
 
-        // Define cache path
-        // We append .webp to the original filename
-        $cachePath = 'cache/' . $width . '/' . $path . '.webp';
-
-        // Check if cached file exists in storage
-        if (Storage::disk('public')->exists($cachePath)) {
-             $file = Storage::disk('public')->path($cachePath);
-             return response()->file($file, [
-                 'Content-Type' => 'image/webp',
-                 'Cache-Control' => 'public, max-age=31536000'
-             ]);
+        if ($path === null || $paths->containsTraversal($path) || filter_var($path, FILTER_VALIDATE_URL)) {
+            abort(400, 'Invalid image path');
         }
 
-        // Locate source file
-        $sourcePath = null;
+        $sourcePath = $this->sourcePath($path);
 
-        // 1. Check if it's in public disk (projects/thumbnails/...)
-        if (Storage::disk('public')->exists($path)) {
-            $sourcePath = Storage::disk('public')->path($path);
-        }
-        // 2. Check if it's a static asset in public folder (img/avatar.webp)
-        // We accept path like 'img/avatar.webp'
-        elseif (File::exists(public_path($path))) {
-            $sourcePath = public_path($path);
-        }
-
-        if (!$sourcePath) {
+        if ($sourcePath === null) {
             abort(404);
         }
 
-        // Process Image
+        $cachePath = 'cache/'.$width.'/'.hash('sha256', $path).'.webp';
+
+        if (Storage::disk('public')->exists($cachePath)) {
+            return response()->file(Storage::disk('public')->path($cachePath), [
+                'Content-Type' => 'image/webp',
+                'Cache-Control' => 'public, max-age=31536000, immutable',
+            ]);
+        }
+
         try {
-            $image = Image::read($sourcePath);
+            $encoded = Image::read($sourcePath)
+                ->scale(width: $width)
+                ->toWebp(quality: 80);
 
-            // Resize respecting aspect ratio
-            $image->scale(width: $width);
-
-            // Encode to WebP
-            $encoded = $image->toWebp(quality: 80);
-
-            // Save to cache
             Storage::disk('public')->put($cachePath, (string) $encoded);
 
-            // Return response
             return response((string) $encoded)
                 ->header('Content-Type', 'image/webp')
-                ->header('Cache-Control', 'public, max-age=31536000');
-
-        } catch (\Exception $e) {
-            // Fallback: return original if optimization fails, or 500
-            // But we should try to serve something.
-            // Let's abort 500 for now so we know if it breaks.
-            abort(500, 'Image processing failed: ' . $e->getMessage());
+                ->header('Cache-Control', 'public, max-age=31536000, immutable');
+        } catch (\Throwable) {
+            return response()->file($sourcePath, [
+                'Cache-Control' => 'public, max-age=3600',
+            ]);
         }
+    }
+
+    private function sourcePath(string $path): ?string
+    {
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->path($path);
+        }
+
+        $candidate = public_path($path);
+        $realPublicPath = realpath(public_path());
+        $realCandidate = realpath($candidate);
+
+        if ($realPublicPath !== false
+            && $realCandidate !== false
+            && str_starts_with($realCandidate, $realPublicPath.DIRECTORY_SEPARATOR)
+            && File::isFile($realCandidate)) {
+            return $realCandidate;
+        }
+
+        return null;
     }
 }

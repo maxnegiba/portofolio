@@ -7,50 +7,46 @@
     'width' => null,
     'height' => null,
     'loading' => 'lazy',
-    'fetchpriority' => 'auto'
+    'fetchpriority' => 'auto',
 ])
 
 @php
     $imagePath = $path ?? $src;
+    $resolver = app(\App\Support\Projects\ProjectImagePath::class);
+    $originalUrl = $resolver->publicUrl(is_string($imagePath) ? $imagePath : null);
+    $optimizerPath = $resolver->optimizerPath(is_string($imagePath) ? $imagePath : null);
+    $defaultWidth = $width ? (int) $width : 800;
+
+    $srcset = null;
+    $srcUrl = $originalUrl;
+
+    if ($optimizerPath) {
+        $widths = [300, 400, 600, 800, 1000, 1200];
+        $srcset = collect($widths)
+            ->map(fn (int $candidateWidth): string => route('image.cache', [
+                'width' => $candidateWidth,
+                'path' => $optimizerPath,
+            ])." {$candidateWidth}w")
+            ->implode(', ');
+        $srcUrl = route('image.cache', ['width' => $defaultWidth, 'path' => $optimizerPath]);
+    }
 @endphp
 
-@if($imagePath)
-    @php
-        $cleanPath = $imagePath;
-        
-        // Remove /storage/ prefix if present
-        if (str_starts_with($cleanPath, '/storage/')) {
-            $cleanPath = substr($cleanPath, 9);
-        } elseif (str_starts_with($cleanPath, 'storage/')) {
-            $cleanPath = substr($cleanPath, 8);
-        }
-
-        // Remove leading slash if any (for clean URL construction)
-        $cleanPath = ltrim($cleanPath, '/');
-
-        // Build srcset using cache routes
-        $widths = [300, 400, 600, 800, 1000, 1200];
-        $srcsetParts = [];
-        foreach ($widths as $w) {
-            $url = url("/img/cache/{$w}/{$cleanPath}");
-            $srcsetParts[] = "{$url} {$w}w";
-        }
-        $srcsetString = implode(', ', $srcsetParts);
-
-        $defaultWidth = $width ? (int)$width : 800;
-        $srcUrl = url("/img/cache/{$defaultWidth}/{$cleanPath}");
-    @endphp
-
-    <img x-data
-         x-on:error.once="$el.srcset = ''; $el.src = '{{ asset(str_starts_with($cleanPath, 'img/') ? $cleanPath : 'img/' . $cleanPath) }}'"
-         src="{{ $srcUrl }}"
-         srcset="{{ $srcsetString }}"
-         sizes="{{ $sizes }}"
-         alt="{{ $alt }}"
-         class="{{ $class }}"
-         @if($width) width="{{ $width }}" @endif
-         @if($height) height="{{ $height }}" @endif
-         loading="{{ $loading }}"
-         fetchpriority="{{ $fetchpriority }}"
-         decoding="async">
+@if($srcUrl)
+    <img
+        @if($optimizerPath)
+            x-data
+            x-on:error.once="$el.srcset = ''; $el.src = {{ \Illuminate\Support\Js::from($originalUrl) }}"
+        @endif
+        src="{{ $srcUrl }}"
+        @if($srcset) srcset="{{ $srcset }}" @endif
+        sizes="{{ $sizes }}"
+        alt="{{ $alt }}"
+        class="{{ $class }}"
+        @if($width) width="{{ $width }}" @endif
+        @if($height) height="{{ $height }}" @endif
+        loading="{{ $loading }}"
+        fetchpriority="{{ $fetchpriority }}"
+        decoding="async"
+    >
 @endif
