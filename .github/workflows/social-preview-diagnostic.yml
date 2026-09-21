@@ -10,31 +10,25 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect live page and Open Graph image
+      - name: Inspect localized blog routing
         shell: bash
         run: |
           set -euxo pipefail
-          URL="https://negibamaxim.eu/ro/blog/cat-costa-o-ora-de-munca-it-in-romania-ghid-2026"
           UA="facebookexternalhit/1.1"
+          URLS=(
+            "https://negibamaxim.eu/"
+            "https://negibamaxim.eu/ro"
+            "https://negibamaxim.eu/blog/how-much-does-it-work-cost-romania-hourly-rates-2026"
+            "https://negibamaxim.eu/ro/blog/cat-costa-o-ora-de-munca-it-in-romania-ghid-2026"
+            "https://negibamaxim.eu/ro/blog/how-much-does-it-work-cost-romania-hourly-rates-2026"
+            "https://negibamaxim.eu/blog/cat-costa-o-ora-de-munca-it-in-romania-ghid-2026"
+            "https://negibamaxim.eu/ro/blog/de-ce-20-de-euro-pe-ora-inseamna-sa-lucrezi-aproape-gratis"
+          )
 
-          curl -L -A "$UA" -D /tmp/page.headers -o /tmp/page.html "$URL"
-          echo "=== PAGE HEADERS ==="
-          cat /tmp/page.headers
-          echo "=== SOCIAL META ==="
-          grep -Eio '<meta[^>]+(og:|twitter:)[^>]*>' /tmp/page.html || true
-
-          IMAGE_URL=$(grep -Eio '<meta[^>]+property="og:image"[^>]+content="[^"]+"' /tmp/page.html | head -n1 | sed -E 's/.*content="([^"]+)".*/\1/' || true)
-          if [ -z "$IMAGE_URL" ]; then
-            IMAGE_URL=$(grep -Eio '<meta[^>]+content="[^"]+"[^>]+property="og:image"' /tmp/page.html | head -n1 | sed -E 's/.*content="([^"]+)".*/\1/' || true)
-          fi
-
-          echo "OG_IMAGE=$IMAGE_URL"
-
-          if [ -n "$IMAGE_URL" ]; then
-            echo "=== IMAGE HEADERS AS FACEBOOK ==="
-            curl -L -A "$UA" -D /tmp/image.headers -o /tmp/image.bin "$IMAGE_URL"
-            cat /tmp/image.headers
-            echo "=== IMAGE FILE INFO ==="
-            file /tmp/image.bin
-            wc -c /tmp/image.bin
-          fi
+          for URL in "${URLS[@]}"; do
+            echo
+            echo "===== $URL ====="
+            curl -L -sS -A "$UA" -o /tmp/page.html -w "HTTP=%{http_code} FINAL=%{url_effective}\n" "$URL"
+            grep -Eio '<title>[^<]*</title>' /tmp/page.html | head -n1 || true
+            grep -Eio '<meta[^>]+property="og:image"[^>]*>' /tmp/page.html | head -n1 || true
+          done
