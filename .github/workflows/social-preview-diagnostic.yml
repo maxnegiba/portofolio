@@ -1,0 +1,54 @@
+name: Social Preview Live Diagnostic
+
+on:
+  push:
+    branches:
+      - fix/social-preview-live-debug
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect page as Facebook crawler
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://negibamaxim.eu/ro/blog/cat-costa-o-ora-de-munca-it-in-romania-ghid-2026'
+          UA='facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+
+          echo '=== PAGE HEADERS ==='
+          curl -L -sS -A "$UA" -D page.headers -o page.html "$URL"
+          cat page.headers
+
+          echo '=== OPEN GRAPH / TWITTER META ==='
+          grep -Ei '<meta[^>]+(og:|twitter:)' page.html || true
+
+          echo '=== TITLE ==='
+          grep -Ei '<title>' page.html | head -n 3 || true
+
+          IMAGE_URL="$(python3 - <<'PY'
+import re, html
+s=open('page.html', encoding='utf-8', errors='ignore').read()
+patterns=[
+    r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
+    r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+]
+for p in patterns:
+    m=re.search(p,s,re.I)
+    if m:
+        print(html.unescape(m.group(1)))
+        break
+PY
+)"
+          echo "OG_IMAGE=$IMAGE_URL"
+
+          if [ -n "$IMAGE_URL" ]; then
+            echo '=== IMAGE HEADERS AS FACEBOOK CRAWLER ==='
+            curl -L -sS -A "$UA" -D image.headers -o /dev/null "$IMAGE_URL"
+            cat image.headers
+
+            echo '=== IMAGE HEADERS AS NORMAL BROWSER ==='
+            curl -L -sS -A 'Mozilla/5.0' -D image-browser.headers -o /dev/null "$IMAGE_URL"
+            cat image-browser.headers
+          fi
