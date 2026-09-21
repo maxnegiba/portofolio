@@ -60,9 +60,18 @@ class BlogController extends Controller
             
         SEO::setTitle($post->getLocalizedTitle());
         SEO::setDescription(Str::limit(strip_tags($post->getTranslation('excerpt', app()->getLocale())), 160));
-        SEO::opengraph()->setType('article');
+        SEO::opengraph()->setType('article')->setUrl(url()->current());
 
-        $imageUrl = $post->image ? (str_starts_with($post->image, 'http') ? $post->image : asset('storage/' . $post->image)) : asset('img/avatar.jpg');
+        // Social previews must use the actual featured image. Storage::url() can
+        // return a relative /storage/... path, so normalize it to an absolute URL.
+        $imageUrl = $post->image_url;
+
+        if ($imageUrl && ! Str::startsWith($imageUrl, ['http://', 'https://'])) {
+            $imageUrl = url($imageUrl);
+        }
+
+        $imageUrl = $imageUrl ?: asset('img/avatar-400.jpg');
+
         SEO::addImages([$imageUrl]);
 
         return view('blog.show', compact('post', 'recentPosts'));
